@@ -1,0 +1,39 @@
+ROUTINE AoC2020Day2
+
+Start() PUBLIC {
+	s input="input2.txt"
+	d readInput(input, .nums)
+	s count1 = 0
+	s count2 = 0
+	s ind = 0
+	
+	for {
+		s ind = $order(nums(ind), 1, curr)
+		if 'ind quit
+		
+		s a = $p($p(curr, " ", 1), "-")
+		s b = $p($p(curr, " ", 1), "-", 2)
+		s c = $p($p(curr, " ", 2), ":")
+		s d = $p(curr, " ", 3)
+		
+		s count = $length(d, c) - 1
+		
+		if (a <= count) && (count <= b) s count1 = count1 + 1
+		
+		s v1 = ($extract(d, a) = c)
+		s v2 = ($extract(d, b) = c)
+		
+		if ((v1+v2) = 1) s count2 = count2 + 1
+	}
+	quit count1_"^"_count2
+}
+
+readInput(input, result) {
+	set file = ##class(%Stream.FileCharacter).%New()
+	s sc = file.LinkToFile(input)
+	s ind = 1
+	while 'file.AtEnd {
+		s result(ind) = file.ReadLine()
+		s ind = ind + 1
+	}
+}
