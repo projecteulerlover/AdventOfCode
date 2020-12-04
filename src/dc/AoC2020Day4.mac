@@ -50,16 +50,19 @@ readInput(input, result) PUBLIC {
 	set file = ##class(%Stream.FileCharacter).%New()
 	s sc = file.LinkToFile(input)
 	s i = 1
-	while 'file.AtEnd {
-		s curr = file.ReadLine()
-        
-		if curr = $c(13) {
-			s i = i + 1
+
+	s data = $listfromstring(file.Read(), $c(13, 10))
+	s ptr = 0
+	
+	while $listnext(data, ptr, curr) {
+		if curr = "" {
+			s i = i+1
 			continue
 		}
-        if $extract(curr, *) = $c(13) s curr = $extract(curr, 1, *-1)
 		s cl = $listfromstring(curr, " ")
 		s p = 0
+		
+		zw cl
 		while $listnext(cl, p, v) {
 			s a = $p(v, ":")
 			s b = $p(v, ":", 2)
