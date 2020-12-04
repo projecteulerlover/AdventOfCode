@@ -1,0 +1,69 @@
+ROUTINE AoC2020Day4
+
+Start() PUBLIC {
+	s input="/irisdev/app/input4.txt"
+	d readInput(input, .nums)
+
+	s pid = ""
+	s count1 = 0
+	s count2 = 0
+	for {
+		s pid = $o(nums(pid))
+		if 'pid quit
+		
+		s field = ""
+		s c = 0
+		s cid = 0
+		s allowed = 1
+		for {
+			s field = $o(nums(pid, field), 1, targ)
+			if field="" quit
+			
+			s c = c + 1		
+			
+			if field = "byr" && ((targ < 1920) || (targ > 2002)) s allowed = 0
+			if field = "iyr" && ((targ < 2010) || (targ > 2020)) s allowed = 0
+			if field = "eyr" && ((targ < 2020) || (targ > 2030)) s allowed = 0
+			if field = "ecl" && ($listfind($lb("amb", "blu", "brn", "gry", "grn", "hzl", "oth"), targ) = 0) s allowed = 0
+			if field = "hgt" {
+				s hgtu = $extract(targ, *-1, *)
+				s hgtv = $extract(targ, 1, *-2)
+				if hgtu = "cm" && ((hgtv < 150) || (hgtv > 193)) {
+					s allowed = 0
+				} elseif hgtu = "in" && ((hgtv < 59) || (hgtv > 76)) {
+					s allowed = 0
+				} elseif (hgtu '= "cm") && (hgtu '= "in") {
+					s allowed = 0
+				}
+			}
+			if field = "hcl" && '$match(targ, "\#[0-9a-f]{6}") s allowed = 0
+			if field = "pid" && '$match(targ, "[0-9]{9}") s allowed = 0
+            //if pid = 255 zw field, allowed, targ
+		}
+		if c=7 s count1 = count1 + 1
+		if (c=7) && allowed s count2 = count2 + 1
+	}
+	return count1_"^"_count2
+}
+
+readInput(input, result) PUBLIC {
+	set file = ##class(%Stream.FileCharacter).%New()
+	s sc = file.LinkToFile(input)
+	s i = 1
+	while 'file.AtEnd {
+		s curr = file.ReadLine()
+        
+		if curr = $c(13) {
+			s i = i + 1
+			continue
+		}
+        if $extract(curr, *) = $c(13) s curr = $extract(curr, 1, *-1)
+		s cl = $listfromstring(curr, " ")
+		s p = 0
+		while $listnext(cl, p, v) {
+			s a = $p(v, ":")
+			s b = $p(v, ":", 2)
+			if a'="cid" s result(i, a) = b
+		}
+	}
+}
