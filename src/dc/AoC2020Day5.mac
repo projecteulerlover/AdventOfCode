@@ -1,5 +1,8 @@
 ROUTINE AoC2020Day5
 
+/// key takeaways: easy to find gap in continuous interval in both ordered/unordered hash sets if you know the max
+///                noticing the multiplying by 8 stuff was unneeded, could translate input into binary right away
+///                since 8 = 2**3 = number governing seats
 Start() PUBLIC {
 	s input="/irisdev/app/inputs/input5.txt"
 	d readInput(input, .nums)

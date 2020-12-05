@@ -1,5 +1,6 @@
 ROUTINE AoC2020Day4
 
+/// key takeaways: be even better are parsing data, notice we can safely ignore "cid" while parsing
 Start() PUBLIC {
 	s input="/irisdev/app/inputs/input4.txt"
 	d readInput(input, .nums)
@@ -38,7 +39,6 @@ Start() PUBLIC {
 			}
 			if field = "hcl" && '$match(targ, "\#[0-9a-f]{6}") s allowed = 0
 			if field = "pid" && '$match(targ, "[0-9]{9}") s allowed = 0
-            //if pid = 255 zw field, allowed, targ
 		}
 		if c=7 s count1 = count1 + 1
 		if (c=7) && allowed s count2 = count2 + 1

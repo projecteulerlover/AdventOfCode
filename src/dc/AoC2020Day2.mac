@@ -1,7 +1,8 @@
 ROUTINE AoC2020Day2
 
+/// key takeaways: be good at parsing data
 Start() PUBLIC {
-	s input="/irisdev/app/input2.txt"
+	s input="/irisdev/app/inputs/input2.txt"
 	d readInput(input, .nums)
 	s count1 = 0
 	s count2 = 0
