@@ -1,6 +1,6 @@
 ROUTINE AoC2020Day1
 Start() public {
-	s input="/irisdev/app/input1.txt"
+	s input="/irisdev/app/inputs/input1.txt"
 	d readInput(input, .nums)
 
 	s v1 = 0, v2 = 0

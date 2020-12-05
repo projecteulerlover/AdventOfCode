@@ -1,7 +1,7 @@
 ROUTINE AoC2020Day4
 
 Start() PUBLIC {
-	s input="/irisdev/app/input4.txt"
+	s input="/irisdev/app/inputs/input4.txt"
 	d readInput(input, .nums)
 
 	s pid = ""
@@ -62,7 +62,6 @@ readInput(input, result) PUBLIC {
 		s cl = $listfromstring(curr, " ")
 		s p = 0
 		
-		zw cl
 		while $listnext(cl, p, v) {
 			s a = $p(v, ":")
 			s b = $p(v, ":", 2)
