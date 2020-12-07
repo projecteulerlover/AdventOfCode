@@ -1,0 +1,88 @@
+ROUTINE AoC2020Day7
+
+/// key takewways: could have made part 1 faster with caching intermediate bags which we know lead to gold ones, but it was fast enough as is so just leaving it.
+
+Start() PUBLIC {
+	s input="/irisdev/app/inputs/input7.txt"
+	d readInput(input, .edges, .vertices)
+	
+	s v1 = ""
+	s ans1 = 0
+	for {
+		s v1 = $order(vertices(v1), 1, v1bag)
+		if v1="" quit
+		
+		if $$dfs(v1, .edges, .vertices) {
+			s ans1 = ans1 + 1
+		}
+	}
+	s ans2 = $$dfs2("shiny gold", .edges, .vertices)
+	return ans1_"^"_ans2
+}
+
+dfs(start, edges, vertices) PUBLIC {
+	s stack = []
+	do stack.%Push(start)
+	
+	while stack.%Size() {
+		s curr = stack.%Pop()
+		s nxt = ""
+		for {
+			s nxt = $order(edges(curr, nxt))
+			if nxt="" quit
+			
+			if nxt="shiny gold" return 1
+			
+			do stack.%Push(nxt)
+		}
+	}
+	return 0
+}
+
+dfs2(start, edges, vertices) PUBLIC {
+	s stack = []
+	do stack.%Push($lb(start, 1))
+	s total = -1
+	while stack.%Size() {
+		s curr = stack.%Pop()
+		s bag = $list(curr, 1), qty = $list(curr, 2)
+		s total = total + qty
+		s nxt = ""
+		for {
+			s nxt = $order(edges(bag, nxt), 1, targ)
+			if nxt="" quit
+			zw nxt, targ
+			do stack.%Push($lb(nxt, targ * qty))
+		}
+	}
+	return total
+}
+
+readInput(input, edges, vertices) PUBLIC {
+	set file = ##class(%Stream.FileCharacter).%New()
+	s sc = file.LinkToFile(input)
+	s i = 1
+	while 'file.AtEnd {
+		s curr = file.ReadLine()
+		
+		if $find(curr, "no other bags") continue
+		
+		s curr = $translate(curr, $c(13)_".")
+		s in = $p(curr, " contain ")
+		s outs = $p(curr, " contain ", 2)
+		
+		s in = $p(in, " ", 1, 2)
+		s vertices(in) = ""
+		s outs = $listfromstring(outs, ", ")
+		
+		s p = 0
+		while $listnext(outs, p, out) {
+			s outBag = $p(out, " ", 2, 3)
+			s outAmt = $p(out, " ")
+			s edges(in, outBag) = outAmt
+			s verts(outBag) = ""
+		}
+	}
+}
+
+
