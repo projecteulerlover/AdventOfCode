@@ -51,7 +51,7 @@ dfs2(start, edges, vertices) PUBLIC {
 		for {
 			s nxt = $order(edges(bag, nxt), 1, targ)
 			if nxt="" quit
-			zw nxt, targ
+
 			do stack.%Push($lb(nxt, targ * qty))
 		}
 	}
