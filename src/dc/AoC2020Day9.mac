@@ -5,8 +5,16 @@ ROUTINE AoC2020Day9
 Start() PUBLIC {
 	s input="/irisdev/app/inputs/input9.txt"
 	d readInput(input, .nums)
+	s t1 = $p($zts,",",2)
 	s ans1 = $$part1(.nums)
+	s t2 = $p($zts,",",2)
 	s ans2 = $$part2(.nums, ans1)
+	s t3 = $p($zts,",",2)
+
+	s p1time="Part1: "_(t2-t1)
+	s p2time="Part2: "_(t3-t2)
+	zw p1time
+	zw p2time
 	return ans1_"^"_ans2
 }
 

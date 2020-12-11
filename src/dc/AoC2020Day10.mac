@@ -1,0 +1,56 @@
+ROUTINE AoC2020Day10
+
+Start() PUBLIC {
+	s input="/irisdev/app/inputs/input10.txt"
+	d readInput(input, .nums)
+	
+	s nums($o(nums(""),-1)+3) =""
+	s curr = ""
+	s last = 0
+	for {
+		s curr = $order(nums(curr))
+		if curr = "" quit
+		s dj = curr-last
+		s djolt(dj) = $g(djolt(dj)) + 1
+		s last = curr
+	}
+	s ans1 = djolt(1)*djolt(3)
+	s ans2 = $$part2(.nums, .memo, 0)
+	
+	return ans1_"^"_ans2
+}
+
+part2(nums, memo, curr) PUBLIC {
+	s next = $order(nums(curr))
+	if next = "" return 1
+
+	if $d(memo(curr)) {
+		return memo(curr)
+	}
+	
+	s total = 0
+	s next = curr
+	for {
+		s next = $order(nums(next))
+		if next = "" quit
+
+		if (next - curr) <= 3 {
+			s total = total + $$part2(.nums, .memo, next)
+		} else {
+			quit
+		}
+	}
+	s memo(curr) = total
+	return total
+}
+
+
+readInput(input, result) PUBLIC {
+	set file = ##class(%Stream.FileCharacter).%New()
+	s sc = file.LinkToFile(input)
+	while 'file.AtEnd {
+		s curr = $translate(file.ReadLine(), $c(13))
+		s result(curr) = ""
+	}
+}
+
