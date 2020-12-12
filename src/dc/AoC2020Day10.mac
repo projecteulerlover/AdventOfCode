@@ -1,5 +1,8 @@
 ROUTINE AoC2020Day10
 
+/// main takeaway: DP for part 2 where memo(i) = number of adapter chains that could be created using adapters with voltages >= i
+///                note, this works even if i isn't a voltage present
+
 Start() PUBLIC {
 	s input="/irisdev/app/inputs/input10.txt"
 	d readInput(input, .nums)

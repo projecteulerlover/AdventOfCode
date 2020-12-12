@@ -1,5 +1,7 @@
 ROUTINE AoC2020Day11
 
+/// main takeway: don't use $s for min/max functions. for part 2, explore in each 8 directions until you see a tile which isn't the floor.
+
 Start() PUBLIC {
 	s input="/irisdev/app/inputs/input11.txt"
 	d readInput(input, .in)
