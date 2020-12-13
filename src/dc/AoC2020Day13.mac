@@ -1,5 +1,14 @@
 ROUTINE AoC2020Day13
 
+/// key takeways: for part 2, we are solving the system of equations for T: T + i == 0 mod b_i, where b_i is the interval for which each bus comes in
+///               and i is the (0-index) index of it's appearance in the second line of the input
+///               this is just chinese remainder theorem, which I stole: https://rosettacode.org/wiki/Chinese_remainder_theorem#Python
+///               one thing is because all the bus intervals are prime, we don't need to use the extended euclidean algorithm for the modular inverse step
+///               we only need to use https://en.wikipedia.org/wiki/Fermat%27s_little_theorem, which is standard for get modular inverse for prime modulus
+///               lastly, cache has no powmod implementation, so I wrote the quick linear powmod; note that usually powmod uses the repeated squaring 
+///               technique which has O(log(exponent)) instead of O(exponent) operations; however, since we only need to take things to powers <500,
+///               O(exponent) is perfectly fine here.
+
 Start() PUBLIC {
 	s input="/irisdev/app/inputs/input13.txt"
 	d readInput(input, .ts, .in)
