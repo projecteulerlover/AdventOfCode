@@ -1,5 +1,7 @@
 ROUTINE AoC2020Day15
 
+/// main takeways: use globals when you have memory issues (first time this contest); remember to kill globals if you are using them
+
 Start() PUBLIC {
 	s input="/irisdev/app/inputs/input15.txt"
 	d readInput(input, .in)
