@@ -1,0 +1,90 @@
+ROUTINE AoC2020Day16
+
+Start() PUBLIC {
+	s input="/irisdev/app/inputs/input16.txt"
+	d readInput(input, .conds, .others, .mine)
+	
+	s ans1 = $$p1(.conds, .others)
+	s ans2 = $$p2(.conds, .others)
+	return ans1_"^"_ans2
+}
+
+p1(conds, others) PUBLIC {
+	s total = 0
+	
+	for t=1:1:others {
+		for f=1:1:others(t) {
+			s fv = others(t, f)
+			s works = 0
+			for c=1:1:conds {
+				if ((conds(c, 1)<=fv) && (conds(c, 2)>=fv)) || ((conds(c, 3)<=fv) && (conds(c, 4)>=fv)) {
+					s works = 1
+					quit
+				}
+			}
+			if works=0 s total = total + fv
+		}
+	}
+	return total
+}
+
+p2(conds, others) PUBLIC {
+	s total = 0
+	
+	for t=1:1:others {
+		for f=1:1:others(t) {
+			s fv = others(t, f)
+			s works = 0
+			for c=1:1:conds {
+				if ((conds(c, 1)<=fv) && (conds(c, 2)>=fv)) || ((conds(c, 3)<=fv) && (conds(c, 4)>=fv)) {
+					s works = 1
+					quit
+				}
+			}
+			if works=0 s total = total + fv
+		}
+	}
+	return total
+}
+
+
+readInput(input, conds, others, mine, condend = 3) PUBLIC {
+	set file = ##class(%Stream.FileCharacter).%New()
+	s sc = file.LinkToFile(input)
+	
+	s conds = condend
+	for i=1:1:condend {
+		s curr = $translate(file.ReadLine(), $c(13))
+		s curr = $p(curr, ": ", 2)
+		s c1 = $p(curr, " or "), c2 = $p(curr, " or ", 2)
+		s conds(i, 1) = $p(c1, "-", 1)
+		s conds(i, 2) = $p(c1, "-", 2)
+		s conds(i, 3) = $p(c2, "-", 1)
+		s conds(i, 4) = $p(c2, "-", 2)
+	}
+	
+	do file.ReadLine()
+	do file.ReadLine()
+	
+	s curr = $translate(file.ReadLine(), $c(13))
+	s mine = curr
+	
+	do file.ReadLine()
+	do file.ReadLine()
+	
+	set i = 0
+	while 'file.AtEnd {
+		s i = i+1
+		s curr = $translate(file.ReadLine(), $c(13))
+		s curr = $listfromstring(curr, ",")
+		s pt = 0
+		s j = 0
+		while $listnext(curr, pt, v) {
+			s j=j+1
+			s others(i, j) = v
+		}
+		s others(i) = j
+	}
+	s others = i
+}
+
