@@ -1,15 +1,18 @@
 ROUTINE AoC2020Day16
 
+/// main takeaways: part 1 is straight forward; for part 2, maintain a mapping from condition to all the
+///                 fields it could be. Then do topological sort on the graph induced by this mapping.
+
 Start() PUBLIC {
 	s input="/irisdev/app/inputs/input16.txt"
 	d readInput(input, .conds, .others, .mine)
 	
-	s ans1 = $$p1(.conds, .others)
-	s ans2 = $$p2(.conds, .others)
+	s ans1 = $$p1(.conds, .others, .bads)
+	s ans2 = $$p2(.conds, .others, .bads, mine)
 	return ans1_"^"_ans2
 }
 
-p1(conds, others) PUBLIC {
+p1(conds, others, bads) PUBLIC {
 	s total = 0
 	
 	for t=1:1:others {
@@ -22,33 +25,82 @@ p1(conds, others) PUBLIC {
 					quit
 				}
 			}
-			if works=0 s total = total + fv
+			if works=0 s total = total + fv, bads(t)=""
 		}
 	}
 	return total
 }
 
-p2(conds, others) PUBLIC {
-	s total = 0
-	
-	for t=1:1:others {
-		for f=1:1:others(t) {
-			s fv = others(t, f)
-			s works = 0
-			for c=1:1:conds {
-				if ((conds(c, 1)<=fv) && (conds(c, 2)>=fv)) || ((conds(c, 3)<=fv) && (conds(c, 4)>=fv)) {
-					s works = 1
+p2(conds, others, bads, mine) PUBLIC {
+	s b = ""
+	for {
+		s b = $o(bads(b))
+		if b="" quit
+		
+		kill others(b)	
+	}
+	s all = 0
+	for c=1:1:conds {
+		for f=1:1:conds {
+			s all = 1
+			s t = ""
+			
+			for {
+				s t = $o(others(t))
+				if t="" quit
+				s fv = others(t, f)
+				if '(((conds(c, 1)<=fv) && (conds(c, 2)>=fv)) || ((conds(c, 3)<=fv) && (conds(c, 4)>=fv))) {
+					s all = 0
 					quit
 				}
 			}
-			if works=0 s total = total + fv
+			if all {
+				s candidates(c, f)=""
+				s candidates(c)=$g(candidates(c))+1
+			}
 		}
 	}
-	return total
+	
+	// used to do this by hand, tological sort impl
+	s stack = []
+	for c=1:1:conds {
+		if candidates(c)=1 {
+			s f = ""
+			s f = $o(candidates(c, f))
+			do stack.%Push(f)
+			kill candidates(c, f)
+			s candidates(c)=candidates(c)-1
+			s mapping(c) = f
+		}
+	}
+	
+	while stack.%Size() > 0 {
+		s curr = stack.%Pop()
+		for c=1:1:conds {
+			if $d(candidates(c, curr)) {
+				s candidates(c) = candidates(c)-1
+				kill candidates(c, curr)
+				if candidates(c) = 1 {
+					s f = ""
+					s f = $o(candidates(c, f))
+					do stack.%Push(f)
+					s mapping(c) = f
+				}
+			}
+		}
+	}
+	
+	s mine = $listfromstring(mine, ",")
+	s prod = 1
+	for i=1:1:6 {
+		s prod = prod * $listget(mine, mapping(i))
+	}
+	
+	return prod
 }
 
 
-readInput(input, conds, others, mine, condend = 3) PUBLIC {
+readInput(input, conds, others, mine, condend = 20) PUBLIC {
 	set file = ##class(%Stream.FileCharacter).%New()
 	s sc = file.LinkToFile(input)
 	
