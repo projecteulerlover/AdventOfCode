@@ -30,8 +30,7 @@ p2(in) PUBLIC {
 
 calculate(line) PUBLIC {
 	s num = 0
-	s res = 0
-	s cres = 0
+	s stack = []
 	s op = "+"
 	for i=1:1:$length(line) {
 		s c = $e(line, i)
@@ -48,21 +47,23 @@ calculate(line) PUBLIC {
 			}
 			s num = $$calculate($e(line, j+1, i-1))
 		}
-		if (c="+") || (c="*") || (i=$length(line)) {
+		if ('c || (i=$length(line))) {
 			if op="+" {
-				s cres = cres + num
+				s prev = stack.%Pop()
+				do stack.%Push(prev + num)
 			} elseif op="*" {
-				s cres = cres * num
-			}
-			if (c="+") || (i=$length(line)) {
-				s res = res + cres
-				s cres = 0
+				do stack.%Push(num)
 			}
 			s op = c
 			s num = 0
 		}
+		
 	}
-	return res
+	s prod = 1
+	while stack.%Size() > 0 {
+		s prod = prod * stack.%Pop()
+	}
+	return prod
 }
 
 readInput(input, result) PUBLIC {
