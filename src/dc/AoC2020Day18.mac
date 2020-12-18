@@ -5,7 +5,7 @@ Start() PUBLIC {
 	d readInput(input, .in)
 
 	s ans1 = $$p1(.in)
-	s ans2 = 0
+	s ans2 = $$p2(.in)
 	
 	return ans1_"^"_ans2
 }
