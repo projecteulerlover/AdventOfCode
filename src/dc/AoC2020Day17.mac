@@ -6,7 +6,7 @@ Start() PUBLIC {
 	s ans1=$$p1(.in)
 
 	kill in
-	d readInput2(input, .in)
+	d readInput(input, .in, 1)
 	s ans2=$$p2(.in)
 
 
@@ -146,24 +146,7 @@ getNewMap2(in, out) PUBLIC {
 	}
 }
 
-readInput(input, result) PUBLIC {
-	set file = ##class(%Stream.FileCharacter).%New()
-	s sc = file.LinkToFile(input)
-	s x = 0
-	s z = 0
-	while 'file.AtEnd {
-		s curr = $translate(file.ReadLine(), $c(13))
-		for y=0:1:$length(curr)-1 {
-			if $extract(curr, y+1)="#" {
-				s result(z_"^"_x_"^"_y) = 1
-			}
-		}
-		s x = x + 1
-	}
-	s result = x-1
-}
-
-readInput2(input, result) PUBLIC {
+readInput(input, result, p2=0) PUBLIC {
 	set file = ##class(%Stream.FileCharacter).%New()
 	s sc = file.LinkToFile(input)
 	s x = 0
@@ -173,7 +156,7 @@ readInput2(input, result) PUBLIC {
 		s curr = $translate(file.ReadLine(), $c(13))
 		for y=0:1:$length(curr)-1 {
 			if $extract(curr, y+1)="#" {
-				s result(z_"^"_x_"^"_y_"^"_w) = 1
+				s result(z_"^"_x_"^"_y_$s(p2: "^"_w, 1:"")) = 1
 			}
 		}
 		s x = x + 1
