@@ -4,8 +4,11 @@ Start() PUBLIC {
 	s input="/irisdev/app/inputs/2017input20.txt"
 	d readInput(input, .ps, .vs, .as)
 
-    s ans = $$p1(.ps, .vs, .as)
-	return ans
+    s ans1 = $$p1(.ps, .vs, .as)
+
+    d readInput(input, .ps, .vs, .as)
+    s ans2 = $$p1(.ps, .vs, .as, 1)
+	return ans1_"^"_ans2
 }
 
 step(ps, vs, as) PUBLIC {
@@ -27,28 +30,44 @@ step(ps, vs, as) PUBLIC {
 }
 
 step2(ps, vs, as) PUBLIC {
-    s c = -1
-    s cdist = 10**10
     for i=0:1:ps-1 {
         if '$d(ps(i)) continue
-        
+
         for j=1:1:3 {
             s vs(i, j)=vs(i, j) + as(i, j)
             s ps(i, j)=ps(i, j) + vs(i, j)
         }
-        s curr = $zabs(ps(i, 1)) + $zabs(ps(i, 2)) + $zabs(ps(i, 3))
+        s pos(ps(i, 1)_","_ps(i, 2)_","_ps(i, 3)) = $g(pos(ps(i, 1)_","_ps(i, 2)_","_ps(i, 3)))_","_i
+    }
+    s p = ""
+    for {
+        s p=$o(pos(p), 1, x)
+        if p="" quit
 
-        if curr < cdist {
-            s cdist = curr
-            s c = i
+        if $length(x, ",") = 2 {
+            continue
+        }
+
+        for i=2:1:$length(x, ",") {
+            s particle = $p(x, ",", i)
+            k ps(particle), vs(particle), as(particle)
         }
     }
-    return c
+    s total = 0
+    for i=0:1:ps-1 {
+        if '$d(ps(i)) continue
+        s total = total+1
+    }   
+    return total
 }
 
-p1(ps, vs, as) {
+p1(ps, vs, as, p2=0) {
     for t=1:1:1000 {
-        set c = $$step(.ps, .vs, .as)
+        if p2 = 1 {
+            s c = $$step2(.ps, .vs, .as)
+        } else {
+            set c = $$step(.ps, .vs, .as)
+        }
     }
     return c
 }
