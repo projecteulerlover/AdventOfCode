@@ -10,7 +10,7 @@ Start() PUBLIC {
     d readInput(input, .in)
 
     s ans2 = $$p2(.in)
-	return ans2
+	return ans1_"^"_ans2
 }
 
 p1(in, t=10000) PUBLIC {
