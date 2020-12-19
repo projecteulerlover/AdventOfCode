@@ -1,0 +1,38 @@
+ROUTINE AoC2020Day18
+
+Start() PUBLIC {
+	s input="/irisdev/app/inputs/input18.txt"
+	d readInput(input, .in)
+
+	s ans1 = $$p1(.in)
+
+    kill in
+    d readInput(input, .in)
+
+	return ans1
+}
+
+p1(in) PUBLIC {
+	s ans = 0
+
+    return ans
+}
+
+p2(in) PUBLIC {
+    s ans = 0
+
+	return ans
+}
+
+
+readInput(input, result) PUBLIC {
+	set file = ##class(%Stream.FileCharacter).%New()
+	s sc = file.LinkToFile(input)
+	s i = 0
+	while 'file.AtEnd {
+		s i = i+1
+		s result(i) = $translate(file.ReadLine(), $c(13)_" ")
+	}
+	s result = i
+}
+
