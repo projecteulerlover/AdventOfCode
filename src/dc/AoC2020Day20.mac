@@ -3,12 +3,73 @@ ROUTINE AoC2020Day20
 Start() PUBLIC {
 	s input="/irisdev/app/inputs/input20.txt"
 	d readInput(input, .in)
+	
+	d getEdgeMapping(.in, .edgeToHas, .tileToEdges, .hashToEdge)
 
-	s ans1= $$p1(.in, .count)
-	return ans1
+	s edges=1
+	s unique=2
+	while edges'="" {
+		s edges=""
+		s v= $$p1(.in, .edges, unique)
+		
+		for i=2:1:$length(edges, ",") {
+			s c=$p(edges, ",", i)
+			kill in(c)
+		}
+		s unique=unique+1
+	}
+	return 1
 }
 
-p1(in, count) PUBLIC {
+lrflip(tile) PUBLIC {
+	for i=1:1:10 {
+		s tile(i)=$reverse(tile(i))
+	}
+}
+
+rotate90(tile) PUBLIC {
+	for i=1:1:5 {
+		for j=i:1:10-i {
+			s tmp=$e(tile(i), j)
+			s $e(tile(i), j) = $e(tile(10-j+1), i)
+			s $e(tile(10-j+1), i) = $e(tile(10-i+1), 10-j+1)
+			s $e(tile(10-i+1), 10-j+1) = $e(tile(j), 10-i+1)
+			s $e(tile(j), 10-i+1) = tmp
+		}
+	}
+}
+
+getEdgeMapping(in, edgeToHash, tileToEdges, hashToEdge) PUBLIC {
+	s id=""
+	s hash=1
+	for {
+		s id=$o(in(id))
+		if id="" quit
+
+		s t=in(id, 1)
+		s b=in(id, 10)
+		s l="", r=""
+		for i=1:1:10 {
+			s $e(l, i)=$e(in(id, i), 1)
+			s $e(r, i)=$e(in(id, i), 10)
+		}
+
+		s sides=$lb(t, b, l, r)
+		for i=1:1:$LISTLENGTH(sides) {
+			s curr=$list(sides, i)
+
+			if $d(edgeToHash(curr)) || $d(edgeTohas($reverse(curr))) continue
+
+			s edgeToHash(curr)=hash
+			s edgeToHash($reverse(curr))=hash
+			s hashToEdge(hash)=curr_","_$reverse(curr)
+
+			s hash=hash+1
+		}
+	}
+}
+
+p1(in, edges, unique) PUBLIC {
 	s id=""
 	for {
 		s id=$o(in(id))
@@ -35,8 +96,8 @@ p1(in, count) PUBLIC {
 		s r=""
 
 		for i=1:1:10 {
-			s $e(l, $length(l)+1)=$e(in(id, i), 1)
-			s $e(r, $length(r)+1)=$e(in(id, i), 10)
+			s $e(l, i)=$e(in(id, i), 1)
+			s $e(r, i)=$e(in(id, i), 10)
 		}
 
 		if $d(count(l)) {
@@ -79,7 +140,10 @@ p1(in, count) PUBLIC {
 		s id=$o(fcount(id),1,v)
 		if id="" quit
 
-		if v=2 s prod=prod*id
+		if v=unique {
+			s edges=edges_","_id
+			s prod=prod*id
+		}
 	}
 	return prod
 }
