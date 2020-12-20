@@ -1,0 +1,64 @@
+ROUTINE AoC2017Day24
+
+Start() PUBLIC {
+	s input="/irisdev/app/inputs/2017input24.txt"
+	d readInput(input, .ports, .components)
+
+    s curr=0
+    s best=0
+    do perms(.ports, .components, .curr, .best, 0)
+    s ans1=best
+	return ans1
+}
+
+perms(ports, components, curr, best, start=0) {
+    s ncompid=""
+
+    for {
+        s ncompid=$o(ports(start, ncompid))
+        if ncompid="" quit
+
+        merge nports=ports
+        merge ncomps=components
+
+        s currcopy=curr
+        s ncomp=$o(ncomps(ncompid, ""))
+
+
+        s p1=$p(ncomp,"/"), p2=$p(ncomp,"/",2)
+        kill ncomps(ncompid)
+        kill nports(p1, ncompid)
+        kill nports(p2, ncompid)
+
+        if p1=start {
+            s nstart=p2
+        } else {
+            s nstart=p1
+        }
+        
+        s ncurr=currcopy+p1+p2
+        s nbest=best
+        if ncurr > best{
+            s nbest=ncurr
+        }
+        d perms(.nports, .ncomps, .ncurr, .nbest, nstart)
+        if nbest>best {
+            s best=nbest
+        }
+    }
+}
+
+readInput(input, ports, component) PUBLIC {
+	set file = ##class(%Stream.FileCharacter).%New()
+	s sc = file.LinkToFile(input)
+	s i = 0
+	while 'file.AtEnd {
+        s i = i+1
+        s c = $translate(file.ReadLine(), $c(13))
+        s p1=$p(c,"/"), p2=$p(c,"/",2)
+        s ports(p1,i)=""
+        s ports(p2,i)=""
+        s component(i, c)=""
+	}
+}
+
