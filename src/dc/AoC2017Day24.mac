@@ -5,10 +5,16 @@ Start() PUBLIC {
 	d readInput(input, .ports, .components)
 
     s curr=0
-    s best=0
-    do perms(.ports, .components, .curr, .best, 0)
-    s ans1=best
-	return ans1
+    s ans1=0
+    do perms(.ports, .components, .curr, .ans1, 0)
+    zw ans1
+    s curr=0
+    s ans2=0
+    s length=0
+    s bestlength=0
+    
+    do perms2(.ports, .components, .curr, .ans2, length, .bestlength, 0)
+	return ans1_"^"_ans2
 }
 
 perms(ports, components, curr, best, start=0) {
@@ -44,6 +50,48 @@ perms(ports, components, curr, best, start=0) {
         d perms(.nports, .ncomps, .ncurr, .nbest, nstart)
         if nbest>best {
             s best=nbest
+        }
+    }
+}
+
+perms2(ports, components, curr, best, length, bestlength, start=0) {
+    s ncompid=""
+
+    for {
+        s ncompid=$o(ports(start, ncompid))
+        if ncompid="" quit
+        merge nports=ports
+        merge ncomps=components
+
+        s currcopy=curr
+        s ncomp=$o(ncomps(ncompid, ""))
+        s nlength=length+1
+        s nbest=best
+        s nbestlength=bestlength
+
+        s p1=$p(ncomp,"/"), p2=$p(ncomp,"/",2)
+        kill ncomps(ncompid)
+        kill nports(p1, ncompid)
+        kill nports(p2, ncompid)
+
+        if p1=start {
+            s nstart=p2
+        } else {
+            s nstart=p1
+        }
+        
+        s ncurr=currcopy+p1+p2
+        if nlength = nbestlength {
+            if ncurr > best  s nbest=ncurr
+        } elseif nlength > nbestlength {
+            s nbestlength=nlength
+            s nbest = ncurr
+        }
+        d perms2(.nports, .ncomps, .ncurr, .nbest, .nlength, .nbestlength, nstart)
+
+        if nbestlength >= bestlength {
+            s best=nbest
+            s bestlength=nbestlength
         }
     }
 }
