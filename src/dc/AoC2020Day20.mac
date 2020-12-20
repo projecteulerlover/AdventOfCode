@@ -4,24 +4,99 @@ Start() PUBLIC {
 	s input="/irisdev/app/inputs/input20.txt"
 	d readInput(input, .in)
 
-	s ans1 = $$p1(.in)
-
+	s ans1= $$p1(.in, .count)
 	return ans1
 }
 
-p1(in) PUBLIC {
-	s total = 0
-    return total
+p1(in, count) PUBLIC {
+	s id=""
+	for {
+		s id=$o(in(id))
+		if id="" quit
+
+		
+		if $d(count(in(id, 1))) {
+			s str = in(id, 1)
+		} else {
+			s str = $reverse(in(id, 1))
+		}
+		s count(str)=$g(count(str))+1
+		s count(str, id)=""
+
+		if $d(count(in(id, 10))) {
+			s str = in(id, 10)
+		} else {
+			s str = $reverse(in(id, 10))
+		}
+		s count(str)=$g(count(str))+1
+		s count(str, id)=""
+
+		s l=""
+		s r=""
+
+		for i=1:1:10 {
+			s $e(l, $length(l)+1)=$e(in(id, i), 1)
+			s $e(r, $length(r)+1)=$e(in(id, i), 10)
+		}
+
+		if $d(count(l)) {
+			s str = l
+		} else {
+			s str = $reverse(l)
+		}
+		s count(str)=$g(count(str))+1
+		s count(str, id)=""
+
+		if $d(count(r)) {
+			s str = r
+		} else {
+			s str = $reverse(r)
+		}
+		s count(str)=$g(count(str))+1
+		s count(str, id)=""
+	}
+	
+
+	s pattern=""
+	for {
+		s pattern=$o(count(pattern),1,c)
+		if pattern="" quit
+
+		if c'=1 {
+			k count(pattern)
+		}
+	}
+	s p=""
+	for {
+		s p=$o(count(p))
+		if p="" quit
+		
+		s fcount($o(count(p, "")))=$g(fcount($o(count(p, ""))))+1
+	}
+	s id=""
+	s prod=1
+	for{
+		s id=$o(fcount(id),1,v)
+		if id="" quit
+
+		if v=2 s prod=prod*id
+	}
+	return prod
 }
 
 
 readInput(input, result) PUBLIC {
 	set file = ##class(%Stream.FileCharacter).%New()
 	s sc = file.LinkToFile(input)
-	s i = 0
 	while 'file.AtEnd {
-		s i = i+1
-		s result(i) = $translate(file.ReadLine(), $c(13)_" ")
+		s curr = $translate(file.ReadLine(), $c(13))
+
+		if curr="" continue
+
+		if $find(curr, "Tile") s j=$extract(curr, 6, *-1)
+		for k=1:1:10 {
+			s curr = $translate(file.ReadLine(), $c(13))
+			s result(j, k)=curr
+		}
 	}
-	s result = i
 }
