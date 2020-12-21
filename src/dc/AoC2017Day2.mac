@@ -1,0 +1,58 @@
+ROUTINE AoC2017Day2
+
+Start() PUBLIC {
+	s input="/irisdev/app/inputs/2017input2.txt"
+	d readInput(input, .in)
+
+	s ans1 = $$p1(.in)
+    s ans2 = $$p2(.in)
+	return ans1_"^"_ans2
+}
+
+p1(in) PUBLIC {
+    s ans=0
+
+    for i=1:1:in {
+        s c=in(i)
+        s max=$p(c,$c(9)), min=$p(c, $c(9))
+        for j=1:1:$length(c,$c(9)) {
+            s curr=$p(c,$c(9),j)
+  
+            if curr>max s max=curr
+            if curr<min s min=curr
+        }
+        s ans=ans+max-min
+    }
+    return ans
+}
+
+p2(in) PUBLIC {
+    s ans=0
+
+    for i=1:1:in {
+        s c=in(i)
+        for j=1:1:$length(c,$c(9)) {
+            for k=1:1:$length(c,$c(9)) {
+                if j=k continue
+
+                if ($p(c,$c(9),j)#$p(c,$c(9),k)=0) {
+                    s ans=ans+($p(c,$c(9),j)/$p(c,$c(9),k))
+                    quit
+                }
+            } 
+        }
+    }
+    return ans
+}
+
+readInput(input, result) PUBLIC {
+	set file = ##class(%Stream.FileCharacter).%New()
+	s sc = file.LinkToFile(input)
+	s i = 0
+	while 'file.AtEnd {
+        s i = i+1
+        s result(i)=$translate(file.ReadLine(), $c(13))
+	}
+	s result = i
+}
+
