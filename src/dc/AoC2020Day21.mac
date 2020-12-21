@@ -4,12 +4,122 @@ Start() PUBLIC {
 	s input="/irisdev/app/inputs/input21.txt"
 	d readInput(input, .in)
 
-	s ans1 = $$p1(.in)
-	return ans1
+	s ans1 = $$p1(.in, .algToIngr)
+    s ans2 = $$p2(.in, .algToIngr)
+
+	return ans1_"^"_ans2
 }
 
-p1(in) PUBLIC {
+p1(in, algToIngr) PUBLIC {
     s ans=0
+
+    for i=1:1:in {
+        s ingr=$p(in(i),":"), alg=$p(in(i),":",2)
+        s alg=$listfromstring(alg,", ")
+        s ingr=$listfromstring(ingr," ")
+
+        for j=1:1:$listlength(alg) {
+            s calg=$list(alg, j)
+
+            if $d(algToIngr(calg))=11 {
+                s cingr=""
+                for {
+                    s cingr=$o(algToIngr(calg, cingr))
+                    if cingr="" quit
+
+                    if $listfind(ingr, cingr)=0 {
+                        kill algToIngr(calg, cingr)
+                        s algToIngr(calg)=algToIngr(calg)-1
+                    }
+                }
+            } else {
+                for k=1:1:$listlength(ingr) {
+                    s cingr=$list(ingr, k)
+                    s algToIngr(calg, cingr)=""
+                }
+                s algToIngr(calg)=$listlength(ingr)
+            }
+        }
+    }
+    
+    s alg=""
+    for {
+        s alg=$o(algToIngr(alg))
+        if alg="" quit
+
+        s ingr=""
+        for {
+            s ingr=$o(algToIngr(alg, ingr))
+            if ingr="" quit
+
+            s allIngr(ingr)=""
+        }
+    }
+
+    for i=1:1:in {
+        s ingr=$p(in(i),":")
+        s ingr=$listfromstring(ingr," ")
+
+        for j=1:1:$listlength(ingr) {
+            s cingr=$list(ingr, j)
+            if '$d(allIngr(cingr)) {
+                s ans=ans+1
+            }
+        }
+    }
+
+    return ans
+}
+
+p2(in, algToIngr) PUBLIC {
+    s stack=[]
+    s alg=""
+    for {
+        s alg=$o(algToIngr(alg),1,c)
+        if alg="" quit
+        
+        if c=1 {
+            d stack.%Push(alg)
+            s seen(alg)=""
+        }
+    }
+    
+    while stack.%Size()>0 {
+        s calg=stack.%Pop()
+        s cingr=$o(algToIngr(calg, ""))
+        k algToIngr(calg)
+        s map(calg)=cingr
+
+        s alg=""
+        for {
+            s alg=$o(algToIngr(alg)) 
+            if alg="" quit
+
+            s ingr=""
+            for {
+                s ingr=$o(algToIngr(alg, ingr))
+                if ingr="" quit
+                
+                if ingr=cingr {
+                    k algToIngr(alg, ingr)
+                    s algToIngr(alg)=algToIngr(alg)-1
+                }
+            }
+            if (algToIngr(alg)=1) && '$d(seen(alg)) {      
+                d stack.%Push(alg)
+                s seen(alg)=""
+            }
+        }
+    }
+    
+    s alg=""
+    s ans=""
+    for {
+        s alg=$o(map(alg), 1, ingr)
+        if alg="" quit
+
+        s ans=ans_$s(ans="":"", 1:",")_ingr
+    }
     return ans
 }
 
@@ -19,7 +129,9 @@ readInput(input, result) PUBLIC {
 	s i = 0
 	while 'file.AtEnd {
         s i = i+1
-        s result(i)=$translate(file.ReadLine(), $c(13))
+        s curr=$translate(file.ReadLine(), $c(13))
+        s ingr=$p(curr," ("), alg=$e($p(curr, " (", 2), 10, *-1)
+        s result(i)=ingr_":"_alg
 	}
 	s result = i
 }
