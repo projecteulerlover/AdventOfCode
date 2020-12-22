@@ -16,7 +16,6 @@ readInput(input, result) PUBLIC {
 		s result(ind) = file.ReadLine()
 		s ind = ind + 1
 	}
-	zw result
 }
 
 gC(dx, dy, &nums) PUBLIC {

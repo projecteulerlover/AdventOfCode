@@ -1,0 +1,11 @@
+ROUTINE AoC2020
+
+Start(d=22) PUBLIC {
+    for i=1:1:d {
+        s curr = $xecute("return "_"$$Start^AoC2020Day"_i_"()")
+        zw "Problem "_i_" Part 1="_$p(curr,"^")
+        zw "Problem "_i_" Part 2="_$p(curr,"^",2)
+        w !
+    }
+    return "Done"
+}
