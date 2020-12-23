@@ -1,13 +1,13 @@
-ROUTINE AoC2020Day18
+ROUTINE AoC2020Day24
 
 Start() PUBLIC {
-	s input="/irisdev/app/inputs/input18.txt"
+	s input="/irisdev/app/inputs/input24.txt"
 	d readInput(input, .in)
 
 	s ans1 = $$p1(.in)
 	s ans2 = $$p2(.in)
 
-    
+
 	return ans1
 }
 
