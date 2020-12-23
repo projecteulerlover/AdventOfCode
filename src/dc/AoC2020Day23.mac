@@ -1,17 +1,44 @@
 ROUTINE AoC2020Day23
 
 Start() PUBLIC {
-	s input="/irisdev/app/inputs/input23.txt"
-	d readInput(input, .in)
-
+	s in = "2 1 9 7 4 8 3 6 5"
 	s ans1=$$p1(in)
-	
+
     s ans2=0
 	return ans1
 }
 
-p1(in) PUBLIC {
-	s ans=0
+p1(in, t=100) PUBLIC {
+	for i=1:1:t {
+
+		s curr=$p(in, " ", 1)
+
+		s c1=$p(in, " ", 2), c2=$p(in, " ", 3), c3=$p(in, " ", 4)
+
+		s d=curr-1
+		if d=0 s d=9
+		while (d=c1) || (d=c2) || (d=c3) {
+			s d=d-1
+			if d=0 s d=9
+		}
+		for j=5:1:9 {
+			if $p(in, " ", j)=d {
+				s in=$p(in, " ", 5, j)_" "_$p(in, " ", 2, 4)_" "_$p(in, " ", j+1, 9)_$s($p(in, " ", j+1, 9)'="":" ", 1:"")_$p(in, " " , 1)
+				quit
+			}
+		}
+	}
+	s start=0
+	for i=1:1:$length(in, " ") {
+		if $p(in, " ", i) = 1 {
+			s start=i#10
+		}
+	}
+
+	s ans=""
+	for i=1:1:$length(in, " ")-1 {
+		s ans=ans_$p(in," ",(start+i)#$length(in, " "))
+	}
 
 	return ans
 }
@@ -23,14 +50,7 @@ p2(in) PUBLIC {
 
 
 readInput(input, p1) PUBLIC {
-	s p1="", p2=""
 	set file = ##class(%Stream.FileCharacter).%New()
 	s sc = file.LinkToFile(input)
-	s i=0
-	while 'file.AtEnd {
-        s i=i+1
-		s curr=$translate(file.ReadLine(), $c(13))
-        s p1(i)=curr
-	}
-	s p1=i
+	s p1 = file.ReadLine()
 }
