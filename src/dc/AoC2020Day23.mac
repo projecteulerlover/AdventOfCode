@@ -1,11 +1,12 @@
 ROUTINE AoC2020Day23
 
 Start() PUBLIC {
+	s input="/irisdev/app/inputs/input23.txt"
 	s in = "2 1 9 7 4 8 3 6 5"
 	s ans1=$$p1(in)
 
-    s ans2=0
-	return ans1
+    s ans2=$$p2(in)
+	return ans1_"^"_ans2
 }
 
 p1(in, t=100) PUBLIC {
@@ -43,9 +44,42 @@ p1(in, t=100) PUBLIC {
 	return ans
 }
 
-p2(in) PUBLIC {
-    s ans=0
-	return ans
+p2(in, t=10000000) PUBLIC {
+	s l=$length(in, " ")
+    for i=1:1:l-1 {
+		s ll($p(in, " ", i))=$p(in, " ", i+1)
+	}
+	s ll($p(in, " ",*))=10
+	
+	for i=11:1:10**6 {
+		s ll(i-1)=i
+	}
+	s ll(10**6)=$p(in, " ", 1)
+
+	
+
+	s curr=$p(in, " ")
+	for i=1:1:t {
+
+		s c1=ll(curr)
+		s c2=ll(c1)
+		s c3=ll(c2)
+
+		s d=curr-1
+		if d=0 s d=10**6
+		while (d=c1) || (d=c2) || (d=c3) {
+			s d=d-1
+			if d=0 s d=10**6
+		}
+		s ll(curr)=ll(c3)
+		s ll(c3)=ll(d)
+		s ll(d)=c1
+		
+		s curr=ll(curr)
+	}
+
+	
+	return ll(1)*ll(ll(1))
 }
 
 
