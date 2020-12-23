@@ -1,5 +1,10 @@
 ROUTINE AoC2020Day23
 
+/// maintake away: for part 2 today, we can implement a linked list where ll(x)=the value which comes after x
+///                I wish I did this for part 1 as well, because it makes the "circular" part of it a lot easier- you just hook up
+///                ll(last value) = first value.
+
+
 Start() PUBLIC {
 	s input="/irisdev/app/inputs/input23.txt"
 	s in = "2 1 9 7 4 8 3 6 5"
@@ -46,34 +51,49 @@ p1(in, t=100) PUBLIC {
 
 p2(in, t=10000000) PUBLIC {
 	s l=$length(in, " ")
+	// first, hook up the first 8 values, so this looks like with the given example
+	// 3 -> 8 -> 9 -> 1 -> 2 -> 5 -> 4 -> 6 -> 7
     for i=1:1:l-1 {
 		s ll($p(in, " ", i))=$p(in, " ", i+1)
 	}
+
+	// hook up the last element to 10
+	// 3 -> 8 -> 9 -> 1 -> 2 -> 5 -> 4 -> 6 -> 7 -> 10
 	s ll($p(in, " ",*))=10
 	
+	// hook up the rest of the range from 10 to 10**6
+	// 3 -> 8 -> 9 -> 1 -> 2 -> 5 -> 4 -> 6 -> 7 -> 10 -> 11 -> ... -> 10**6
 	for i=11:1:10**6 {
 		s ll(i-1)=i
 	}
-	s ll(10**6)=$p(in, " ", 1)
 
-	
+	// hook up the last to the first
+	// 3 -> 8 -> 9 -> 1 -> 2 -> 5 -> 4 -> 6 -> 7 -> 10 -> 11 -> ... -> 10**6 -> 3 (now it's circular)
+	s ll(10**6)=$p(in, " ", 1)
 
 	s curr=$p(in, " ")
 	for i=1:1:t {
-
+		// grabs the 3 elements after curr
 		s c1=ll(curr)
 		s c2=ll(c1)
 		s c3=ll(c2)
 
+		// finds the destination; note that ll(d) should contain c1 afterwards
 		s d=curr-1
 		if d=0 s d=10**6
 		while (d=c1) || (d=c2) || (d=c3) {
 			s d=d-1
 			if d=0 s d=10**6
 		}
+
+		// first, set curr's next element to the last cup grabbed's next element
 		s ll(curr)=ll(c3)
+		// then, set the last cup grabbed's next element to by the one that comes after the destination
 		s ll(c3)=ll(d)
+		// finally, insert cup 1 after the destination. Note that c1->c2->c3 still maintains their connect
 		s ll(d)=c1
+		
+		// make curr the next one
 		
 		s curr=ll(curr)
 	}
