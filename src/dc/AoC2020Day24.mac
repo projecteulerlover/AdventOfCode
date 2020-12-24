@@ -7,7 +7,7 @@ Start() PUBLIC {
 	s ans1 = $$p1(.in, .grid)
 	s ans2 = $$p2(.grid)
 
-	return ans2
+	return ans1_"^"_ans2
 }
 
 p1(in, grid) PUBLIC {
@@ -110,7 +110,6 @@ fixNeighbors(cx, cy, cz, grid, ngrid) PUBLIC {
 p2(grid) PUBLIC {
     s ans=0
 	s t=100
-	zw grid
 	for t=1:1:100 {
 		merge ngrid=grid
 
