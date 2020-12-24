@@ -3,14 +3,14 @@ ROUTINE AoC2020Day24
 Start() PUBLIC {
 	s input="/irisdev/app/inputs/input24.txt"
 	d readInput(input, .in)
-	zw in
-	s ans1 = $$p1(.in)
-	s ans2 = $$p2(.in)
 
-	return ans1
+	s ans1 = $$p1(.in, .grid)
+	s ans2 = $$p2(.grid)
+
+	return ans2
 }
 
-p1(in) PUBLIC {
+p1(in, grid) PUBLIC {
     s ans=0
 
 	for j=1:1:in {
@@ -65,9 +65,100 @@ p1(in) PUBLIC {
     return ans
 }
 
-p2(in) PUBLIC {
-    s ans=0
+fixNeighbors(cx, cy, cz, grid, ngrid) PUBLIC {
+	s count=0
+	
+	for k=1:1:6 {
+		s x=cx, y=cy, z=cz
+		if k=1 {
+			s x=x+1
+			s y=y-1
+		} elseif k=2 {
+			s x=x-1
+			s y=y+1
+			
+		} elseif k=3 {
+			s y=y+1
+			s z=z-1
+			
+		} elseif k=4 {
+			s x=x+1
+			s z=z-1
+			
+		} elseif k=5 {
+			s x=x-1
+			s z=z+1
+			
+		} elseif k=6 {
+			s y=y-1
+			s z=z+1
+		} 
+		s count=count+$g(grid(x_","_y_","_z), 0)
+	}
+	s key=cx_","_cy_","_cz
+	if $g(grid(key),0)=1 {
+		if (count=0) || (count>2) {
+			k ngrid(key)
+		}
+	} else {
+		if (count=2) {
+			s ngrid(key)=1
+		}
+	}
+}
 
+p2(grid) PUBLIC {
+    s ans=0
+	s t=100
+	zw grid
+	for t=1:1:100 {
+		merge ngrid=grid
+
+		s key=""
+		for {
+			s key=$o(grid(key))
+			if key="" quit
+
+			s cx=$p(key,","),cy=$p(key,",",2),cz=$p(key,",",3)
+			d fixNeighbors(cx, cy, cz, .grid, .ngrid)
+			for k=1:1:6 {
+				s x=cx, y=cy, z=cz
+				if k=1 {
+					s x=x+1
+					s y=y-1
+				} elseif k=2 {
+					s x=x-1
+					s y=y+1
+				} elseif k=3 {
+					s y=y+1
+					s z=z-1
+				} elseif k=4 {
+					s x=x+1
+					s z=z-1			
+				} elseif k=5 {
+					s x=x-1
+					s z=z+1	
+				} elseif k=6 {
+					s y=y-1
+					s z=z+1
+				} 
+				d fixNeighbors(x, y, z, .grid, .ngrid)
+			}
+		}
+		
+		kill grid
+		merge grid=ngrid
+		kill ngrid
+		
+		s key=""
+		s ans=0
+		for {
+			s key=$o(grid(key), 1, v)
+			if key="" quit
+
+			s ans=ans+v
+		}
+	}
 
 
     return ans
