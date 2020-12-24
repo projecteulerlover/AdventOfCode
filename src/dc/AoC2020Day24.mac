@@ -3,16 +3,62 @@ ROUTINE AoC2020Day24
 Start() PUBLIC {
 	s input="/irisdev/app/inputs/input24.txt"
 	d readInput(input, .in)
-
+	zw in
 	s ans1 = $$p1(.in)
 	s ans2 = $$p2(.in)
-
 
 	return ans1
 }
 
 p1(in) PUBLIC {
     s ans=0
+
+	for j=1:1:in {
+		s c=in(j)
+
+		s x=0,y=0,z=0
+		s i=1
+		while i<=$length(c) {
+			if $e(c,i)="e" {
+				s x=x+1
+				s y=y-1
+				s i=i+1
+			} elseif $e(c,i)="w" {
+				s x=x-1
+				s y=y+1
+				s i=i+1
+			} elseif $e(c,i,i+1)="nw" {
+				s y=y+1
+				s z=z-1
+				s i=i+2
+			} elseif $e(c,i,i+1)="ne" {
+				s x=x+1
+				s z=z-1
+				s i=i+2
+			} elseif $e(c,i,i+1)="sw" {
+				s x=x-1
+				s z=z+1
+				s i=i+2
+			} elseif $e(c,i,i+1)="se" {
+				s y=y-1
+				s z=z+1
+				s i=i+2
+			} else {
+				zw "bad"
+			}
+		}
+		s key=x_","_y_","_z
+		s grid(key)=($g(grid(key), 0)+1) #2
+		if grid(key)=0 kill grid(key)
+	}
+
+	s key=""
+	for {
+		s key=$o(grid(key), 1, v)
+		if key="" quit
+
+		if v=1 s ans=ans+1
+	}
 
 
 
