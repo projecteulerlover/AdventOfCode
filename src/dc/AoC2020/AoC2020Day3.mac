@@ -1,0 +1,42 @@
+ROUTINE AoC2020Day3
+
+/// key takeaways: use modulus to take care of infinitely tiled matrices
+Start() PUBLIC {
+	s input="/irisdev/app/inputs/2020/input3.txt"
+	d readInput(input, .nums)
+	
+	return $$gC(1, 3, .nums)_"^"_($$gC(1, 1, .nums)*$$gC(1, 3, .nums)*$$gC(1, 5, .nums)*$$gC(1, 7, .nums)*$$gC(2, 1, .nums))
+}
+
+readInput(input, result) PUBLIC {
+	set file = ##class(%Stream.FileCharacter).%New()
+	s sc = file.LinkToFile(input)
+	s ind = 1
+	while 'file.AtEnd {
+		s result(ind) = file.ReadLine()
+		s ind = ind + 1
+	}
+}
+
+gC(dx, dy, &nums) PUBLIC {
+	s x=1
+	s y=1
+	s c = 0
+	
+	s xl = ""
+	s xl = $order(nums(xl), -1, curr)
+	// last line does not have newline character
+	s yl = $length(curr)
+	
+	for {
+		if x > xl quit
+		if y#yl '= 0 s y = y # yl 
+		
+		if $extract(nums(x), y) = "#" s c = c+1
+
+		s x = x+dx
+		s y = y+dy
+	}
+	
+	return c
+}

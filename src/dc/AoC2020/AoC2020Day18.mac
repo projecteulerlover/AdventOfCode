@@ -1,0 +1,79 @@
+ROUTINE AoC2020Day18
+
+Start() PUBLIC {
+	s input="/irisdev/app/inputs/2020/input18.txt"
+	d readInput(input, .in)
+
+	s ans1 = $$p1(.in)
+	s ans2 = $$p2(.in)
+
+
+	return ans1_"^"_ans2
+}
+
+p1(in) PUBLIC {
+	s total = 0
+	for i=1:1:in {
+		s rtn = $xecute("return "_in(i))
+		s total = total + rtn
+	}
+    return total
+}
+
+p2(in) PUBLIC {
+    s total = 0
+	for i=1:1:in {
+		s total = total + $$calculate(in(i))
+	}
+	return total
+}
+
+calculate(line) PUBLIC {
+	s num = 0
+	s stack = []
+	s op = "+"
+	for i=1:1:$length(line) {
+		s c = $e(line, i)
+		if c {
+			s num = 10*num + c
+		} elseif (c="(") {
+			s paren = 0
+			s j=i
+			for i=j:1:$length(line) {
+				s cc = $e(line, i)
+				if cc="(" s paren = paren + 1
+				if cc=")" s paren = paren - 1
+				if paren=0 quit
+			}
+			s num = $$calculate($e(line, j+1, i-1))
+		}
+		if ('c || (i=$length(line))) {
+			if op="+" {
+				s prev = stack.%Pop()
+				do stack.%Push(prev + num)
+			} elseif op="*" {
+				do stack.%Push(num)
+			}
+			s op = c
+			s num = 0
+		}
+		
+	}
+	s prod = 1
+	while stack.%Size() > 0 {
+		s prod = prod * stack.%Pop()
+	}
+	return prod
+}
+
+readInput(input, result) PUBLIC {
+	set file = ##class(%Stream.FileCharacter).%New()
+	s sc = file.LinkToFile(input)
+	s i = 0
+	while 'file.AtEnd {
+		s i = i+1
+		s result(i) = $translate(file.ReadLine(), $c(13)_" ")
+	}
+	s result = i
+}
+

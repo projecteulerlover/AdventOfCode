@@ -1,0 +1,63 @@
+ROUTINE AoC2018Day8
+
+Start() PUBLIC {
+	s input="/irisdev/app/inputs/2018/input8.txt"
+	d readInput(input, .in)
+
+    s ans1=0
+	d p1(in, 1, .ans1)
+	
+    s ans2=$$p2(in, 1)
+	return ans1_"^"_ans2
+}
+
+p1(tree, i, total) PUBLIC {
+    s cnodes = $p(tree, " ", i)
+    s mdata = $p(tree, " ", i+1)
+
+    s i=i+2
+
+    for j=1:1:cnodes {
+        d p1(tree, .i, .total)
+    }
+
+    for j=0:1:mdata-1 {
+        s total=total+$p(tree, " ", i+j)
+    }
+    s i=i+mdata
+}
+
+p2(tree, i) PUBLIC {
+
+    s value=0
+    s cnodes = $p(tree, " ", i)
+    s mdata = $p(tree, " ", i+1)
+
+    s i=i+2
+    
+    for j=1:1:cnodes {
+        s v(j)=$$p2(tree, .i)
+    }
+
+    if cnodes=0 {
+        for j=0:1:mdata-1 {
+            s value=value+$p(tree, " ", i+j)
+        }
+    } else {
+        for j=0:1:mdata-1 {
+            s value=value+$g(v($p(tree, " ", i+j)), 0)
+        }
+    }
+    
+    s i=i+mdata
+
+    return value
+}
+
+
+readInput(input, p1) PUBLIC {
+	s p1="", p2=""
+	set file = ##class(%Stream.FileCharacter).%New()
+	s sc = file.LinkToFile(input)
+	s p1=$translate(file.ReadLine(), $c(13))
+}

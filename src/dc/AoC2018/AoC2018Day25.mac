@@ -1,0 +1,67 @@
+ROUTINE AoC2018Day25
+
+Start() PUBLIC {
+	s input="/irisdev/app/inputs/2018/input25.txt"
+	d readInput(input, .in)
+
+	s ans1 = $$p1(.in)
+	return ans1
+}
+
+dist(p1, p2) {
+    s w1=$p(p1,","), x1=$p(p1,",",2), y1=$p(p1,",",3), z1=$p(p1,",",4)
+    s w2=$p(p2,","), x2=$p(p2,",",2), y2=$p(p2,",",3), z2=$p(p2,",",4)
+
+    return $zabs(w1-w2)+$zabs(x1-x2)+$zabs(y1-y2)+$zabs(z1-z2)
+}
+
+p1(in) PUBLIC {
+    for i=1:1:in {
+        s unvisited(i)=""
+        for j=i+1:1:in {
+            if i=j continue
+
+            if $$dist(in(i), in(j)) <= 3 {
+                s edges(i, j)="", edges(j, i)=""
+            }
+        }
+    }
+
+    s total=0
+    while $d(unvisited) {
+        s start=$o(unvisited(""))
+        kill unvisited(start)
+        s stack=[]
+        d stack.%Push(start)
+
+        s total=total+1
+        while stack.%Size()>0 {
+            s c = stack.%Pop()
+
+            s n=""
+            for {
+                s n=$o(edges(c, n))
+                if n="" quit
+
+                if $d(unvisited(n)) {
+                    d stack.%Push(n)
+                    k unvisited(n)
+                }
+            }
+        }
+    }
+
+	return total
+}
+
+readInput(input, result) PUBLIC {
+	set file = ##class(%Stream.FileCharacter).%New()
+	s sc = file.LinkToFile(input)
+	s i = 0
+	while 'file.AtEnd {
+        s i = i+1
+        s result(i)=$translate(file.ReadLine(), $c(13))
+	}
+	s result = i
+}
+

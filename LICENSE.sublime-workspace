@@ -1,0 +1,356 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"new",
+				"newick_tree"
+			],
+			[
+				"matr",
+				"matrix_power(…)\tfunction ⟠"
+			],
+			[
+				"A",
+				"A"
+			],
+			[
+				"collections",
+				"collections.defaultdict\t1★ pro ⟠"
+			],
+			[
+				"collection",
+				"collections.defaultdict\t3★ pro ⟠"
+			],
+			[
+				"count",
+				"count(x)\t3★ pro ⟠"
+			],
+			[
+				"array",
+				"array_overwrite_ascending"
+			],
+			[
+				"real",
+				"real_size"
+			],
+			[
+				"c",
+				"c"
+			],
+			[
+				"perm",
+				"permIter"
+			],
+			[
+				"total",
+				"totalYard"
+			],
+			[
+				"player",
+				"playerPoints"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"Package Control: ",
+				"Package Control: Remove Package"
+			],
+			[
+				"INSTA",
+				"Package Control: Advanced Install Package"
+			],
+			[
+				"INST",
+				"Package Control: Install Package"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/D/The.Last.Spell.v0.91.11/The.Last.Spell.v0.91.11/README.txt",
+		"/D/Surgeon.Simulator.2 (2)/Surgeon.Simulator.2/README.txt",
+		"/D/Surgeon.Simulator.2 (2)/Surgeon.Simulator.2/HOW TO START.txt",
+		"/C/Users/kevin/Downloads/Roguebook-CODEX/README.txt",
+		"/D/Roguebook/client_version.txt",
+		"/D/Roguebook-CODEX/Roguebook-CODEX/README.txt",
+		"/D/Hades.v1.38064/Content/Scripts/MetaUpgradeData.lua",
+		"/C/Users/kevin/Downloads/Mirror of Night Free-11-V0-26833-1584049098/MetaUpgradeData.lua",
+		"/C/Users/kevin/OneDrive/Documents/Advent of Code/15AdventOfCode/Day24/code.py",
+		"/C/Users/kevin/Downloads/TradeBroker.7z-61-1-0-1607713513/TradeBroker/modfile.txt",
+		"/D/Hades.v1.38064/Hades.v1.38064/Hades.v1.38064/Content/Game/Weapons/PlayerWeapons.sjson",
+		"/C/Users/kevin/Downloads/Free Weapon Upgrades (Hades)-102-1-0-1622142098/WeaponUpgradeData.lua",
+		"/D/Hades/Content/Game/Weapons/PlayerWeapons.sjson",
+		"/C/Users/kevin/Downloads/Zagreus 100x Stronger-2-v21882-1574994245/Content/Game/Weapons/PlayerWeapons.sjson",
+		"/C/Users/kevin/Downloads/README.txt",
+		"/D/Hades/Content/Scripts/ConsumableData.lua",
+		"/D/Hades/Content/Game/Weapons/Weapons.sjson",
+		"/D/Hades.v1.38064/Hades.v1.38064/Hades.v1.38064/Content/Game/Weapons/Weapons.sjson",
+		"/C/Users/kevin/Downloads/hades_save_editor-0.0.1/main.py",
+		"/C/Users/kevin/Downloads/tmwilliamlin168-000000000069d11f.txt",
+		"/C/Users/kevin/Downloads/ecnerwala-000000000069ae7c.txt",
+		"/C/Users/kevin/AppData/Roaming/SumatraPDF/SumatraPDF-settings.txt",
+		"/C/Users/kevin/OneDrive/Documents/latex2wp.0.6.2/latex2wp.py",
+		"/C/Users/kevin/OneDrive/Documents/latex2wp.0.6.2/latex2wpstyle.py",
+		"/C/Users/kevin/OneDrive/Documents/USACO/2-21/cyear.py",
+		"/C/Users/kevin/OneDrive/Documents/USACO/2-21/fence.py",
+		"/C/Users/kevin/OneDrive/Documents/USACO/2-21/cows.py",
+		"/C/Users/kevin/OneDrive/Documents/USACO/2-21/ccow.py",
+		"/C/Users/kevin/OneDrive/Documents/USACO/2-21/year.py",
+		"/C/Users/kevin/OneDrive/Documents/Python Scribbles/perm_with_repeats.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/nwck.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/nkew.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/rosalind_nkew.txt",
+		"/C/Users/kevin/OneDrive/Documents/USACO/2-21/bp1.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/rosalind_nwck.txt",
+		"/C/Users/kevin/OneDrive/Documents/Python Scribbles/amc12a25.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/rosalind_nwek.txt",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/Newick_Trees.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/dij.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/rosalind_sc.txt",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/nwc.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/rosalind_sdag.txt",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/rosalind_scc.txt",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/rosalind_ba10a.txt",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/ba10a.py",
+		"/C/Users/kevin/OneDrive/Documents/Advent of Code/15AdventOfCode/Day24/ba10a.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/qs.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/3sum.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/cte.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/bip.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/aspc.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/eval.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/rosalind_nwc.txt",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/rosalind_bf.txt",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/rosalind_eval.txt",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/rosalind_aspc.txt",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/rosalind_bip.txt",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/rosalind_cte.txt",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/rosalind_dij.txt",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/rosalind_3sum.txt",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/par.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/rosalind_qs.txt",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/bf.py",
+		"/C/Users/kevin/Downloads/rosalind_bip.txt",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/revp.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/mer.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/prob.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/sq.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/problem.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/rosalind_lcsq.txt",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/rosalind_ba3d.txt",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/rosalind_hdag.txt",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/rosalind_par3.txt",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/rosalind_med.txt",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/med.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/par3.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/hdag.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/ba3d.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/lcsq.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/lexv.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/lexf.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/rosalind_lexv.txt",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/dag.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/algorithmic-heights/rosalind_sq.txt",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/algorithmic-heights/rosalind_ba6a.txt",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/algorithmic-heights/ba6a.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/algorithmic-heights/sq.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/algorithmic-heights/ps.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/algorithmic-heights/hs.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/algorithmic-heights/ts.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/algorithmic-heights/dag.py",
+		"/C/Users/kevin/Downloads/rosalind_ba10a.txt",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/algorithmic-heights/rosalind_dag.txt",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/algorithmic-heights/rosalind_ts.txt",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/algorithmic-heights/rosalind_hs.txt",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/algorithmic-heights/rosalind_ps.txt",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/algorithmic-heights/rosalind_hs.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/algorithmic-heights/bfs.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/algorithmic-heights/rosalind_ddeg.txt",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/algorithmic-heights/rosalind_hea.txt",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/algorithmic-heights/rosalind_ms.txt",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/algorithmic-heights/rosalind_2sum.txt",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/algorithmic-heights/rosalind_par.txt",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/algorithmic-heights/rosalind_cc.txt",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/algorithmic-heights/rosalind_bfs.txt",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/algorithmic-heights/cc.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/algorithmic-heights/par.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/algorithmic-heights/2sum.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/algorithmic-heights/ms.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/algorithmic-heights/hea.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/algorithmic-heights/ddeg.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/algorithmic-heights/deg.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/algorithmic-heights/rosalind_fibo.txt",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/algorithmic-heights/rosalind_ins.txt",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/algorithmic-heights/rosalind_deg.txt",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/algorithmic-heights/rosalind_maj.txt",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/algorithmic-heights/rosalind_mer.txt",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/algorithmic-heights/mer.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/algorithmic-heights/ins.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/algorithmic-heights/bins.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/algorithmic-heights/rosalind_bins.txt",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/algorithmic-heights/fibo.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/algorithmic-heights/maj.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/python-village/ini5.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/rosalind_fibo.txt",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/fibo.py",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/python-village/rosalind_ini4.txt",
+		"/C/Users/kevin/OneDrive/Documents/Rosalind/python-village/rosalind_ini5.txt"
+	],
+	"find":
+	{
+		"height": 36.0
+	},
+	"find_in_files":
+	{
+		"height": 226.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 36.0
+	},
+	"input":
+	{
+		"height": 55.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "LICENSE.sublime-project",
+	"replace":
+	{
+		"height": 68.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 204.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

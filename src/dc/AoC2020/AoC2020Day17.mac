@@ -1,0 +1,165 @@
+ROUTINE AoC2020Day17
+
+Start() PUBLIC {
+	s input="/irisdev/app/inputs/2020/input17.txt"
+	d readInput(input, .in)
+	s ans1=$$p1(.in)
+
+	kill in
+	d readInput(input, .in, 1)
+	s ans2=$$p2(.in)
+
+
+
+	return ans1_"^"_ans2
+}
+
+p1(input, time=6) PUBLIC {
+	MERGE in = input
+
+	for t=1:1:time {
+		d getNewMap1(.in, .out)
+		
+		s total = 0
+		s c = ""
+		for {
+			s c = $o(out(c))
+			if c="" quit
+
+			s z = $p(c, "^")
+			s x = $p(c, "^", 2)
+			s y = $p(c, "^", 3)
+			s count = 0
+
+			for nx=x-1:1:x+1 {
+				for ny=y-1:1:y+1 {
+					for nz=z-1:1:z+1 {
+						if (nx=x) && (ny=y) && (nz=z) continue
+						s count = count + $g(in(nz_"^"_nx_"^"_ny))
+					}
+				}
+			}
+			s active = $g(in(c), 0)
+			if (active=1) && ((count=2)||(count=3)) {
+				s out(c)=1
+			}
+			if (active=0) && (count=3) {
+				s out(c)=1
+			}
+			if $g(out(c), 0)=0 {
+				kill out(c)
+			} else {
+				s total = total +1
+			}
+		}
+		kill in
+		MERGE in = out
+		kill out
+	}
+
+	return total
+}
+
+getNewMap1(in, out) PUBLIC {
+	s c = ""
+	for {
+		s c = $o(in(c))
+		if c ="" quit
+
+		s z =$p(c, "^"), x=$p(c, "^", 2), y=$p(c, "^", 3)
+
+		for nx=x-1:1:x+1 {
+			for ny=y-1:1:y+1 {
+				for nz=z-1:1:z+1 {
+					s out(nz_"^"_nx_"^"_ny) = 0
+				}
+			}
+		}
+	}
+}
+
+p2(input, time=6) PUBLIC {
+	MERGE in = input
+
+	for t=1:1:time {
+		d getNewMap2(.in, .out)
+		s total = 0
+		s c = ""
+		for {
+			s c = $o(out(c))
+			if c="" quit
+
+			s z = $p(c, "^")
+			s x = $p(c, "^", 2)
+			s y = $p(c, "^", 3)
+			s w = $p(c, "^", 4)
+			s count = 0
+
+			for nx=x-1:1:x+1 {
+				for ny=y-1:1:y+1 {
+					for nz=z-1:1:z+1 {
+						for nw=w-1:1:w+1 {
+							if (nx=x) && (ny=y) && (nz=z) && (nw=w) continue
+							s count = count + $g(in(nz_"^"_nx_"^"_ny_"^"_nw))
+						}
+					}
+				}
+			}
+			s active = $g(in(c), 0)
+			if (active=1) && ((count=2)||(count=3)) {
+				s out(c)=1
+			}
+			if (active=0) && (count=3) {
+				s out(c)=1
+			}
+			if $g(out(c), 0)=0 {
+				kill out(c)
+			} else {
+				s total = total +1
+			}
+		}
+		kill in
+		MERGE in = out
+		kill out
+	}
+
+	return total
+}
+getNewMap2(in, out) PUBLIC {
+	s c = ""
+	for {
+		s c = $o(in(c))
+		if c ="" quit
+
+		s z =$p(c, "^"), x=$p(c, "^", 2), y=$p(c, "^", 3), w=$p(c,"^",4)
+
+		for nx=x-1:1:x+1 {
+			for ny=y-1:1:y+1 {
+				for nz=z-1:1:z+1 {
+					for nw=w-1:1:w+1 {
+						s out(nz_"^"_nx_"^"_ny_"^"_nw) = 0
+					}
+					
+				}
+			}
+		}
+	}
+}
+
+readInput(input, result, p2=0) PUBLIC {
+	set file = ##class(%Stream.FileCharacter).%New()
+	s sc = file.LinkToFile(input)
+	s x = 0
+	s z = 0
+	s w = 0
+	while 'file.AtEnd {
+		s curr = $translate(file.ReadLine(), $c(13))
+		for y=0:1:$length(curr)-1 {
+			if $extract(curr, y+1)="#" {
+				s result(z_"^"_x_"^"_y_$s(p2: "^"_w, 1:"")) = 1
+			}
+		}
+		s x = x + 1
+	}
+	s result = x-1
+}

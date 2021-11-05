@@ -1,0 +1,456 @@
+ROUTINE AoC2020Day20
+
+Start() PUBLIC {
+	s input="/irisdev/app/inputs/2020/input20.txt"
+	d readInput(input, .in)
+
+	s ans1=$$p1(.in, "", 2)
+	
+	d build(.in, .out)
+	
+
+	s monster(0)="                  # "
+	s monster(1)="#    ##    ##    ###"
+ 	s monster(2)=" #  #  #  #  #  #   "
+
+	do parseMonster(.monster, .m)
+
+	s ans2=$$p2(.out,  .m, .monster)
+	
+	return ans1_"^"_ans2
+}
+
+p2(out, m, monster) {
+	s total=0
+	s size=$o(out(""), -1)
+
+	for i=1:1:size {	
+		s total=total+$l(out(i), "#")-1
+	}
+	for i=1:1:4 {
+		d rot(.out, size)
+		s curr = $$count(.out, .m, .monster)
+		if curr < total {
+			return curr
+		}
+		d lrflip(.out, size)
+		s curr = $$count(.out, .m, .monster)
+
+		if curr < total {
+			return curr
+		}
+		d lrflip(.out, size)
+	}
+	return curr
+}
+
+count(out, m, monster) {
+	s size=$o(out(""), -1)
+	for i=1:1:size {
+		for j=1:1:size {
+			if $e(out(i), j)="#" s hashes(i_"^"_j)=""
+		}
+	}
+	s l=$length(monster(0))
+	zw size
+	
+	for i=1:1:size-2 {
+		for j=1:1:size-l+1 {
+
+	
+			s found=1
+			s c=""
+			for {
+				s c=$o(m(c))
+				if c="" quit
+				
+				s di=$p(c,"^"), dj=$p(c, "^", 2)
+
+				if $e(out(i+di), j+dj)'="#" {
+					s found = 0
+					quit
+				}
+			}
+			if found=1 {
+				s c=""
+				for {
+					s c=$o(m(c))
+					if c="" quit
+					s di=$p(c,"^"), dj=$p(c, "^", 2)
+					kill hashes((i+di)_"^"_(j+dj))
+				}
+			}
+		}
+	}
+	s l=""
+	s total=0
+	for {
+		s l=$o(hashes(l))
+		if l="" quit
+
+		s total=total+1
+	}
+	return total
+}
+
+parseMonster(monster, m) {
+	for i=0:1:2 {
+		for j=1:1:$l(monster(1)) {
+			if $e(monster(i), j)="#" s m(i_"^"_(j-1))=""
+		}
+	}
+}
+
+lrflip(tile, n=10) PUBLIC {
+	for i=1:1:n {
+		s tile(i)=$reverse(tile(i))
+	}
+}
+
+rot(tile, n=10) PUBLIC {
+	for i=1:1:n/2 {
+		for j=i:1:n-i {
+			s tmp=$e(tile(i), j)
+			s $e(tile(i), j) = $e(tile(n-j+1), i)
+			s $e(tile(n-j+1), i) = $e(tile(n-i+1), n-j+1)
+			s $e(tile(n-i+1), n-j+1) = $e(tile(j), n-i+1)
+			s $e(tile(j), n-i+1) = tmp
+		}
+	}
+}
+
+zip(tile, i) PUBLIC {
+	s c=""
+	for j=1:1:10 {
+		s $e(c, j)=$e(tile(j), i)
+	}
+	return c
+}
+
+getOrientation(tile, e1, e2) {
+	s found=0
+	for i=1:1:4 {
+		do rot(.tile)
+		if '($l(e1, tile(1))>1) || '($l(e2, $$zip(.tile, 1))>1) { 
+			continue
+		} else {
+			s found=1
+			quit
+		}
+	}
+
+	if found'=1 {
+		d lrflip(.tile)
+		for i=1:1:4 {
+			do rot(.tile)
+			if '($l(e1, tile(1))>1) || '($l(e2, $$zip(.tile, 1))>1) { 
+				continue
+			} else {
+				s found=1
+				quit
+			}
+		}
+	}
+}
+
+getOrientation1(tile, e2) {
+	s found=0
+	
+	for i=1:1:4 {
+		do rot(.tile)
+		if e2'=$$zip(.tile, 1) { 
+			continue
+		} else {
+			s found=1
+			quit
+		}
+	}
+
+	if found'=1 {
+		d lrflip(.tile)
+		for i=1:1:4 {
+			do rot(.tile)
+			if e2'=$$zip(.tile, 1) { 
+				continue
+			} else {
+				s found=1
+				quit
+			}
+		}
+	}
+}
+
+getOrientation2(tile, e2) {
+	s found=0
+	for i=1:1:4 {
+		do rot(.tile)
+		if e2'=tile(1) { 
+			continue
+		} else {
+			s found=1
+			quit
+		}
+	}
+
+	if found'=1 {
+		d lrflip(.tile)
+		for i=1:1:4 {
+			do rot(.tile)
+			if e2'=tile(1) { 
+				continue
+			} else {
+				s found=1
+				quit
+			}
+		}
+	}
+}
+
+getNextId(edgeToTile, used, edge) {
+	s id=""
+	for {
+		s id=$o(edgeToTile(edge, id))
+		if id="" quit
+
+		if $d(used(id)) continue
+		s used(id)=""
+		return id
+	}
+	s id=""
+	s edge=$reverse(edge)
+	for {
+		s id=$o(edgeToTile(edge, id))
+		if id="" quit
+
+		if $d(used(id)) continue
+		s used(id)=""
+		return id
+	}
+	return "bad"
+}
+
+
+build(in, out, size=12) {
+	do getEdgeMapping(.in, .edgeToHash, .hashToEdge, .edgeToTile)
+
+	s corners=""
+	s v=$$p1(.in, .corners, 2)
+
+	s tlc=$p(corners, "^", 1)
+	s id=$p(tlc, ":"), edges=$p(tlc, ":", 2)
+	s e1=$p(edges,",")_","_$reverse($p(edges,",")), e2=$p(edges,",",2)_","_$reverse($p(edges,",",2))
+
+	k tile
+	merge tile = in(id)
+	
+	d getOrientation(.tile, e1, e2)
+
+	merge in(id)=tile
+
+	// get tl corner
+	for i=2:1:9 {
+		s out(i-1)=$e(tile(i),2,*-1)
+	}
+	s tiling(1, 1)=id
+	s used(id)=""
+	
+	// fill rest of top row
+	for j=2:1:size {
+		s r=$$zip(.tile, 10)
+		s nxtid=$$getNextId(.edgeToTile, .used, r)
+		s tiling(1, j)=nxtid
+
+		kill tile
+		merge tile = in(nxtid)
+
+		d getOrientation1(.tile, r)
+		merge in(nxtid)=tile
+
+		for i=2:1:9 {
+			s out(i-1)=out(i-1)_$e(tile(i),2,*-1)
+		}
+		
+	}
+	for i=2:1:size {
+		s aboveid=tiling(i-1,1)
+		kill tile
+		merge tile = in(aboveid)
+		s t=tile(10)
+	
+		s nxtid=$$getNextId(.edgeToTile, .used, t)
+		s tiling(i,1)=nxtid
+		
+		kill tile
+		merge tile = in(nxtid)
+
+		d getOrientation2(.tile, t)
+		merge in(nxtid)=tile
+		for j=2:1:9 {
+			s out(8*(i-1)+j-1)=$g(out(8*(i-1)+j-1))_$e(tile(j),2,*-1)
+		}
+
+		for k=2:1:size {
+			s leftid=tiling(i, k-1)
+
+			kill tile
+			merge tile = in(leftid)
+	
+			s r=$$zip(.tile, 10)
+			
+			s nxtid=$$getNextId(.edgeToTile, .used, r)
+			s tiling(i, k)=nxtid
+			
+			kill tile
+			merge tile = in(nxtid)
+
+			d getOrientation1(.tile, r)
+			
+			merge in(nxtid)=tile
+			for j=2:1:9 {
+				s out(8*(i-1)+j-1)=$g(out(8*(i-1)+j-1))_$e(tile(j),2,*-1)
+			}
+		}
+	}
+}
+
+getEdgeMapping(in, edgeToHash, hashToEdge, edgeToTile) PUBLIC {
+	s id=""
+	s hash=1
+	for {
+		s id=$o(in(id))
+		if id="" quit
+
+		s t=in(id, 1)
+		s b=in(id, 10)
+		s l="", r=""
+		for i=1:1:10 {
+			s $e(l, i)=$e(in(id, i), 1)
+			s $e(r, i)=$e(in(id, i), 10)
+		}
+
+		s sides=$lb(t, b, l, r)
+		for i=1:1:$LISTLENGTH(sides) {
+			s curr=$list(sides, i)
+
+			s edgeToTile(curr, id)=""
+			s edgeToTile($reverse(curr), id)=""
+			if $d(edgeToHash(curr)) || $d(edgeTohas($reverse(curr))) continue
+
+			s edgeToHash(curr)=hash
+			s edgeToHash($reverse(curr))=hash
+			s hashToEdge(hash)=curr_","_$reverse(curr)
+
+			
+
+			s hash=hash+1
+		}
+	}
+}
+
+
+
+p1(in, corners, unique) PUBLIC {
+	s id=""
+	for {
+		s id=$o(in(id))
+		if id="" quit
+
+		
+		if $d(count(in(id, 1))) {
+			s str = in(id, 1)
+		} else {
+			s str = $reverse(in(id, 1))
+		}
+		s count(str)=$g(count(str))+1
+		s count(str, id)=""
+
+		if $d(count(in(id, 10))) {
+			s str = in(id, 10)
+		} else {
+			s str = $reverse(in(id, 10))
+		}
+		s count(str)=$g(count(str))+1
+		s count(str, id)=""
+
+		s l=""
+		s r=""
+
+		for i=1:1:10 {
+			s $e(l, i)=$e(in(id, i), 1)
+			s $e(r, i)=$e(in(id, i), 10)
+		}
+
+		if $d(count(l)) {
+			s str = l
+		} else {
+			s str = $reverse(l)
+		}
+		s count(str)=$g(count(str))+1
+		s count(str, id)=""
+
+		if $d(count(r)) {
+			s str = r
+		} else {
+			s str = $reverse(r)
+		}
+		s count(str)=$g(count(str))+1
+		s count(str, id)=""
+	}
+	
+
+	s pattern=""
+	for {
+		s pattern=$o(count(pattern),1,c)
+		if pattern="" quit
+
+		if c'=1 {
+			k count(pattern)
+		}
+	}
+	s p=""
+	for {
+		s p=$o(count(p))
+		if p="" quit
+		
+		if $g(fcount($o(count(p, ""))))="" {
+			s fcount($o(count(p, "")))=p
+		} else {
+			s fcount($o(count(p, "")))=fcount($o(count(p, "")))_","_p
+		}
+	}
+	s id=""
+	s prod=1
+	for{
+		s id=$o(fcount(id),1,v)
+		if id="" quit
+
+		if $length(v,",")=(unique) {
+			if corners="" {
+				s corners=id_":"_v
+			} else {
+				s corners=corners_"^"_id_":"_v
+			}
+			s prod=prod*id
+		}
+	}
+	return prod
+}
+
+
+
+
+readInput(input, result) PUBLIC {
+	set file = ##class(%Stream.FileCharacter).%New()
+	s sc = file.LinkToFile(input)
+	while 'file.AtEnd {
+		s curr = $translate(file.ReadLine(), $c(13))
+
+		if curr="" continue
+
+		if $find(curr, "Tile") s j=$extract(curr, 6, *-1)
+		for k=1:1:10 {
+			s curr = $translate(file.ReadLine(), $c(13))
+			s result(j, k)=curr
+		}
+	}
+}

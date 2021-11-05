@@ -1,0 +1,79 @@
+ROUTINE AoC2017Day19
+
+Start() PUBLIC {
+	s input="/irisdev/app/inputs/2017/input19.txt"
+	d readInput(input, .in)
+	s ans1 = $$p1(.in)
+	return ans1
+}
+
+p1(in) PUBLIC {
+    s ans = 0
+
+    for j=1:1:in(1) {
+        if in(1, j)'=" " {
+            set start = 1_","_j_","_"1,0"
+            quit
+        }
+    }
+    
+    s d = "1,0:-1,0:0,1:0,-1"
+
+    set stack = []
+    do stack.%Push(start)
+    set seen = ""
+    set total = 0
+
+    while (stack.%Size() > 0) {
+        s c = stack.%Pop()
+        set total = total + 1
+        s cx = $p(c, ","), cy = $p(c, ",", 2), dx=$p(c,",",3), dy=$p(c,",",4)
+
+        if (65 <= $ascii(in(cx, cy))) && ($ascii(in(cx, cy)) <= 90) {
+            set $extract(seen, $length(seen)+1) = $g(in(cx, cy))
+        }
+
+        s nx=cx+dx, ny=cy+dy
+        if $g(in(nx, ny), " ") '= " " {
+            d stack.%Push(nx_","_ny_","_dx_","_dy)
+            continue
+        }
+        
+        for i=1:1:$length(d, ":") {
+            s nd = $p(d, ":", i)
+            if (-1*dx)_","_(-1*dy)=nd continue
+
+            s ndx=$p(nd,","), ndy=$p(nd,",",2)
+            s nx=cx+ndx, ny=cy+ndy
+            if $g(in(nx, ny), " ") '= " " {
+                d stack.%Push(nx_","_ny_","_ndx_","_ndy)
+                quit
+            }
+        }
+    }
+
+    return seen_"^"_total
+}
+
+p2(in) PUBLIC {
+    s total = 0
+
+	return total
+}
+
+readInput(input, result) PUBLIC {
+	set file = ##class(%Stream.FileCharacter).%New()
+	s sc = file.LinkToFile(input)
+	s i = 0
+	while 'file.AtEnd {
+        s i = i+1
+        s curr = $translate(file.ReadLine(), $c(13))
+        s result(i) = $length(curr) 
+        for j=1:1:$length(curr) {
+            s c = $e(curr, j)
+            s result(i, j) = c
+        }
+	}
+	s result = i
+}
+

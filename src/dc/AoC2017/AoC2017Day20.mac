@@ -1,0 +1,91 @@
+ROUTINE AoC2017Day20
+
+Start() PUBLIC {
+	s input="/irisdev/app/inputs/2017/input20.txt"
+	d readInput(input, .ps, .vs, .as)
+
+    s ans1 = $$p1(.ps, .vs, .as)
+
+    d readInput(input, .ps, .vs, .as)
+    s ans2 = $$p1(.ps, .vs, .as, 1)
+	return ans1_"^"_ans2
+}
+
+step(ps, vs, as) PUBLIC {
+    s c = -1
+    s cdist = 10**10
+    for i=0:1:ps-1 {
+        for j=1:1:3 {
+            s vs(i, j)=vs(i, j) + as(i, j)
+            s ps(i, j)=ps(i, j) + vs(i, j)
+        }
+        s curr = $zabs(ps(i, 1)) + $zabs(ps(i, 2)) + $zabs(ps(i, 3))
+
+        if curr < cdist {
+            s cdist = curr
+            s c = i
+        }
+    }
+    return c
+}
+
+step2(ps, vs, as) PUBLIC {
+    for i=0:1:ps-1 {
+        if '$d(ps(i)) continue
+
+        for j=1:1:3 {
+            s vs(i, j)=vs(i, j) + as(i, j)
+            s ps(i, j)=ps(i, j) + vs(i, j)
+        }
+        s pos(ps(i, 1)_","_ps(i, 2)_","_ps(i, 3)) = $g(pos(ps(i, 1)_","_ps(i, 2)_","_ps(i, 3)))_","_i
+    }
+    s p = ""
+    for {
+        s p=$o(pos(p), 1, x)
+        if p="" quit
+
+        if $length(x, ",") = 2 {
+            continue
+        }
+
+        for i=2:1:$length(x, ",") {
+            s particle = $p(x, ",", i)
+            k ps(particle), vs(particle), as(particle)
+        }
+    }
+    s total = 0
+    for i=0:1:ps-1 {
+        if '$d(ps(i)) continue
+        s total = total+1
+    }   
+    return total
+}
+
+p1(ps, vs, as, p2=0) {
+    for t=1:1:1000 {
+        if p2 = 1 {
+            s c = $$step2(.ps, .vs, .as)
+        } else {
+            set c = $$step(.ps, .vs, .as)
+        }
+    }
+    return c
+}
+
+readInput(input, ps, vs, as) PUBLIC {
+	set file = ##class(%Stream.FileCharacter).%New()
+	s sc = file.LinkToFile(input)
+	s i = 0
+	while 'file.AtEnd {
+        s curr = $translate(file.ReadLine(), $c(13))
+        s p=$translate($p(curr, ", ")," "), v=$translate($p(curr, ", ", 2)," "), a=$translate($p(curr, ", ", 3)," ")
+        s p=$e(p, 4, *-1), v=$e(v, 4, *-1), a=$e(a, 4, *-1)
+
+        s ps(i,1)=$p(p,","), ps(i,2)=$p(p,",",2), ps(i,3)=$p(p,",",3)
+        s vs(i,1)=$p(v,","), vs(i,2)=$p(v,",",2), vs(i,3)=$p(v,",",3)
+        s as(i,1)=$p(a,","), as(i,2)=$p(a,",",2), as(i,3)=$p(a,",",3)
+        s i = i+1
+	}
+	s ps = i, vs=i, as=i
+}
+
