@@ -1,0 +1,75 @@
+ROUTINE AoC2015Day5
+
+
+Start() PUBLIC {
+    s inputfile="/irisdev/app/inputs/2015/input5.txt"
+	d readInput(inputfile, .input)
+    return $$p1(.input)_"^"_$$p2(.input)
+}
+
+condition1(string) PUBLIC {
+    s vowels="a^e^i^o^u"
+    s vcount=0
+    for i=1:1:5 {
+        s vcount=vcount+$LENGTH(string, $p(vowels, "^", i))-1
+    }
+    if vcount<3 return 0
+
+    s double=0
+    for i=1:1:$LENGTH(string)-1 {
+        if ($extract(string, i)=$extract(string, i+1)) s double = 1
+    }
+    if double=0 return 0
+
+    s badsubstrs="ab^cd^pq^xy"
+    for i=1:1:4 {
+        if ($LENGTH(string, $p(badsubstrs, "^", i))>1) return 0
+    }
+    return 1
+}
+
+p1(input) PUBLIC {
+    s t=0
+    for i=1:1:input {
+        s t=t+$$condition1(input(i))
+    }
+    return t
+}
+
+condition2(string) PUBLIC {
+    s double=0
+    s alphabet="abcdefghijklmnopqrstuvwxyz"
+    for i=1:1:26 {
+        for j=1:1:26 {
+            s key=$e(alphabet,i)_$e(alphabet,j)
+            if $LENGTH(string, key) > 2 s double=1
+        }
+    }
+    if double=0 return 0
+    s repeat=0
+    for i=1:1:$LENGTH(string)-2 {
+        if ($extract(string, i)=$extract(string, i+2)) s repeat = 1
+    }
+    if repeat=0 return 0
+    return 1
+}
+
+p2(input) PUBLIC {
+    s t=0
+    for i=1:1:input {
+        s t=t+$$condition2(input(i))
+    }
+    return t
+}
+
+readInput(inputfile, input) {
+	set file = ##class(%Stream.FileCharacter).%New()
+	s sc = file.LinkToFile(inputfile)
+	s ind = 1
+	while 'file.AtEnd {
+        s line = $translate(file.ReadLine(), $c(13))
+		s input(ind) = line
+		s ind = ind + 1
+	}
+    s input=ind-1
+}

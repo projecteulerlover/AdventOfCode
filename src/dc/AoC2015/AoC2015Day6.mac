@@ -1,0 +1,96 @@
+ROUTINE AoC2015Day6
+
+Start() PUBLIC {
+    s inputfile="/irisdev/app/inputs/2015/input6.txt"
+	d readInput(inputfile, .input)
+    s p1=$$p1(.input)
+    #; zw p1
+    s p2=$$p2(.input)
+    #; zw p2
+    return p1_"^"_p2
+}
+
+p1(input) PUBLIC {
+    for i=1:1:input {
+        s x1=$p(input(i),",",1),y1=$p(input(i),",",2),x2=$p(input(i),",",3),y2=$p(input(i),",",4),turn=$p(input(i),",",5)
+        if turn=2 {
+            for x=x1:1:x2 {
+                for y=y1:1:y2 {
+                    s grid(x_","_y)='$g(grid(x_","_y))
+                }
+            }
+        } else {
+            for x=x1:1:x2 {
+                for y=y1:1:y2 {
+                    s grid(x_","_y)=turn
+                }
+            }
+        }
+    }
+    s coord=""
+    s total=0
+    for {
+        s coord=$o(grid(coord), 1, val)
+        q:coord=""
+
+        s total=total+val
+    }
+    return total
+}
+
+
+p2(input) PUBLIC {
+    for i=1:1:input {
+        s x1=$p(input(i),",",1),y1=$p(input(i),",",2),x2=$p(input(i),",",3),y2=$p(input(i),",",4),turn=$p(input(i),",",5)
+        if turn=2 {
+            for x=x1:1:x2 {
+                for y=y1:1:y2 {
+                    s grid(x_","_y)=$g(grid(x_","_y))+2
+                }
+            }
+        } elseif turn=1 {
+            for x=x1:1:x2 {
+                for y=y1:1:y2 {
+                    s grid(x_","_y)=$g(grid(x_","_y))+1
+                }
+            }
+        } else {
+            for x=x1:1:x2 {
+                for y=y1:1:y2 {
+                    s grid(x_","_y)=$s($g(grid(x_","_y))>1:grid(x_","_y)-1,1:0)
+                }
+            }
+        }
+    }
+    s coord=""
+    s total=0
+    for {
+        s coord=$o(grid(coord), 1, val)
+        q:coord=""
+
+        s total=total+val
+    }
+    return total
+}
+
+readInput(inputfile, input) {
+	set file = ##class(%Stream.FileCharacter).%New()
+	s sc = file.LinkToFile(inputfile)
+	s ind = 1
+	while 'file.AtEnd {
+        s line = $translate(file.ReadLine(), $c(13))
+        if ($p(line, " ", 1)="toggle") {
+            s c1=$p(line, " ", 2)
+            s c2=$p(line, " ", 4)
+            s input(ind) = c1_","_c2_","_2
+            s ind = ind + 1
+        } else {
+            s turn = $s($p(line, " ", 2)="on":1, 1:0)
+            s c1=$p(line, " ", 3)
+            s c2=$p(line, " ", 5)
+            s input(ind) = c1_","_c2_","_turn
+            s ind = ind + 1
+        }
+	}
+    s input=ind-1
+}

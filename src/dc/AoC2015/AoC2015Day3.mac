@@ -1,0 +1,110 @@
+ROUTINE AoC2015Day3
+
+Start() PUBLIC {
+	s input="/irisdev/app/inputs/2015/input3.txt"
+	d readInput(input, .lines)
+
+    return $$p1(lines(1))_"^"_$$p2(lines(1))
+}
+
+p1(moves) PUBLIC {
+    s ptr = 0
+    s curr = "0^0"
+    
+    s presents(curr)=1
+    for i=1:1:$LENGTH(moves) {
+        s value=$EXTRACT(moves, i, i)
+        s x=$p(curr, "^", 1)
+        s y=$p(curr, "^", 2)
+        if value="^" {
+            s y=y+1
+        }
+        elseif value=">" {
+            s x=x+1
+        }
+        elseif value="v" {
+            s y=y-1
+        }
+        else {
+            s x=x-1
+        }
+        s curr=x_"^"_y
+        s presents(curr)=$g(presents(curr))+1
+    }
+    s curr=""
+    s total=0
+    for {
+        s curr=$o(presents(curr))
+        if curr="" quit
+
+        s total=total+1
+    }
+    return total
+}
+
+p2(moves) PUBLIC {
+    s ptr = 0
+    s scurr = "0^0"
+    s rcurr = scurr
+    s presents(scurr)=1
+    for i=1:1:$LENGTH(moves) {
+        if i#2=1 {
+            s value=$EXTRACT(moves, i, i)
+            s x=$p(scurr, "^", 1)
+            s y=$p(scurr, "^", 2)
+            if value="^" {
+                s y=y+1
+            }
+            elseif value=">" {
+                s x=x+1
+            }
+            elseif value="v" {
+                s y=y-1
+            }
+            else {
+                s x=x-1
+            }
+            s scurr=x_"^"_y
+            s presents(scurr)=$g(presents(scurr))+1
+        } else {
+            s value=$EXTRACT(moves, i, i)
+            s x=$p(rcurr, "^", 1)
+            s y=$p(rcurr, "^", 2)
+            if value="^" {
+                s y=y+1
+            }
+            elseif value=">" {
+                s x=x+1
+            }
+            elseif value="v" {
+                s y=y-1
+            }
+            else {
+                s x=x-1
+            }
+            s rcurr=x_"^"_y
+            s presents(rcurr)=$g(presents(rcurr))+1            
+        }
+    }
+    s curr=""
+    s total=0
+    for {
+        s curr=$o(presents(curr))
+        if curr="" quit
+
+        s total=total+1
+    }
+    return total
+}
+
+readInput(input, lines) {
+	set file = ##class(%Stream.FileCharacter).%New()
+	s sc = file.LinkToFile(input)
+	s ind = 1
+	while 'file.AtEnd {
+        s line = $translate(file.ReadLine(), $c(13))
+		s lines(ind) = line
+		s ind = ind + 1
+	}
+}
+

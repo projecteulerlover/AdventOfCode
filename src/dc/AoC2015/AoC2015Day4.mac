@@ -1,0 +1,46 @@
+ROUTINE AoC2015Day4
+
+
+Start() PUBLIC {
+    s input="ckczppom"
+
+    return $$p1(input)_"^"_$$p2(input)
+}
+
+condition1(x) PUBLIC {
+    return ($ASCII(x, 1)=0) && ($ASCII(x, 2)=0) && ($ASCII(x, 3)<=16)
+}
+
+condition2(x) PUBLIC {
+    return ($ASCII(x, 1)=0) && ($ASCII(x, 2)=0) && ($ASCII(x, 3)=0)
+}
+
+
+p1(input) PUBLIC {
+    s curr=1
+    for {
+        if ($$condition1(##class(%SYSTEM.Encryption).MD5Hash(input_curr))) return curr
+        s curr=curr+1
+    }
+    return 0
+}
+
+p2(input) PUBLIC {
+    s curr=1
+    for {
+        if ($$condition2(##class(%SYSTEM.Encryption).MD5Hash(input_curr))) return curr
+        s curr=curr+1
+    }
+    return 0
+}
+
+readInput(input, lines) {
+	set file = ##class(%Stream.FileCharacter).%New()
+	s sc = file.LinkToFile(input)
+	s ind = 1
+	while 'file.AtEnd {
+        s line = $translate(file.ReadLine(), $c(13))
+		s lines(ind) = line
+		s ind = ind + 1
+	}
+}

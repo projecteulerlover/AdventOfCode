@@ -1,0 +1,33 @@
+ROUTINE AoC2015Day1
+
+Start() PUBLIC {
+	s input="/irisdev/app/inputs/2015/input1.txt"
+	d readInput(input, .lines)
+    return $LENGTH(lines(1)) - (2*($LENGTH(lines(1), ")")-1))_"^"_$$p2(lines(1))
+}
+
+p2(line) PUBLIC {
+    s floor = 0
+    for i=1:1:$LENGTH(line) {
+        s c = $extract(line, i, i)
+        if c=")" {
+            s floor = floor - 1
+        } else {
+            s floor = floor + 1
+        }
+        if floor = -1 {
+            return i
+        }
+    }
+    return $LENGTH(line) + 1
+}
+
+readInput(input, result) {
+	set file = ##class(%Stream.FileCharacter).%New()
+	s sc = file.LinkToFile(input)
+	s ind = 1
+	while 'file.AtEnd {
+		s result(ind) = $translate(file.ReadLine(), $c(13))
+		s ind = ind + 1
+	}
+}

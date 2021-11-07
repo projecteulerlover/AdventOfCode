@@ -1,0 +1,22 @@
+ROUTINE SortUtils
+
+sort(nums, delim) PUBLIC {
+    if ($LENGTH(nums)=0) return ""
+    s sorted = 0
+    s numslist = $LISTFROMSTRING(nums, delim)
+    s sortedstring = ""
+    s ptr = 0
+    while $LISTNEXT(numslist, ptr, value) {
+        s sorted = sorted+1
+        s sorted(value) = $g(sorted(value))+1
+    }
+    s i = ""
+    for {
+        s i = $o(sorted(i), 1, cnt)
+        if i = "" quit
+        for j=1:1:cnt {
+            s sortedstring = sortedstring_"^"_i
+        }
+    }
+    return $EXTRACT(sortedstring, 2, $LENGTH(sortedstring))
+}
