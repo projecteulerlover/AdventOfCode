@@ -1,0 +1,94 @@
+ROUTINE AoC2015Day7
+
+Start() PUBLIC {
+    s inputfile="/irisdev/app/inputs/2015/input7.txt"
+	d readInput(inputfile, .input)
+    s p1=$$p1(.input)
+    zw p1
+    s p2=$$p2(.input)
+    return p1_"^"_p2
+}
+
+gw(l, pn, wires, input) {
+    if (+$p(l, " " , pn))=$p(l, " " , pn) {
+        return +$p(l, " " , pn)
+    }
+    s src = $p(l, " ", *)
+    if $d(wires(src))=1 q +wires(src)
+    return +$$dfs(.input, .wires, $p(l, " ", pn)) # 65536
+}
+
+dfs(input, wires, src) PUBLIC {
+    if $d(wires(src))=1 q +wires(src)
+    s l = input(src)
+
+    s wd=src
+    if ($p(l, " ", 1)="NOT") {
+        s w1=$$gw(l, 2, .wires, .input)
+        s wires(wd) = $ZBOOLEAN(w1, 65535, 6)
+    } elseif ($p(l, " ", 2)="OR") {
+        s w1=$$gw(l, 1, .wires, .input)
+        s w2=$$gw(l, 3, .wires, .input)
+        
+        s wires(wd) = $ZBOOLEAN(w1, w2, 7)
+    } elseif ($p(l, " ", 2)="AND") {
+        s w1=$$gw(l, 1, .wires, .input)
+        s w2=$$gw(l, 3, .wires, .input)
+        s wires(wd) = $ZBOOLEAN(w1, w2, 1)
+    } elseif ($p(l, " ", 2)="RSHIFT") {
+        s w1=$$gw(l, 1, .wires, .input)
+        s amt=+$p(l, " ", 3)
+        for i=1:1:amt {
+            s w1=w1\2 
+        }
+        s wires(wd)=w1
+    } elseif ($p(l, " ", 2)="LSHIFT") {
+        s w1=$$gw(l, 1, .wires, .input)
+        s amt=+$p(l, " ", 3)
+        for i=1:1:amt {
+            s w1=w1*2 # 65536
+        }
+        s wires(wd)=(+w1 # 65536)
+    } elseif $p(l, " ", 1)=(+$p(l, " " , 1)) {
+        s wires(wd) = $p(l, " " , 1)
+    } else { // assignment
+        s wires(wd)=$$gw(l, 1, .wires, .input)
+    }
+    s wires(wd)=+wires(wd)
+    q +wires(wd)
+}
+
+p1(input) PUBLIC {
+    s c=""
+    for {
+        s c = $o(input(c))
+        if c="" q
+        s val= $$dfs(.input, .wires, c)
+    }
+    q wires("a")
+}
+
+
+p2(input) PUBLIC {
+    s wires("b") = $$p1(.input)
+    s c=""
+    for {
+        s c = $o(input(c))
+        if c="" q
+        s val= $$dfs(.input, .wires, c)
+    }
+    q wires("a")
+}
+
+readInput(inputfile, input) {
+	set file = ##class(%Stream.FileCharacter).%New()
+	s sc = file.LinkToFile(inputfile)
+	s ind = 1
+	while 'file.AtEnd {
+        s line = $translate(file.ReadLine(), $c(13))
+        s input($p(line, " ", *)) = line
+        s ind = ind + 1
+
+	}
+    s input=ind-1
+}
