@@ -4,7 +4,6 @@ Start() PUBLIC {
     s inputfile="/irisdev/app/inputs/2015/input7.txt"
 	d readInput(inputfile, .input)
     s p1=$$p1(.input)
-    zw p1
     s p2=$$p2(.input)
     return p1_"^"_p2
 }

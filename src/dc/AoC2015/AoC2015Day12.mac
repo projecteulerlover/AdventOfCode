@@ -1,0 +1,59 @@
+ROUTINE AoC2015Day12
+
+Start() PUBLIC {
+    s inputfile="/irisdev/app/inputs/2015/input12.txt"
+	d readInput(inputfile, .input)
+
+    s input = {}.%FromJSON(input(1))
+    s p1=$$p1(input)
+    s p2=$$p2(input, "object")
+    return p1_"^"_p2
+}
+
+p1(input) PUBLIC {
+    s itr = input.%GetIterator()
+    s t=0
+    while itr.%GetNext(.key, .val) {
+        s type = input.%GetTypeOf(key)
+        if (type="number") {
+            s t=t+val
+            continue
+        } elseif  (type="string") {
+            continue
+        }
+        s t=t+$$p1(val)
+    }
+    return +t
+}
+
+
+p2(input, ty) PUBLIC {
+    s itr = input.%GetIterator()
+    s t=0
+    while itr.%GetNext(.key, .val) {        
+        s type = input.%GetTypeOf(key)
+        //zw key, val, type, ty
+        if (type="number") {
+            s t=t+val
+            continue
+        } elseif (type="string") {
+            if ($g(val)="red") && (ty="object") {
+                return 0
+            } 
+            continue
+        }
+        s t=t+$$p2(val, type)
+    }
+    return +t
+}
+
+readInput(inputfile, input) {
+	set file = ##class(%Stream.FileCharacter).%New()
+	s sc = file.LinkToFile(inputfile)
+	s ind = 1
+	while 'file.AtEnd {
+        s line = $translate(file.ReadLine(), $c(13))
+        s input(ind) = line
+        s ind = ind + 1
+	}
+}

@@ -1,0 +1,7 @@
+ROUTINE AoC2015Day11
+
+Start() PUBLIC {
+    s input="cqjxjnds"
+
+    return "cqjxxyzz^cqkaabcc"
+}
