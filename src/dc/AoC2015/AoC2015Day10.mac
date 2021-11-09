@@ -1,0 +1,47 @@
+ROUTINE AoC2015Day10
+
+Start() PUBLIC {
+    s p1=$$p1(3113322113)
+    s p2=$$p2(3113322113)
+    return p1_"^"_p2
+}
+
+ge(input, ind) PUBLIC {
+    s ci = ind
+    s t = $e(input, ind)
+    while (t = $e(input, ci)) {
+        s ci = ci+1
+    }
+    return ci
+}
+
+gn(c) PUBLIC {
+    s n = ""
+    s j = 1
+    for {
+        if j > $LENGTH(c) q
+        s ej = $$ge(c, j)
+        
+        s n = n_(ej-j)_$e(c, j)
+        s j=ej
+    }
+    return n
+}
+
+p1(input) PUBLIC {
+    s c = input
+    for i=1:1:49 {
+        s c = $$gn(c)
+    }
+    return $LENGTH(c)
+}
+
+p2(input) PUBLIC {
+    s c = input
+    for i=1:1:49 {
+        s c = $$gn(c)
+    }
+    s c1 = $$gn($e(c, 1, 3579328\2))
+    s c2 = $$gn($e(c, 3579328\2+1, *))
+    return $LENGTH(c1)+$LENGTH(c2)
+}
