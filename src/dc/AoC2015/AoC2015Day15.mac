@@ -1,0 +1,78 @@
+ROUTINE AoC2015Day15
+
+Start() PUBLIC {
+    s inputfile="/irisdev/app/inputs/2015/input15.txt"
+	d readInput(inputfile, .input)
+
+    s p1=$$p1(.input)
+    s p2=$$p2(.input)
+    return p1_"^"_p2
+}
+
+p1(input) PUBLIC {
+    s ms=0
+    for i=0:1:100 {
+        for j=0:1:100-i {
+            for k=0:1:100-i-j {
+                s l = 100-i-j-k
+                s c=0, d=0, f=0, t=0
+                s c=k*$p(input(3), ",", 1)+c, d=k*$p(input(3), ",", 2)+d, f=k*$p(input(3), ",", 3)+f, t=k*$p(input(3), ",", 4)+t
+                s c=j*$p(input(2), ",", 1)+c, d=j*$p(input(2), ",", 2)+d, f=j*$p(input(2), ",", 3)+f, t=j*$p(input(2), ",", 4)+t
+                s c=i*$p(input(1), ",", 1)+c, d=i*$p(input(1), ",", 2)+d, f=i*$p(input(1), ",", 3)+f, t=i*$p(input(1), ",", 4)+t
+                s c=l*$p(input(4), ",", 1)+c, d=l*$p(input(4), ",", 2)+d, f=l*$p(input(4), ",", 3)+f, t=l*$p(input(4), ",", 4)+t
+                if c < 0 s c=0
+                if d < 0 s d=0
+                if f < 0 s f=0
+                if t < 0 s t=0
+                s cs = c*d*f*t
+                if cs > ms s ms=cs
+            }
+        }
+        
+    }
+    return ms
+}
+
+
+
+
+p2(input) PUBLIC {
+    s ms=0
+    for i=0:1:100 {
+        for j=0:1:100-i {
+            for k=0:1:100-i-j {
+                s l = 100-i-j-k
+                s tc=($p(input(1), ",", 5)*i)+($p(input(2), ",", 5)*j)+($p(input(3), ",", 5)*k)+($p(input(4), ",", 5)*l)
+                
+                if tc'=500 {
+                    continue
+                }
+
+                s c=0, d=0, f=0, t=0
+                s c=k*$p(input(3), ",", 1)+c, d=k*$p(input(3), ",", 2)+d, f=k*$p(input(3), ",", 3)+f, t=k*$p(input(3), ",", 4)+t
+                s c=j*$p(input(2), ",", 1)+c, d=j*$p(input(2), ",", 2)+d, f=j*$p(input(2), ",", 3)+f, t=j*$p(input(2), ",", 4)+t
+                s c=i*$p(input(1), ",", 1)+c, d=i*$p(input(1), ",", 2)+d, f=i*$p(input(1), ",", 3)+f, t=i*$p(input(1), ",", 4)+t
+                s c=l*$p(input(4), ",", 1)+c, d=l*$p(input(4), ",", 2)+d, f=l*$p(input(4), ",", 3)+f, t=l*$p(input(4), ",", 4)+t
+                if c < 0 s c=0
+                if d < 0 s d=0
+                if f < 0 s f=0
+                if t < 0 s t=0
+                s cs = c*d*f*t
+                if cs > ms s ms=cs
+            }
+        }
+        
+    }
+    return ms
+}
+
+readInput(inputfile, input) {
+	set file = ##class(%Stream.FileCharacter).%New()
+	s sc = file.LinkToFile(inputfile)
+	s ind = 1
+	while 'file.AtEnd {
+        s l = $translate(file.ReadLine(), $c(13))
+        s input(ind) = $p(l, " ", 3)_$p(l, " ", 5)_$p(l, " ", 7)_$p(l, " ", 9)_$p(l, " ", 11)
+        s ind = ind + 1
+	}
+}

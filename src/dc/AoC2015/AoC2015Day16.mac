@@ -1,0 +1,89 @@
+ROUTINE AoC2015Day16
+
+Start() PUBLIC {
+    s inputfile="/irisdev/app/inputs/2015/input16.txt"
+	d readInput(inputfile, .input)
+
+    s m("children")=3
+    s m("cats")=7
+    s m("samoyeds")=2
+    s m("pomeranians")=3
+    s m("akitas")=0
+    s m("vizslas")=0
+    s m("goldfish")=5
+    s m("trees")=3
+    s m("cars")=2
+    s m("perfumes")=1
+
+    s p1=$$p1(.input, .m)
+    s p2=$$p2(.input, .m)
+    return p1_"^"_p2
+}
+
+p1(input, m) PUBLIC {
+    s i=""
+    for {
+        s i=$o(input(i))
+        if i="" q
+
+        s j=""
+        s f=1
+        for {
+            s j=$o(input(i, j), 1, v)
+            if j="" q
+            
+            if v'=m(j) {
+                s f=0
+            }
+        }
+        if f=1 {
+            return i
+        }
+    }
+    return 0
+}
+
+
+p2(input, m) PUBLIC {
+    s i=""
+    for {
+        s i=$o(input(i))
+        if i="" q
+
+        s j=""
+        s f=1
+        for {
+            s j=$o(input(i, j), 1, v)
+            if j="" q
+            
+            if ((j="cats") || (j="trees")) {
+                if (v<=m(j)) s f=0
+                continue
+            } elseif ((j="pomeranians") || (j="goldfish")) {
+                if (v>=m(j)) s f=0 
+                continue
+            } elseif v'=m(j) {
+                s f=0
+            }
+        }
+        if f=1 {
+            return i
+        }
+    }
+    return 0
+}
+
+readInput(inputfile, input) {
+	set file = ##class(%Stream.FileCharacter).%New()
+	s sc = file.LinkToFile(inputfile)
+	s ind = 1
+	while 'file.AtEnd {
+        s l = $translate(file.ReadLine(), $c(13))
+        s l = $TRANSLATE(l, ",")
+        s l = $TRANSLATE(l, ":")
+        for i=1:2:5 {
+            s input(ind, $p(l, " ", 2+i))=$p(l, " ", 3+i)
+        }
+        s ind = ind + 1
+	}
+}

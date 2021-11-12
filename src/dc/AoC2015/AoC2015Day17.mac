@@ -1,0 +1,53 @@
+ROUTINE AoC2015Day17
+
+Start() PUBLIC {
+    s inputfile="/irisdev/app/inputs/2015/input17.txt"
+	s input=$$readInput(inputfile)
+
+    s input=$$sort^SortUtils(.input, "^")
+    s p1=$$p1(input, 1, 150)
+    s p2=$$p2(input)
+    return p1_"^"_p2
+}
+
+p1(input, i, total) PUBLIC {
+    if total = 0 {
+        return 1
+    }
+    if (total < 0) || (i>$LENGTH(input, "^")) return 0
+
+    s tc=$$p1(input, i+1, total-($p(input, "^", i)))
+    s tc=tc+$$p1(input, i+1, total)
+
+    return tc
+}
+
+
+p2util(input, memo, i, total, str) PUBLIC {
+    if total = 0 {
+        s memo($length(str, "^")-1)=$g(memo($length(str, "^")-1))+1
+        return
+    }
+    if (total < 0) || (i>$LENGTH(input, "^")) return 0
+
+    d p2util(input, .memo, i+1, total-($p(input, "^", i)), str_"^"_$p(input, "^", i))
+    d p2util(input, .memo, i+1, total, str)
+}
+
+p2(input) PUBLIC {
+    d p2util(.input, .memo, 1, 150, "")
+    s i = $o(memo(""), 1, v)
+    return v
+}
+
+readInput(inputfile) {
+	set file = ##class(%Stream.FileCharacter).%New()
+	s sc = file.LinkToFile(inputfile)
+	s ind = 1
+    s input=""
+	while 'file.AtEnd {
+        s l = $translate(file.ReadLine(), $c(13))
+        s input=input_$select(input="" : "", 1: "^")_l
+	}
+    return input
+}
