@@ -1,7 +1,7 @@
 ROUTINE AoC2021Day1
 
 Start() public {
-	d readInput("/irisdev/app/inputs/2021/1.txt", .input)
+	d readInput("/irisdev/app/inputs/2021/1.in", .input)
 
     return $$p1(.input)_"^"_$$p2(.input)
 }

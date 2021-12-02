@@ -1,0 +1,50 @@
+ROUTINE AoC2021Day2
+
+Start() public {
+	d readInput("/irisdev/app/inputs/2021/2.in", .input)
+
+    return $$p1(.input)_"^"_$$p2(.input)
+}
+
+p1(x) public {
+    s px=0, py=0
+
+	for i=1:1:x {
+		s d = $p(x(i), " ", 1), a = $p(x(i), " ", 2)
+		if (d="forward") {
+			s px = px + a
+		} elseif (d="down") {
+			s py = py + a
+		} else {
+			s py = py - a
+		}
+	}
+    return px*py
+}
+
+p2(x) public {
+    s px=0, py=0, aim=0
+	for i=1:1:x {
+		s d = $p(x(i), " ", 1), a = $p(x(i), " ", 2)
+		if (d="forward") {
+			s px = px + a
+			s py = py + (a*aim)
+		} elseif (d="down") {
+			s aim = aim + a
+		} else {
+			s aim = aim - a
+		}
+	}
+    return px*py
+}
+
+readInput(input, result) PUBLIC {
+	set file = ##class(%Stream.FileCharacter).%New()
+	s sc = file.LinkToFile(input)
+	s i = 0
+	while 'file.AtEnd {
+		s i = i+1
+		s result(i) = $translate(file.ReadLine(), $c(13))
+	}
+	s result = i
+}
