@@ -1,0 +1,137 @@
+ROUTINE AoC2021Day4
+
+Start() public {
+	d readInput("/irisdev/app/inputs/2021/4.in", .nums, .input)
+
+    return $$p1(.input, .nums)_"^"_$$p2(.input, .nums)
+}
+
+cw(b) PUBLIC {
+	for r=1:1:5 {
+		s w = 1
+		for c=1:1:5 {
+			if (+$p(b(r), ",", c) = $p(b(r), ",", c)) {
+				
+				s w = 0
+			}
+		}
+		if w {
+			return 1
+		}
+	}
+	for c=1:1:5 {
+		s w = 1
+		for r=1:1:5 {
+			if (+$p(b(r), ",", c) = $p(b(r), ",", c)) {
+				s w = 0
+			}
+		}
+		if w {
+			return 1
+		}
+	}
+	return 0
+}
+
+p1(x, nums) public {
+    m y=x
+	s wf = 0
+	for i=1:1:$length(nums, ",") {
+		s n=$p(nums, ",", i)
+		for bn=1:1:y {
+			for r=1:1:5 {
+				for c=1:1:5 {
+					if ($p(y(bn, r), ",", c)=n) {
+						s $p(y(bn, r), ",", c)="!"_n
+					}
+				}
+			}
+			m cb = y(bn)
+			if ($$cw(.cb)) {
+				m wb=cb
+				s wn=n
+				s wf=1
+				quit
+			}
+		}
+		if wf quit
+	}
+	zw wb
+	s sum=0
+	for r=1:1:5 {
+		for c=1:1:5 {
+			if (+$p(wb(r), ",", c) = $p(wb(r), ",", c)) {
+				s sum=sum+$p(wb(r), ",", c)
+			}
+		}
+	}
+	return sum*wn
+}
+
+p2(x, nums) public {
+    m y=x
+
+	for i=1:1:$length(nums, ",") {
+		s n=$p(nums, ",", i)
+		for bn=1:1:y {
+			if $d(wins(bn)) continue
+			for r=1:1:5 {
+				for c=1:1:5 {
+					if ($p(y(bn, r), ",", c)=n) {
+						s $p(y(bn, r), ",", c)="!"_n
+					}
+				}
+			}
+			m cb = y(bn)
+			if ($$cw(.cb)) {
+				m wb=cb
+				s wn=n
+				s wins(bn)=""
+			}
+		}
+	}
+	s sum=0
+	for r=1:1:5 {
+		for c=1:1:5 {
+			if (+$p(wb(r), ",", c) = $p(wb(r), ",", c)) {
+				s sum=sum+$p(wb(r), ",", c)
+			}
+		}
+	}
+	return sum*wn
+}
+
+readInput(input, nums, result) PUBLIC {
+	set file = ##class(%Stream.FileCharacter).%New()
+	s sc = file.LinkToFile(input)
+	
+	s i = 0
+	while 'file.AtEnd {
+		s i = i+1
+		s line = $translate(file.ReadLine(), $c(13))
+		s ind = 0
+		if i=1 {
+			s temp(i) = line
+			continue
+		}
+		s temp(i) = ""
+		for j=1:1:$length(line, " ") {
+			if $p(line," ", j) '= "" {
+				s ind = ind + 1
+				s $p(temp(i), ",", ind) = $p(line, " ", j)
+			}
+		}
+		
+	}
+	s temp = i
+
+	s nums = temp(1)
+	s bn = 0
+	for i=3:6:temp {
+		s bn = bn+1
+		for j=0:1:4 {
+			s result(bn, j+1)=temp(i+j)
+		}
+	}
+	s result = bn
+}

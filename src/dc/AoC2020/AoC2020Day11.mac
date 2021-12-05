@@ -111,4 +111,3 @@ readInput(input, result) PUBLIC {
 	}
 	s result = i_"^"_j
 }
-
