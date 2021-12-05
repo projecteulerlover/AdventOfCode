@@ -1,17 +1,73 @@
-ROUTINE AoC2021Day3
+ROUTINE AoC2021Day5
 
 Start() public {
-	d readInput("/irisdev/app/inputs/2021/3.in", .input)
+	d readInput("/irisdev/app/inputs/2021/5.in", .input)
 
     return $$p1(.input)_"^"_$$p2(.input)
 }
 
+min(a, b) PUBLIC {
+	if (a<b) return a
+	return b
+}
+
+max(a, b) PUBLIC {
+	if (a<b) return b
+	return a
+}
+
 p1(x) public {
-    return 0
+	for i=1:1:x {
+		s x0=$p(x(i), ",", 1), y0=$p(x(i), ",", 2), x1=$p(x(i), ",", 3), y1=$p(x(i), ",", 4)
+		if (x0=x1) {
+			for j=$$min(y0, y1):1:$$max(y0, y1) {
+				s seen(x0_","_j) = $g(seen(x0_","_j))+1
+			}
+		}
+		elseif (y0=y1) {
+			for j=$$min(x0, x1):1:$$max(x0, x1) {
+				s seen(j_","_y0) = $g(seen(j_","_y0))+1
+			}
+		}
+	}
+	s c=0
+	s t = 0
+	for {
+		s c = $o(seen(c), 1, v)
+		if c="" q
+		if (v>1) s t=t+1
+	}
+	return t
 }
 
 p2(x) public {
-    return 0
+	for i=1:1:x {
+		s x0=$p(x(i), ",", 1), y0=$p(x(i), ",", 2), x1=$p(x(i), ",", 3), y1=$p(x(i), ",", 4)
+		if (x0=x1) {
+			for j=$$min(y0, y1):1:$$max(y0, y1) {
+				s seen(x0_","_j) = $g(seen(x0_","_j))+1
+			}
+		}
+		elseif (y0=y1) {
+			for j=$$min(x0, x1):1:$$max(x0, x1) {
+				s seen(j_","_y0) = $g(seen(j_","_y0))+1
+			}
+		}
+		else {
+			s dx=(x1-x0)/($zabs(x1-x0)), dy=(y1-y0)/($zabs(y1-y0))
+			for j=0:1:$zabs(x1-x0) {
+				s seen((x0+(j*dx))_","_(y0+(j*dy))) = $g(seen((x0+(j*dx))_","_(y0+(j*dy))))+1
+			}
+		}
+	}
+	s c=0
+	s t = 0
+	for {
+		s c = $o(seen(c), 1, v)
+		if c="" q
+		if (v>1) s t=t+1
+	}
+	return t
 }
 
 readInput(input, result) PUBLIC {
@@ -20,7 +76,9 @@ readInput(input, result) PUBLIC {
 	s i = 0
 	while 'file.AtEnd {
 		s i = i+1
-		s result($translate(file.ReadLine(), $c(13))) = ""
+		s l = $translate(file.ReadLine(), $c(13))
+		s l1 = $p(l, " ", 1), l2 = $p(l, " ", 3)
+		s result(i) = l1_","_l2
 	}
 	s result = i
 }
