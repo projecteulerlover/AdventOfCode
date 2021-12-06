@@ -1,26 +1,50 @@
-ROUTINE AoC2021Day7
+ROUTINE AoC2021Day6
 
 Start() public {
-	d readInput("/irisdev/app/inputs/2021/7.in", .input)
+	d readInput("/irisdev/app/inputs/2021/6.in", .input)
 
-    return $$p1(.input)_"^"_$$p2(.input)
+    return $$p(.input, 80)_"^"_$$p(.input, 256)
 }
 
-p1(x) public {
-    return 0
+p(x, t) public {
+    for i=1:1:t {
+        s c = ""
+        
+        for {
+            s c=$o(x(c), 1, v)
+            if (c="") || (v=0) q
+
+            if (c=0) {
+                s y(6) = $g(y(6)) + v
+                s y(8) = $g(y(8)) + v
+            }
+            else {
+                s y(c-1) = $g(y(c-1)) + v
+            }
+        }
+        k x
+        m x = y
+        k y
+    }
+    s c = ""
+    s t = 0
+    for {
+        s c=$o(x(c), 1, v)
+        if c="" q
+        s t = t+v
+    }
+	return t
 }
 
-p2(x) public {
-    return 0
-}
 
 readInput(input, result) PUBLIC {
 	set file = ##class(%Stream.FileCharacter).%New()
 	s sc = file.LinkToFile(input)
 	s i = 0
 	while 'file.AtEnd {
-		s i = i+1
-		s result($translate(file.ReadLine(), $c(13))) = ""
+		s l = $translate(file.ReadLine(), $c(13))
+		for j=1:1:$l(l, ",") {
+            s result($p(l, ",", j)) = $g(result($p(l, ",", j))) + 1
+        }
 	}
-	s result = i
 }
