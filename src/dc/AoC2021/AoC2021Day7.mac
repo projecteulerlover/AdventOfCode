@@ -1,41 +1,66 @@
 ROUTINE AoC2021Day7
 
+#; for a faster solution, we could binary search for the answer, but that wasn't necessary.
+
 Start() public {
 	d readInput("/irisdev/app/inputs/2021/7.in", .input)
-
     return $$p1(.input)_"^"_$$p2(.input)
 }
 
-p1helper(x, count) public {
-    s l = $length($o(x("")))
-	for j=1:1:l s count(j)=0
-	s c = ""
+p1(x) public {
+    s c1 = ""
+	s cm = 1e30
 	for {
-		s c = $o(x(c))
-		if c = "" q
-		for j=1:1:l {
-			if $e(c, j) = "1" {
-				s count(j) = count(j)+1
-			}
+		s c1 = $o(x(c1))
+		if c1 = "" q
+
+		s t = 0
+		s c2 = ""
+		for {
+			s c2 = $o(x(c2), 1, v)
+			if c2 = "" q
+
+			s t = t + ($zabs(c2-c1)*v)
+		}
+		if t < cm {
+			s cm = t
 		}
 	}
-}
-
-p1(x) public {
-    return 0
+	return cm
 }
 
 p2(x) public {
-    return 0
+    s c1 = ""
+	s cm = 1e30
+	for {
+		s c1 = $o(x(c1))
+		if c1 = "" q
+
+		s t = 0
+		s c2 = ""
+		for {
+			s c2 = $o(x(c2), 1, v)
+			if c2 = "" q
+
+			s f = $zabs(c2-c1)
+			s t = t + (f*(f+1)\2 * v)
+		}
+		if t < cm {
+			s cm = t
+		}
+	}
+	return cm
 }
 
 readInput(input, result) PUBLIC {
 	set file = ##class(%Stream.FileCharacter).%New()
 	s sc = file.LinkToFile(input)
-	s i = 0
+
 	while 'file.AtEnd {
-		s i = i+1
-		s result($translate(file.ReadLine(), $c(13))) = ""
+		s result = $translate(file.ReadLine(), $c(13))
 	}
-	s result = i
+	for i=1:1:$LENGTH(result, ",") {
+		s c = $p(result, ",", i) 
+		s result(c) = $g(result(c)) + 1
+	}
 }
