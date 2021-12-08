@@ -1,0 +1,26 @@
+ROUTINE AoC2021Day9
+
+Start() public {
+	d readInput("/irisdev/app/inputs/2021/9.in", .input)
+
+    return $$p1(.input)_"^"_$$p2(.input)
+}
+
+p1(x) public {
+    return 0
+}
+
+p2(x) public {
+	return 0
+}
+
+readInput(input, result) PUBLIC {
+	set file = ##class(%Stream.FileCharacter).%New()
+	s sc = file.LinkToFile(input)
+	s i = 0
+	while 'file.AtEnd {
+		s i = i+1
+		s result(i) = $translate(file.ReadLine(), $c(13))
+	}
+	s result = i
+}

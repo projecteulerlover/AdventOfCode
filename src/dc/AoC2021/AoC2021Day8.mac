@@ -7,11 +7,111 @@ Start() public {
 }
 
 p1(x) public {
-    return 0
+    s d(2)="", d(4)="", d(7)="", d(3)=""
+	s t = 0
+
+	for i=1:1:x {
+		s row = x(i)
+		s nums = $p(row, " | ", 2)
+		for j=1:1:$l(nums, " ") {
+			if ($d(d($length($p(nums, " ", j))))) {
+				s t = t+1
+			}
+		}
+	}
+	return t
+}
+
+permute(p, w, l, r) public {
+	if l=r {
+		s p(w)=""
+	} else {
+		for i=l:1:r {
+			s wl=$e(w, l), wi=$e(w, i)
+			s $e(w, i) = wl
+			s $e(w, l) = wi
+			do permute(.p, w, l+1, r)
+			s $e(w, i) = wi
+			s $e(w, l) = wl
+		}
+	}
+}
+
+getw(map, w) public {
+	s nw = ""
+	for i=1:1:$l(w) {
+		s $e(nw, i) = map($e(w, i))
+	}
+	return nw
+}
+
+getsorted(w) public {
+	for i=1:1:$l(w) {
+		s sort($e(w, i)) = ""	
+	}
+	s c = ""
+	s i = 0
+	s nw = ""
+	for {
+		s i = i+1
+		s c = $o(sort(c))
+		if c = "" q
+		s $e(nw, i) = c
+	}
+	return nw
 }
 
 p2(x) public {
-    return 0
+	s m("abcefg")=0
+	s m("cf")=1
+	s m("acdeg")=2
+	s m("acdfg")=3
+	s m("bcdf")=4
+	s m("abdfg")=5
+	s m("abdefg")=6
+	s m("acf")=7
+	s m("abcdefg")=8
+	s m("abcdfg")=9
+	s def = "abcdefg"
+	s t = 0
+	for i=1:1:x {
+		s in=$p(x(i), " | "), out=$p(x(i), " | ", 2)
+		kill p
+		do permute(.p, "abcdefg", 1, 7)
+
+		s pe = ""
+		for {
+			s pe = $o(p(pe))
+			if pe = "" q
+
+			k map
+			for j=1:1:7 {
+				s map($e(pe, j)) = $e(def, j)
+			}
+			s fail=0
+			for j=1:1:$l(in, " ") {
+				s w = $p(in, " ", j)
+
+				s nw = $$getsorted($$getw(.map, w))
+
+				if '$d(m(nw)) {
+					s fail=1
+					quit
+				}
+			}
+			if fail=1 continue
+
+			s ct=0
+			for j=$l(out, " "):-1:1 {
+				s w = $p(out, " ", j)
+				s nw = $$getsorted($$getw(.map, w))
+				s ct = ct*10 + m(nw)
+			}
+			s t=t+ct
+			quit
+		}
+	}
+    return t
 }
 
 readInput(input, result) PUBLIC {
@@ -20,7 +120,7 @@ readInput(input, result) PUBLIC {
 	s i = 0
 	while 'file.AtEnd {
 		s i = i+1
-		s result($translate(file.ReadLine(), $c(13))) = ""
+		s result(i) = $translate(file.ReadLine(), $c(13))
 	}
 	s result = i
 }
