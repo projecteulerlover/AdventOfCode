@@ -1,31 +1,117 @@
 ROUTINE AoC2021Day13
 
 Start() public {
-	d readInput("/irisdev/app/inputs/2021/13.in", .input)
-
-    return $$p1(.input)_"^"_$$p2(.input)
+	d readInput("/irisdev/app/inputs/2021/13.in", .pts, .fs)
+    return $$p1(.pts, .fs)_"^"_$$p2(.pts, .fs)
 }
 
-p1(g) public {
-	s t = 0
+helper(pts, fs, out, stop) public {
+    m npts = pts
+    for i=1:1:stop {
+        k nnpts
+        s f = $p(fs(i), "="), n = $p(fs(i), "=", 2)
 
+        if f="y" {
+            s c=""
+            for {
+                s c = $o(npts(c))
+                if c="" q
+
+                s x=$p(c,","), y=$p(c,",",2)
+                if y>n s nnpts(x_","_(2*n-y)) = ""
+                else  s nnpts(x_","_y) = ""
+            }
+        }
+        if f="x" {
+            s c=""
+            for {
+                s c = $o(npts(c))
+                if c="" q
+
+                s x=$p(c,","), y=$p(c,",",2)
+                if x>n s nnpts((2*n-x)_","_y) = ""
+                else  s nnpts(x_","_y) = ""
+            }
+        }
+        k npts
+        m npts = nnpts
+    }
+    m out=npts
+}
+
+p1(pts, fs) public {
+	s t = 0
+    m npts = pts
+    do helper(.npts, .fs, .nnpts, 1)
+
+    s c = ""
+    for {
+        s c = $o(nnpts(c))
+        if c="" q
+
+        s t = t+1
+    }
 	return t
 }
 
-p2(g) public {
+p2(pts, fs) public {
 	s t = 0
+    m npts = pts
+    do helper(.npts, .fs, .nnpts, fs)
 
-	return t
+    s c = ""
+    s mx=1e9, my=1e9, Mx=0, My=0
+    for {
+        s c = $o(nnpts(c))
+        if c="" q
+
+        s x=$p(c,","), y=$p(c,",",2)
+        if x < mx {
+            s mx = x
+        }
+        if y < my {
+            s my = y
+        }
+        if x > Mx {
+            s Mx = x
+        }
+        if y > My {
+            s My = y
+        }
+    }
+    for y=my+1:1:My+1 {
+        s screen(y) = ""
+    }
+    s c = ""
+    for {
+        s c = $o(nnpts(c))
+        if c="" q
+
+        s x=$p(c,","), y=$p(c,",",2)
+        s $e(screen(y-my+1), x-mx+1) = "0"
+    }
+    for y=my+1:1:My+1 {
+        zw screen(y)
+    }
+	return "ABKJFBGC"
 }
 
-readInput(input, result) PUBLIC {
+readInput(input, pts, fs) PUBLIC {
 	set file = ##class(%Stream.FileCharacter).%New()
 	s sc = file.LinkToFile(input)
 	s i = 0
+    s j = 0
 	while 'file.AtEnd {
         s i=i+1
 		s line = $translate(file.ReadLine(), $c(13))
-		s result(i) = line
+        if line = "" q
+		s pts(line) = ""
 	}
-    s result = i
+    s pts = i
+    while 'file.AtEnd {
+        s j=j+1
+		s line = $translate(file.ReadLine(), $c(13))
+		s fs(j) = $p(line, " ", 3)
+	}
+    s fs = j
 }
