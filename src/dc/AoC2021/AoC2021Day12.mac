@@ -6,14 +6,68 @@ Start() public {
     return $$p1(.input)_"^"_$$p2(.input)
 }
 
-p1(x) public {
-
-	return 0
+#; g: graph
+#; v: current vertex
+#; t: total paths
+#; vi: visited lower case caves
+dfs1(g, v, t, vi) PUBLIC {
+	if v="end" {
+		s t = t+1
+		quit
+	}
+	s w = ""
+	for {
+		s w = $o(g(v, w))
+		if w="" q
+		
+		if $d(vi(w)) continue
+		k nvi
+		m nvi = vi
+		if $zconvert(w, "l")=w s nvi(w)=""
+		d dfs1(.g, w, .t, .nvi)
+	}
 }
 
-p2(x) public {
+p1(g) public {
+	s t = 0
+	s vi("start") = ""
+	d dfs1(.g, "start", .t, .vi)
+	return t
+}
 
-	return 0
+#; g: graph
+#; v: current vertex
+#; t: total paths
+#; vi: visited lower case caves, excluding r if set
+#; r: revisited small cave
+dfs2(g, v, t, vi, r) PUBLIC {
+	if v="end" {
+		s t = t+1
+		quit
+	}
+	s w = ""
+	for {
+		s w = $o(g(v, w))
+		if w="" q
+		
+		k nvi
+		m nvi = vi
+		if $d(vi(w)) {
+			if (r="") && (w'="start") && (w'="end") {
+				d dfs2(.g, w, .t, .nvi, w)
+			}
+		} else {
+			if $zconvert(w, "l")=w s nvi(w)=""
+			d dfs2(.g, w, .t, .nvi, r)
+		}
+	}
+}
+
+p2(g) public {
+	s t = 0
+	s vi("start") = ""
+	d dfs2(.g, "start", .t, .vi, "")
+	return t
 }
 
 readInput(input, result) PUBLIC {
@@ -21,9 +75,8 @@ readInput(input, result) PUBLIC {
 	s sc = file.LinkToFile(input)
 	s i = 0
 	while 'file.AtEnd {
-		s i = i+1
 		s line = $translate(file.ReadLine(), $c(13))
-		s result(i) = line
+		s a=$piece(line, "-"), b=$piece(line, "-", 2)
+		s result(a, b)="", result(b, a)=""
 	}
-	s result = i
 }

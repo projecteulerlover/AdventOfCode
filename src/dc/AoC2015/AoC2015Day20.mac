@@ -1,0 +1,34 @@
+ROUTINE AoC2015Day20
+
+Start() public {
+	d readInput("/irisdev/app/inputs/2015/input20.txt", .input)
+    
+    return $$p1(.input)_"^"_$$p2(.input)
+}
+
+p1(x) public {
+    s c = 0
+    s x = x/10
+    while 1 {
+        s c = c+1
+        s tp = 0
+        for d=1:1:c {
+            if (c\d)*d = c {
+                s tp = tp + (d)
+            }
+        }
+        if tp >= x return c
+    }
+    return -1
+}
+
+p2(x) public {
+
+	return 0
+}
+
+readInput(input, result) PUBLIC {
+	set file = ##class(%Stream.FileCharacter).%New()
+	s sc = file.LinkToFile(input)
+    s result = $translate(file.ReadLine(), $c(13))
+}
