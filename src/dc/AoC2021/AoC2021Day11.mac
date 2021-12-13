@@ -2,17 +2,77 @@ ROUTINE AoC2021Day11
 
 Start() public {
 	d readInput("/irisdev/app/inputs/2021/11.in", .input)
+	m x1=input
+	m x2=input
+    return $$p1(.x1)_"^"_$$p2(.x2)
+}
 
-    return $$p1(.input)_"^"_$$p2(.input)
+p1helper(x, tf, fd, i, j) public {
+	s tf=tf+1
+	s fd(i, j)=""
+	for di=-1:1:1 {
+		for dj=-1:1:1 {
+			if (di=0) && (dj=0) continue
+
+			s ni=i+di, nj=j+dj
+			if (1<=ni) && (ni<=x) && (1<=nj) && (nj<=x) && ('$d(fd(ni, nj))) {
+				s x(ni, nj) = x(ni, nj) + 1
+				if x(ni, nj) > 9 d p1helper(.x, .tf, .fd, ni, nj)
+			}
+		}
+	}
 }
 
 p1(x) public {
-	return 0
+	s tf = 0
+	for t=1:1:100 {
+		for i=1:1:x {
+			for j=1:1:x {
+				s x(i, j) = x(i, j) + 1
+			}
+		}
+		for i=1:1:x {
+			for j=1:1:x {
+				if (x(i, j) > 9) && ('$d(fd(i, j))) {
+					do p1helper(.x, .tf, .fd, i, j)
+				}
+			}
+		}
+		for i=1:1:x {
+			for j=1:1:x {
+				if $d(fd(i, j)) s x(i, j)=0
+			}
+		}
+		k fd
+	}
+	return tf
 }
 
 
 p2(x) public {
-	return 0
+	for t=1:1:10000000 {
+		s tf = 0
+		for i=1:1:x {
+			for j=1:1:x {
+				s x(i, j) = x(i, j) + 1
+			}
+		}
+		for i=1:1:x {
+			for j=1:1:x {
+				if (x(i, j) > 9) && ('$d(fd(i, j))) {
+					do p1helper(.x, .tf, .fd, i, j)
+				}
+			}
+		}
+		for i=1:1:x {
+			for j=1:1:x {
+				if $d(fd(i, j)) s x(i, j)=0
+			}
+		}
+		if tf=(x*x) return t
+		k fd
+	}
+	return -1
 }
 
 readInput(input, result) PUBLIC {
@@ -22,7 +82,9 @@ readInput(input, result) PUBLIC {
 	while 'file.AtEnd {
 		s i = i+1
 		s line = $translate(file.ReadLine(), $c(13))
-		s result(i) = line
+		for j=1:1:$l(line) {
+			s result(i, j) = $e(line, j)
+		}	
 	}
 	s result = i
 }
