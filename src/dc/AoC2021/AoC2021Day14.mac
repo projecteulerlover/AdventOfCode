@@ -1,0 +1,84 @@
+ROUTINE AoC2021Day14
+
+Start() public {
+	d readInput("/irisdev/app/inputs/2021/14.in", .e, .r)
+
+    return $$p1(e, .r)_"^"_$$p2(e, .r)
+}
+
+getdiff(ctr) PUBLIC {
+    s m = 1e30, M=0
+    s c = ""
+    for {
+        s c = $o(ctr(c), 1, v)
+        if c = "" q
+
+        if v < m s m = v
+        if v > M s M = v
+    }
+    return M-m
+}
+
+p1(e, r) public {
+    for t=1:1:10 {
+        s ne=""
+        for j=1:1:$l(e)-1 {
+            s c = $e(e, j, j+1)
+            s cc = r(c)
+
+            s $e(ne, $l(ne)+1) = $e(e, j)
+            s $e(ne, $l(ne)+1) = cc
+        }
+        s $e(ne, $l(ne)+1) = $e(e, *)
+
+        s e = ne
+    }
+    s ctr = ""
+    for i=1:1:$l(e) {
+        s ctr($e(e, i)) = $g(ctr($e(e, i))) + 1
+    }
+
+	return $$getdiff(.ctr)
+}
+
+
+p2(e, r) public {
+    for j=1:1:$l(e)-1 {
+        s cc = $e(e, j, j+1)
+        s pctr(cc) = $g(pctr(cc))+1
+    }
+	for t=1:1:41 {
+        k ctr
+        s cc = ""
+        for {
+            s cc = $o(pctr(cc), 1, v)
+            if cc="" q
+
+            s ctr($e(cc, 2)) = $g(ctr($e(cc, 2)))+v
+            
+            s mc = r(cc)
+            s pctr2($e(cc, 1)_mc) = $g(pctr2($e(cc, 1)_mc))+v
+            s pctr2(mc_$e(cc, 2)) = $g(pctr2(mc_$e(cc, 2)))+v
+        }
+        k pctr
+        m pctr = pctr2
+        k pctr2
+        s ctr($e(e, 1)) = $g(ctr($e(e, 1)))+1
+    }
+    zw ctr
+	return $$getdiff(.ctr)
+}
+
+readInput(input, e, r) PUBLIC {
+	set file = ##class(%Stream.FileCharacter).%New()
+	s sc = file.LinkToFile(input)
+	s i = 0
+    s e = $translate(file.ReadLine(), $c(13))
+    d file.ReadLine()
+	while 'file.AtEnd {
+		s i = i+1
+		s line = $translate(file.ReadLine(), $c(13))
+		s r($p(line, " -> ")) = $p(line, " -> ", 2)
+	}
+	s r = i
+}
