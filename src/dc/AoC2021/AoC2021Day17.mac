@@ -1,34 +1,37 @@
 ROUTINE AoC2021Day17
 
 Start() public {
-	d readInput("/irisdev/app/inputs/2021/17.in", .x)
-
-    return $$p1(x)_"^"_$$p2(x)
+	s mx=241, Mx=275, my=-75, My=-49
+	return $$p(mx, Mx, my, My)
 }
 
+gmh(vx, vy, mx, Mx, my, My) PUBLIC {
+	s x=0, y=0
+	s h=0
+	for t=1:1:1000 {
+		s x=x+vx, y=y+vy
 
-p1(x) public {
-	for i=1:1:x {
-		s l = x(i)
+		s vx = $s(vx > 0: vx-1, vx < 0: vx+1, 1: vx)
+		s vy = vy - 1
+
+		if y > h s h= y
+
+		if (mx <= x) && (x<=Mx) && (my <= y) && (y<=My) return h
+		if x > Mx return -1
+		if (my > y) && (vy < 0) return -1
 	}
-	return 0
+	return -1
 }
 
-p2(x) public {
-	for i=1:1:x {
-		s l = x(i)
+p(mx, Mx, my, My) public {
+	s h = 0
+	s t = 0
+	for vx=1:1:2*Mx {
+		for vy=-500:1:2000 {
+			s nh = $$gmh(vx, vy, mx, Mx, my, My)
+			if h < nh s h = nh
+			if nh '= -1 s t = t+1
+		}
 	}
-	return 0
-}
-
-readInput(input, result) PUBLIC {
-	set file = ##class(%Stream.FileCharacter).%New()
-	s sc = file.LinkToFile(input)
-	s i = 0
-	while 'file.AtEnd {
-		s i = i+1
-		s line = $translate(file.ReadLine(), $c(13))
-		s result(i) = line
-	}
-	s result = i
+	return h_"^"_t
 }
