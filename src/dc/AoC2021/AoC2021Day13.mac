@@ -90,9 +90,6 @@ p2(pts, fs) public {
         s x=$p(c,","), y=$p(c,",",2)
         s $e(screen(y-my+1), x-mx+1) = "0"
     }
-    for y=my+1:1:My+1 {
-        zw screen(y)
-    }
 	return "ABKJFBGC"
 }
 

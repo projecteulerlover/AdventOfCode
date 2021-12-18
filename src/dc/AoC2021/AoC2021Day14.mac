@@ -65,7 +65,6 @@ p2(e, r) public {
         k pctr2
         s ctr($e(e, 1)) = $g(ctr($e(e, 1)))+1
     }
-    zw ctr
 	return $$getdiff(.ctr)
 }
 

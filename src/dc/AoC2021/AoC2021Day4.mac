@@ -56,7 +56,6 @@ p1(x, nums) public {
 		}
 		if wf quit
 	}
-	zw wb
 	s sum=0
 	for r=1:1:5 {
 		for c=1:1:5 {

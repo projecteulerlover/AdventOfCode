@@ -33,7 +33,6 @@ p1(x) public {
 			s ans2 = ans2 + (2**(l-i))
 		}
 	}
-	zw ans1, ans2
 	return ans1*ans2
 }
 
