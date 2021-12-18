@@ -3,7 +3,7 @@ ROUTINE AoC2021Day19
 Start() public {
 	d readInput("/irisdev/app/inputs/2021/19.in", .x)
 
-    return $$p1(x)_"^"_$$p2(x)
+    return $$p1(.x)_"^"_$$p2(.x)
 }
 
 
