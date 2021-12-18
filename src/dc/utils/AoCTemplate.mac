@@ -1,4 +1,4 @@
-ROUTINE AoC2021DayT
+ROUTINE AoCTemplate
 
 Start() public {
 	d readInput("/irisdev/app/inputs/2021/16.in", .x)
