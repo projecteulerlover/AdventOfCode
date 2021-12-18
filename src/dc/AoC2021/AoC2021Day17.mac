@@ -30,7 +30,7 @@ p(mx, Mx, my, My) public {
 		#; early terminating condition, would never make it to left boundary.
 		s mrx = (1+vx)*vx
 		if (mrx < mx) continue
-		for vy=-500:1:2000 {
+		for vy=my:1:2000 {
 			s nh = $$gmh(vx, vy, mx, Mx, my, My)
 			if h < nh s h = nh
 			if nh '= -1 s t = t+1
