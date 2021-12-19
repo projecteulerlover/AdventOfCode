@@ -2,104 +2,101 @@ ROUTINE AoC2021Day19
 
 Start() public {
 	d readInput("/irisdev/app/inputs/2021/19.in", .x)
-	return 496_"^"_14478
+	#; return 496_"^"_14478
 	#; takes a super long time...
-    #; return $$p1(.x, .scanners)_"^"_$$p2(.scanners)
+    return $$p1(.x, .scanners)_"^"_$$p2(.scanners)
 }
 
-permutations(p, w, l, r) public {
-	if l=r {
-		s p(w)=""
-	} else {
-		for i=l:1:r {
-			s wl=$e(w, l), wi=$e(w, i)
-			s $e(w, i) = wl
-			s $e(w, l) = wi
-			do permutations(.p, w, l+1, r)
-			s $e(w, i) = wi
-			s $e(w, l) = wl
-		}
-	}
+permutations(perms) public {
+	s perms("1,2,3") = ""
+	s perms("1,3,-2") = ""
+	s perms("1,-2,-3") = ""
+	s perms("1,-3,2") = ""
+	s perms("2,1,-3") = ""
+	s perms("2,3,1") = ""
+	s perms("2,-1,3") = ""
+	s perms("2,-3,-1") = ""
+	s perms("3,1,2") = ""
+	s perms("3,2,-1") = ""
+	s perms("3,-1,-2") = ""
+	s perms("3,-2,1") = ""
+	s perms("-1,2,-3") = ""
+	s perms("-1,3,2") = ""
+	s perms("-1,-2,3") = ""
+	s perms("-1,-3,-2") = ""
+	s perms("-2,1,3") = ""
+	s perms("-2,3,-1") = ""
+	s perms("-2,-1,-3") = ""
+	s perms("-2,-3,1") = ""
+	s perms("-3,1,-2") = ""
+	s perms("-3,2,1") = ""
+	s perms("-3,-1,2") = ""
+	s perms("-3,-2,-1") = ""
+	
 }
 
-sgns(sgns) public {
-	for i=0:1:1 {
-		for j=0:1:1  {
-			for k=0:1:1 {
-				s sgns(i_j_k) = ""
-			}
-		}
-	}
-}
-
-change(s, perm, sgn) PUBLIC {
+change(s, perm) PUBLIC {
 	s ns = ""
 	for i=1:1:3 {
-		s $p(ns, ",", i) = $p(s, ",", $e(perm, i)) * $s($e(sgn, i)=1:1, 1:-1)
+		s c = $p(perm, ",", i)
+		s $p(ns, ",", i) = $p(s, ",", $zabs(c)) * $s(c > 0: 1, 1: -1)
 	}
 	return ns
 }
 
-changeall(scans, nscans, perm, sgn) {
+changeall(scans, nscans, perm) {
 	s scan = ""
 	for {
 		s scan = $o(scans(scan))
 		if scan = "" q
 
-		s nscans($$change(scan, perm, sgn)) = "" 
+		s nscans($$change(scan, perm)) = "" 
 	}
 }
 
-getoffsets(s1, s2, beacons, perms, sgns) public {
+getoffsets(s1, s2, beacons, d, perms) public {
 	s perm = ""
-
 	for {
 		s perm = $o(perms(perm))
 		if perm = "" quit
 
-		s sgn = ""
+		k ns2
+		d changeall(.s2, .ns2, perm)
+
+		s ss1 = ""
 		for {
-			s sgn = $o(sgns(sgn))
-			if sgn = "" quit
+			s ss1 = $o(s1(ss1))
+			if ss1 = "" q
 
-			k ns2
-			d changeall(.s2, .ns2, perm, sgn)
-
-			s ss1 = ""
+			s ss2 = ""
 			for {
-				s ss1 = $o(s1(ss1))
-				if ss1 = "" q
-
-				s ss2 = ""
+				s ss2 = $o(ns2(ss2))
+				if ss2 = "" q
+				s d = ""
+				
+				for l=1:1:3 {
+					s $p(d, ",", l) = $p(ss2, ",", l) - $p(ss1, ",", l)
+				}
+				s c = 0
+				s nss2 = ""
+				k beacons
 				for {
-					s ss2 = $o(ns2(ss2))
-					if ss2 = "" q
-					s d = ""
-					
-					for l=1:1:3 {
-						s $p(d, ",", l) = $p(ss2, ",", l) - $p(ss1, ",", l)
-					}
-					s c = 0
-					s nss2 = ""
-					k beacons
-					for {
-						s nss2 = $o(ns2(nss2))
-						if nss2 = "" q
+					s nss2 = $o(ns2(nss2))
+					if nss2 = "" q
 
-						s nnss2 = ""
-						for l=1:1:3 {
-							s $p(nnss2, ",", l) = $p(nss2, ",", l) - $p(d, ",", l)
-						}
-						s beacons(nnss2) = ""
-						if $d(s1(nnss2)) {
-							s c = c + 1
-						}
+					s nnss2 = ""
+					for l=1:1:3 {
+						s $p(nnss2, ",", l) = $p(nss2, ",", l) - $p(d, ",", l)
 					}
-					if c >= 12 {
-						return 1_" "_d
+					s beacons(nnss2) = ""
+					if $d(s1(nnss2)) {
+						s c = c + 1
 					}
-				} 
-			}
+				}
+				if c >= 12 {
+					return 1
+				}
+			} 
 		}
 	}
 	return 0
@@ -117,11 +114,11 @@ count(beacons) PUBLIC {
 }
 
 p1(x, scanners) public {
-	d permutations(.perms, "123", 1, 3)
-	d sgns(.sgns)
-	
+	d permutations(.perms)
+
 	m beacons = x(1)
 	s scanners=1, scanners(1) = "0,0,0"
+	zw scanners_": matched beacon 0"
 
 	while scanners'=x {
 		for i=1:1:x {
@@ -132,10 +129,10 @@ p1(x, scanners) public {
 				k si, sj
 				m si = x(i), sj = x(j)
 				k nbeacons
-				s val = $$getoffsets(.si, .sj, .nbeacons, .perms, .sgns) 
-				s m = $p(val, " "), d = $p(val, " ", 2)
-				if m {
+				s d= ""
+				if $$getoffsets(.si, .sj, .nbeacons, .d, .perms)  {
 					s scanners = scanners + 1, scanners(j) = d
+					zw scanners_": matched scanner "_j
 					k x(j)
 					m x(j) = nbeacons
 					m beacons = nbeacons
