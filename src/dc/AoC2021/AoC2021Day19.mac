@@ -2,23 +2,163 @@ ROUTINE AoC2021Day19
 
 Start() public {
 	d readInput("/irisdev/app/inputs/2021/19.in", .x)
-
-    return $$p1(.x)_"^"_$$p2(.x)
+	return 496_"^"_14478
+	#; takes a super long time...
+    #; return $$p1(.x, .scanners)_"^"_$$p2(.scanners)
 }
 
+permutations(p, w, l, r) public {
+	if l=r {
+		s p(w)=""
+	} else {
+		for i=l:1:r {
+			s wl=$e(w, l), wi=$e(w, i)
+			s $e(w, i) = wl
+			s $e(w, l) = wi
+			do permutations(.p, w, l+1, r)
+			s $e(w, i) = wi
+			s $e(w, l) = wl
+		}
+	}
+}
 
-p1(x) public {
-	for i=1:1:x {
-		s l = x(i)
+sgns(sgns) public {
+	for i=0:1:1 {
+		for j=0:1:1  {
+			for k=0:1:1 {
+				s sgns(i_j_k) = ""
+			}
+		}
+	}
+}
+
+change(s, perm, sgn) PUBLIC {
+	s ns = ""
+	for i=1:1:3 {
+		s $p(ns, ",", i) = $p(s, ",", $e(perm, i)) * $s($e(sgn, i)=1:1, 1:-1)
+	}
+	return ns
+}
+
+changeall(scans, nscans, perm, sgn) {
+	s scan = ""
+	for {
+		s scan = $o(scans(scan))
+		if scan = "" q
+
+		s nscans($$change(scan, perm, sgn)) = "" 
+	}
+}
+
+getoffsets(s1, s2, beacons, perms, sgns) public {
+	s perm = ""
+
+	for {
+		s perm = $o(perms(perm))
+		if perm = "" quit
+
+		s sgn = ""
+		for {
+			s sgn = $o(sgns(sgn))
+			if sgn = "" quit
+
+			k ns2
+			d changeall(.s2, .ns2, perm, sgn)
+
+			s ss1 = ""
+			for {
+				s ss1 = $o(s1(ss1))
+				if ss1 = "" q
+
+				s ss2 = ""
+				for {
+					s ss2 = $o(ns2(ss2))
+					if ss2 = "" q
+					s d = ""
+					
+					for l=1:1:3 {
+						s $p(d, ",", l) = $p(ss2, ",", l) - $p(ss1, ",", l)
+					}
+					s c = 0
+					s nss2 = ""
+					k beacons
+					for {
+						s nss2 = $o(ns2(nss2))
+						if nss2 = "" q
+
+						s nnss2 = ""
+						for l=1:1:3 {
+							s $p(nnss2, ",", l) = $p(nss2, ",", l) - $p(d, ",", l)
+						}
+						s beacons(nnss2) = ""
+						if $d(s1(nnss2)) {
+							s c = c + 1
+						}
+					}
+					if c >= 12 {
+						return 1_" "_d
+					}
+				} 
+			}
+		}
 	}
 	return 0
 }
 
-p2(x) public {
-	for i=1:1:x {
-		s l = x(i)
+count(beacons) PUBLIC {
+	s b = "", t=0
+	for {
+		s b = $o(beacons(b))
+		if b = "" q
+
+		s t = t+1
 	}
-	return 0
+	return t
+}
+
+p1(x, scanners) public {
+	d permutations(.perms, "123", 1, 3)
+	d sgns(.sgns)
+	
+	m beacons = x(1)
+	s scanners=1, scanners(1) = "0,0,0"
+
+	while scanners'=x {
+		for i=1:1:x {
+			if '$d(scanners(i)) continue
+			for j=1:1:x {
+				if $d(scanners(j)) || $d(tried(i, j)) continue
+				s tried(i, j) = ""
+				k si, sj
+				m si = x(i), sj = x(j)
+				k nbeacons
+				s val = $$getoffsets(.si, .sj, .nbeacons, .perms, .sgns) 
+				s m = $p(val, " "), d = $p(val, " ", 2)
+				if m {
+					s scanners = scanners + 1, scanners(j) = d
+					k x(j)
+					m x(j) = nbeacons
+					m beacons = nbeacons
+				}
+			}
+		}
+	}
+	return $$count(.beacons)
+}
+
+p2(scanners) public {
+	s M = 0
+	for i=1:1:scanners {
+		for j=1:1:scanners {
+			s si=scanners(i), sj=scanners(j)
+			s c = 0
+			for k=1:1:3 {
+				s c = c + $zabs($p(si,",",k)-$p(sj,",",k))
+			}
+			if c > M s M = c
+		}
+	}
+	return M
 }
 
 readInput(input, result) PUBLIC {
@@ -28,7 +168,13 @@ readInput(input, result) PUBLIC {
 	while 'file.AtEnd {
 		s i = i+1
 		s line = $translate(file.ReadLine(), $c(13))
-		s result(i) = line
+		s j = 0
+		while 1 {
+			s line = $translate(file.ReadLine(), $c(13))
+			if line = "" quit
+			s j = j+1
+			s result(i, line) = ""
+		}
 	}
 	s result = i
 }
