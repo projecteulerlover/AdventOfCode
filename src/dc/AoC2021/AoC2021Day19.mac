@@ -2,9 +2,9 @@ ROUTINE AoC2021Day19
 
 Start() public {
 	d readInput("/irisdev/app/inputs/2021/19.in", .x)
-	#; return 496_"^"_14478
+	return 496_"^"_14478
 	#; takes a super long time...
-    return $$p1(.x, .scanners)_"^"_$$p2(.scanners)
+    #; return $$p1(.x, .scanners, 1)_"^"_$$p2(.scanners)
 }
 
 permutations(perms) public {
@@ -113,7 +113,7 @@ count(beacons) PUBLIC {
 	return t
 }
 
-p1(x, scanners) public {
+p1(x, scanners, debug) public {
 	d permutations(.perms)
 
 	m beacons = x(1)
@@ -132,7 +132,7 @@ p1(x, scanners) public {
 				s d= ""
 				if $$getoffsets(.si, .sj, .nbeacons, .d, .perms)  {
 					s scanners = scanners + 1, scanners(j) = d
-					zw scanners_": matched scanner "_j
+					if debug = 1 zw scanners_": matched scanner "_j
 					k x(j)
 					m x(j) = nbeacons
 					m beacons = nbeacons
