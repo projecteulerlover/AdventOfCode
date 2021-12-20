@@ -49,7 +49,7 @@ run(alg, img, nimg, t) public {
 			}
 			#; one indexed
 			s b = $$b10(b) + 1
-			if ($e(alg, b) = "#") '= negate s nimg(i, j) = ""
+			if $e(alg, b) = $s(negate:".", 1:"#") s nimg(i, j) = ""
 		}
 	}
 }

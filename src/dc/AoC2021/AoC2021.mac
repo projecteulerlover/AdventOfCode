@@ -1,6 +1,6 @@
 ROUTINE AoC2021
 
-PrintAllDays(d=25) PUBLIC {
+PrintAllDays(d=20) PUBLIC {
     for i=1:1:d {
         s curr = $xecute("return "_"$$Start^AoC2021Day"_i_"()")
         zw "Problem "_i_" Part 1="_$p(curr,"^")
