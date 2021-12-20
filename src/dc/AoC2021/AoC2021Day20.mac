@@ -1,34 +1,110 @@
 ROUTINE AoC2021Day20
 
 Start() public {
-	d readInput("/irisdev/app/inputs/2021/20.in", .x)
-
-    return $$p1(.x)_"^"_$$p2(.x)
+	d readInput("/irisdev/app/inputs/2021/20.in", .alg, .img)
+	
+    return $$p1(alg, .img)_"^"_$$p2(alg, .img)
 }
 
-
-p1(x) public {
-	for i=1:1:x {
-		s l = x(i)
+b10(x) public {
+	s c = 0
+	for i=1:1:$l(x) {
+		s c = 2**($l(x)-i) * $e(x, i) + c
 	}
-	return 0
+	return c
 }
 
-p2(x) public {
-	for i=1:1:x {
-		s l = x(i)
+#; Because our input will flip to infinitely many #'s after 1 run, 3 runs, 5 runs, etc
+#; we can toggle what img represents at each run. When run count is odd, img represents
+#; "." cells; when even, it represents "#" cells.
+run(alg, img, nimg, t) public {
+	s li = 1e10, hi = -1e10, lj = 1e10, hj = -1e10
+	s i = ""
+	for {
+		s i = $o(img(i))
+		if i = "" q
+		s j = ""
+		for {
+			s j = $o(img(i, j))
+			if j = "" q
+
+			if i < li s li = i
+			if i > hi s hi = i
+			if j < lj s lj = j
+			if j > hj s hj = j
+		}
 	}
-	return 0
+	#; only bounds we need to worry about, since if a cell is affected
+	#; at most the 3x3 box centered on it will be affected in the next
+	#; iteration.
+	s li = li - 1, hi = hi + 1, lj = lj - 1, hj = hj + 1
+	s negate = t#2
+	for i=li:1:hi {
+		for j=lj:1:hj {
+			s b = ""
+			for ni=i-1:1:i+1 {
+				for nj=j-1:1:j+1 {
+					s b = b_($d(img(ni, nj)) = negate)
+				}
+			}
+			#; one indexed
+			s b = $$b10(b) + 1
+			if ($e(alg, b) = "#") '= negate s nimg(i, j) = ""
+		}
+	}
 }
 
-readInput(input, result) PUBLIC {
+count(img) public {
+	s i = "", t = 0
+	for {
+		s i = $o(img(i))
+		if i = "" q
+		s j = ""
+		for {
+			s j = $o(img(i, j))
+			if j = "" q
+			
+			if $d(img(i, j)) s t = t+1
+		}
+	}
+	return t
+}
+
+p1(alg, img) public {
+	for t=1:1:2 {
+		k nimg
+		d run(alg, .img, .nimg, t)
+		k img
+		m img = nimg
+	}
+
+	return $$count(.img)
+}
+
+p2(alg, img) public {
+	#; alg already ran twice in pt 1
+	for t=1:1:48 {
+		k nimg
+		d run(alg, .img, .nimg, t)
+		k img
+		m img = nimg
+	}
+
+	return $$count(.img)
+}
+
+readInput(input, alg, img) PUBLIC {
 	set file = ##class(%Stream.FileCharacter).%New()
 	s sc = file.LinkToFile(input)
 	s i = 0
+
+	s alg = $translate(file.ReadLine(), $c(13))
+	d file.ReadLine()
 	while 'file.AtEnd {
 		s i = i+1
 		s line = $translate(file.ReadLine(), $c(13))
-		s result(i) = line
+		for j=1:1:$l(line) {
+			if $e(line, j) = "#" s img(i, j) = ""
+		}
 	}
-	s result = i
 }

@@ -146,7 +146,7 @@ p1(x, scanners, debug) public {
 p2(scanners) public {
 	s M = 0
 	for i=1:1:scanners {
-		for j=1:1:scanners {
+		for j=i+1:1:scanners {
 			s si=scanners(i), sj=scanners(j)
 			s c = 0
 			for k=1:1:3 {
