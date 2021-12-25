@@ -1,0 +1,80 @@
+ROUTINE AoC2021Day25
+
+Start() public {
+	d readInput("/irisdev/app/inputs/2021/25.in", .x)
+    return $$p1(.x)_"^"_$$p2(.x)
+}
+
+move(x, turn) public {
+    s turn = turn + 1
+    m nmap1 = x
+    s t = 0
+    
+    for i=1:1:x {
+        s y = x(i)
+        for j=1:1:y {
+            if (x(i, j) = ">") {
+                if (j = y) { 
+                    if (x(i, 1) = ".") {
+                        s t=1
+                        s nmap1(i, 1) = ">"
+                        s nmap1(i, j) = "."
+                    }
+                } elseif (x(i, j+1) = ".") {
+                    s t=1
+                    s nmap1(i, j+1) = ">"
+                    s nmap1(i, j) = "."
+                }
+            }
+        }
+    }
+    m nmap2 = nmap1
+    for i=1:1:x {
+        s y = x(i)
+        for j=1:1:y {
+            if (nmap1(i, j) = "v") {
+                if (i = x) {
+                    if (nmap1(1, j) = ".") {
+                        s t=1
+                        s nmap2(1, j) = "v"
+                        s nmap2(i, j) = "."
+                    }
+                } elseif (nmap1(i+1, j) = ".") {
+                    s t=1
+                    s nmap2(i+1, j) = "v"
+                    s nmap2(i, j) = "."
+                }
+            }
+        }
+    }
+    k x
+    m x = nmap2
+    return t=0
+}
+
+p1(x) public {
+	s turn = 0
+    while '$$move(.x, .turn) {
+        continue
+    }
+    return turn
+}
+
+p2(x) public {
+	return "Happy Holidays!"
+}
+
+readInput(input, result) PUBLIC {
+	set file = ##class(%Stream.FileCharacter).%New()
+	s sc = file.LinkToFile(input)
+	s i = 0
+	while 'file.AtEnd {
+		s i = i+1
+		s line = $translate(file.ReadLine(), $c(13))
+        for j = 1:1:$l(line) {
+            s result(i, j) = $e(line, j)
+        }
+        s result(i) = $l(line)
+	}
+	s result = i
+}

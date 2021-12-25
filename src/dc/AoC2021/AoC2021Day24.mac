@@ -1,0 +1,116 @@
+ROUTINE AoC2021Day24
+
+Start() public {
+	d readInput("/irisdev/app/inputs/2021/24.in", .x)
+
+    return $$p1(.x)_"^"_$$p2(.x)
+}
+
+run(x, try) public {
+    s i = 0
+    s register("w")=0, register("x")=0, register("y")=0, register("z")=0
+    for j = 1:1:x {
+        s l = x(j)
+        s op = $p(l, " ", 1)
+        s a = $p(l, " ", 2)
+        if $l(l, " ") = 3 {
+            s b = $p(l, " ", 3)
+            if +b '= b {
+                s b = register(b)
+            }
+        }
+        if op = "inp" {
+            s i = i + 1
+            s register(a) = $e(try, i)
+        } elseif (op = "add") {
+            s register(a) = register(a) + b
+        } elseif (op = "mul") {
+            s register(a) = register(a) * b
+        } elseif (op = "div") {
+            if b = 0 return 0
+            s register(a) = register(a) \ b
+        } elseif (op = "mod") {
+            if (register(a) < 0) || (b <= 0 ) return 0
+            s register(a) = register(a) # b
+        } else {
+            s register(a) = (register(a) = b)
+        }
+    }
+    return register("z")=0
+}
+
+oldp1(x) public {
+    for i=39999698799429:-1:18116121134117 {
+        for j=1:1:14 {
+            if $e(i, j) = 0 continue
+        }
+        if $$run(.x, i) return i
+    }
+    return
+}
+
+parse(x, part) public {
+    s stack = []
+    s ans = "00000000000000"
+    for d=0:1:13 {
+        s state = ""
+        for i=1:1:18 {
+            s l = x(d*18+i)
+            if $e(l, 1, 5) = "div z" {
+                if ($e(l, 7, *) = 1) {
+                    #; appending
+                    s state = 1
+                } elseif ($e(l, 7, *) = 26) {
+                    #; detaching
+                    s state = 0
+                }
+            }
+            
+            if (state = 0) && ($e(l, 1, 5) = "add x") && (l '= "add x z") {
+                s v = $e(l, 7, *)
+                s d2v2 = stack.%Pop()
+                s d2 = $p(d2v2, " ", 1), v2 = $p(d2v2, " ", 2)
+                if (part = 1) {
+                    for t=1:1:9 {
+                        if ((t + v + v2) > 0) && ((t + v + v2) < 10) {
+                            s $e(ans, d2) = t
+                            s $e(ans, d+1) = t + v + v2
+                        }
+                    }
+                } elseif (part = 2) {
+                    for t=9:-1:1 {
+                        if ((t + v + v2) > 0) && ((t + v + v2) < 10) {
+                            s $e(ans, d2) = t
+                            s $e(ans, d+1) = t + v + v2
+                        }
+                    }
+                }
+                
+            } elseif (state = 1) && ($e(l, 1, 5) = "add y") && (l '= "add y w") && (l '= "add y 25") && (l '= "add y 1"){
+                s v = $e(l, 7, *)
+                d stack.%Push((d+1)_" "_v)
+            }
+        }
+    }
+    return ans
+}
+
+p1(x) public {
+	return $$parse(.x, 1)
+}
+
+p2(x) public {
+	return $$parse(.x, 2)
+}
+
+readInput(input, result) PUBLIC {
+	set file = ##class(%Stream.FileCharacter).%New()
+	s sc = file.LinkToFile(input)
+	s i = 0
+	while 'file.AtEnd {
+		s i = i+1
+		s line = $translate(file.ReadLine(), $c(13))
+		s result(i) = line
+	}
+	s result = i
+}

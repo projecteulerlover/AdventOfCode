@@ -2,23 +2,81 @@ ROUTINE AoC2021Day21
 
 Start() public {
 	d readInput("/irisdev/app/inputs/2021/21.in", .x)
-
-    return $$p1(.x)_"^"_$$p2(.x)
+	m p1x = x
+	m p2x = x
+	
+    return $$p1(.p1x)_"^"_$$p2(.p2x)
 }
 
+roll(d) {
+	s t = 0
+	for i=1:1:3 {
+		s d = d + 1
+		if d > 100 s d = d - 100
+		s t = t + d
+	}
+	return t
+}
 
 p1(x) public {
-	for i=1:1:x {
-		s l = x(i)
+	s s(0)=0, s(1)=0
+	s d = 0, t = 0
+	while (s(0) < 1000) && (s(1) < 1000) {
+		s r = $$roll(.d)
+		s p = t#2
+
+		s x(p) = (x(p) + r) # 10
+		s s(p) = s(p) + x(p) + 1
+		s t = t + 1
 	}
-	return 0
+
+	return t * 3 * $s(s(0) >= 1000: s(1), 1: s(0))
+}
+
+#; x contains position, s contains scores, t is 0,1 - denotes player 0 or player 1 turn
+p2helper(x, s, memo, d, t) public {
+	if s(0) >= 21 return 1_" "_0
+	if s(1) >= 21 return 0_" "_1
+
+	if $d(memo(t_" "_x(0)_" "_s(0)_" "_x(1)_" "_s(1)), v) return v
+	s c(0)=0, c(1)=0
+	s o = 1-t
+	s dr = ""
+	for {
+		s dr = $o(d(dr), 1, v)
+		if dr = "" q
+
+		k nx, ns
+		s nx(o) = x(o)
+		s ns(o) = s(o)
+		s nx(t) = (x(t) + dr) # 10
+		s ns(t) = s(t) + nx(t) + 1
+
+		s c0c1 = $$p2helper(.nx, .ns, .memo, .d, 1-t)
+		s c(0) = c(0) + (v*$p(c0c1, " ", 1)), c(1) = c(1)+(v*$p(c0c1, " ", 2))
+	}
+	s memo(t_" "_x(0)_" "_s(0)_" "_x(1)_" "_s(1)) = c(0)_" "_c(1)
+	return c(0)_" "_c(1)
+}
+
+roll2(d) {
+	for r1=1:1:3 {
+		for r2=1:1:3 {
+			for r3=1:1:3 {
+				s d(r1+r2+r3) = $g(d(r1+r2+r3)) + 1
+			}
+		}
+	}
 }
 
 p2(x) public {
-	for i=1:1:x {
-		s l = x(i)
-	}
-	return 0
+	s s(0)=0, s(1)=0
+	d roll2(.d)
+	s c0c1 = $$p2helper(.x, .s, .memo, .d, 0)
+
+	s c0 = $p(c0c1, " "), c1 = $p(c0c1, " ", 2)
+	if c0 > c1 return c0
+	return c1
 }
 
 readInput(input, result) PUBLIC {
@@ -26,9 +84,8 @@ readInput(input, result) PUBLIC {
 	s sc = file.LinkToFile(input)
 	s i = 0
 	while 'file.AtEnd {
-		s i = i+1
 		s line = $translate(file.ReadLine(), $c(13))
-		s result(i) = line
+		s result(i) = $p(line, " ", *) - 1
+		s i = i+1
 	}
-	s result = i
 }
