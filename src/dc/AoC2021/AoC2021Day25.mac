@@ -76,5 +76,6 @@ readInput(input, result) PUBLIC {
         }
         s result(i) = $l(line)
 	}
+    
 	s result = i
 }
