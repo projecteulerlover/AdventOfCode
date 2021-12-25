@@ -1,7 +1,7 @@
-ROUTINE AoCTemplate
+ROUTINE AoC2022DayX
 
 Start() public {
-	d readInput("/irisdev/app/inputs/2021/16.in", .x)
+	d readInput("/irisdev/app/inputs/2022/x.in", .x)
 
     return $$p1(.x)_"^"_$$p2(.x)
 }
