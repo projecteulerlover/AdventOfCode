@@ -23,7 +23,7 @@ ClassMethod Part1() As %Status [ ProcedureBlock = 1 ]
 ClassMethod Part2() As %Status [ ProcedureBlock = 1 ]
 {
   d ..Read("/irisdev/app/inputs/2022/10.in", .input)
-  set x = 1, j = 0, cs = 0
+  set x = 1, j = 0
   set crt = ""
   for i=1:1:6 {
     set crt(i) = ""
