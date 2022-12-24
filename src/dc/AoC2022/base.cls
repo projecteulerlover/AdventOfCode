@@ -41,6 +41,7 @@ ClassMethod Read(input, result, case = 0) As %Status [ ProcedureBlock = 1 ]
 		}
 		s result = i-1
 	}
+	return
 }
 
 ClassMethod Max(a, b) As %Integer [ ProcedureBlock = 1 ]
