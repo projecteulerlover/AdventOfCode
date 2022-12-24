@@ -5,6 +5,7 @@ ClassMethod Read(input, result, case = 0) As %Status [ ProcedureBlock = 1 ]
 {
 	set file = ##class(%Stream.FileCharacter).%New()
 	s sc = file.LinkToFile(input)
+	if ('sc) return sc
 	if (case = 0) {
 		s i = 0
 		while 'file.AtEnd {
@@ -41,7 +42,7 @@ ClassMethod Read(input, result, case = 0) As %Status [ ProcedureBlock = 1 ]
 		}
 		s result = i-1
 	}
-	return
+	return 1
 }
 
 ClassMethod Max(a, b) As %Integer [ ProcedureBlock = 1 ]

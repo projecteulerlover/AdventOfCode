@@ -30,9 +30,11 @@ ClassMethod Part1() As %Status [ ProcedureBlock = 1 ]
     set a = $replace($replace(ls(i, 1), "[", "$lb("), "]", ")")
     set cmd = "(x) s x="_a_" QUIT 0"
     s null = $XECUTE(cmd, .a)
+    if (null) return -1
     set b = $replace($replace(ls(i, 2), "[", "$lb("), "]", ")")
     set cmd = "(x) s x="_b_" QUIT 0"
     s null = $XECUTE(cmd, .b)
+    if (null) return -1
     if (..Helper(.a, .b) < 0) set res = res + i
   }
   return res
@@ -41,7 +43,6 @@ ClassMethod Part1() As %Status [ ProcedureBlock = 1 ]
 ClassMethod Part2() As %Status [ ProcedureBlock = 1 ]
 {
 	d ..Read("/irisdev/app/inputs/2022/13.in", .ls, 1)
-  set res = 0
   set two = $lb($lb(2)), six = $lb($lb(6))
   set counter2 = 0, counter6 = 0
   if (..Helper(.two, .six) < 0) {
@@ -53,9 +54,11 @@ ClassMethod Part2() As %Status [ ProcedureBlock = 1 ]
     set a = $replace($replace(ls(i, 1), "[", "$lb("), "]", ")")
     set cmd = "(x) s x="_a_" QUIT 0"
     s null = $XECUTE(cmd, .a)
+    if (null) return -1
     set b = $replace($replace(ls(i, 2), "[", "$lb("), "]", ")")
     set cmd = "(x) s x="_b_" QUIT 0"
     s null = $XECUTE(cmd, .b)
+    if (null) return -1
     if (..Helper(.a, .two) < 0) set counter2 = counter2 + 1
     if (..Helper(.a, .six) < 0) set counter6 = counter6 + 1
     if (..Helper(.b, .two) < 0) set counter2 = counter2 + 1

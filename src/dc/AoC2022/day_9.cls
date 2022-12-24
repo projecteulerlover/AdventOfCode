@@ -6,7 +6,6 @@ ClassMethod Helper(sl) As %Integer [ ProcedureBlock = 1 ]
   d ..Read("/irisdev/app/inputs/2022/9.in", .input)
   set mp("R") = 1, mp("D") = 2, mp("L") = 3, mp("U") = 4
   set dir(1) = 1, dir(2) = 0, dir(3) = -1, dir(4) = 0, dir(5) = 1
-  set res = 0
   set seen = 1
   set seen("0^0") = ""
   for s=1:1:sl {

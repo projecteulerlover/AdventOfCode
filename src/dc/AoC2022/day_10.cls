@@ -4,7 +4,7 @@ Class dc.AoC2022.day10 Extends dc.AoC2022.base
 ClassMethod Part1() As %Status [ ProcedureBlock = 1 ]
 {
   d ..Read("/irisdev/app/inputs/2022/10.in", .input)
-  set x = 1, t = 0, j = 0, cs = 0
+  set x = 1, t = 0, j = 0
   for i=20:40:220 {
     set cs(i) = ""
   }

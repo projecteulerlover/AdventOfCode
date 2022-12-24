@@ -10,7 +10,6 @@ ClassMethod Part1() As %Status [ ProcedureBlock = 1 ]
     set stacks(i) = ""
   }
   for i=1:1:input(1)-1 {
-    set m = $length(input(1, i))
     for j=1:1:n {
       set c = $extract(input(1, i), 4*j - 2)
       set stacks(j) = stacks(j)_($case(c, " ":"", : c))
@@ -40,7 +39,6 @@ ClassMethod Part2() As %Status [ ProcedureBlock = 1 ]
     set stacks(i) = ""
   }
   for i=1:1:input(1)-1 {
-    set m = $length(input(1, i))
     for j=1:1:n {
       set c = $extract(input(1, i), 4*j - 2)
       set stacks(j) = stacks(j)_($case(c, " ":"", : c))
