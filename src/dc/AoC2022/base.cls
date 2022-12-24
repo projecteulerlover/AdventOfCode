@@ -66,4 +66,23 @@ ClassMethod Reverse(s) As %String [ ProcedureBlock = 1 ]
 	return s
 }
 
+ClassMethod Equal(ByRef a, ByRef b) As %Boolean [ ProcedureBlock = 1 ]
+{
+	set aptr = ""
+	for {
+		set aptr = $o(a(aptr))
+		if (aptr = "") quit
+
+		if ('$d(b(aptr))) return 0
+	}
+	set bptr = ""
+	for {
+		set bptr = $o(b(bptr))
+		if (bptr = "") quit
+
+		if ('$d(a(bptr))) return 0
+	}
+	return 1
+}
+
 }
