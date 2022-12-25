@@ -18,7 +18,7 @@ ClassMethod GetBoard(ByRef m, ByRef n, ByRef blizz, ByRef T) [ ProcedureBlock = 
       if (d '= -1) set blizz((i-1)_" "_(j-1), d) = ""
     }
   }
-}
+} 
 
 ClassMethod MoveBlizz(m, n, ByRef blizz) [ ProcedureBlock = 1 ]
 {
