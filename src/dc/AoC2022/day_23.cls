@@ -39,9 +39,8 @@ ClassMethod Part1() As %Status [ ProcedureBlock = 1 ]
       if ($e(ls(r), c) = "#") set elves(r_" "_c) = ""
     }
   }
-  set dirs(0) = "N", dirs(1) = "S", dirs(2) = "W", dirs(3) = "E"
-
-  for t=0:1:10 {
+  set dirs = 3, dirs(0) = "N", dirs(1) = "S", dirs(2) = "W", dirs(3) = "E"
+  for t=0:1:9 {
     kill newElves, proposal, proposalCount
     set coords = ""
     for {
@@ -59,12 +58,11 @@ ClassMethod Part1() As %Status [ ProcedureBlock = 1 ]
           quit
         }
       }
-      if (found = 0) {
+      if ('found) {
         set proposalCount(coords) = $g(proposalCount(coords), 0) + 1
         set proposal(coords) = coords
       }
     }
-
     set coords = ""
     for {
       set coords = $o(proposal(coords), 1, ncoords)
@@ -98,6 +96,7 @@ ClassMethod Part1() As %Status [ ProcedureBlock = 1 ]
 
 ClassMethod Part2() As %Status [ ProcedureBlock = 1 ]
 {
+  zw "This might take awhile."
   d ..Read("/irisdev/app/inputs/2022/23.in", .ls)
   set elves = "", m = ls, n = $length(ls(1))
   for r=1:1:m {

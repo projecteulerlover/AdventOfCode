@@ -39,6 +39,7 @@ ClassMethod Part2() As %Status [ ProcedureBlock = 1 ]
       set j = j+1
     }
   }
+  s $e(crt(6), 1) = "#"
   for r=1:1:6 {
     w crt(r), !
   }

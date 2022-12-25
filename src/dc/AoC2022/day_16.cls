@@ -53,6 +53,7 @@ ClassMethod Part1() As %Status [ ProcedureBlock = 1 ]
 
 ClassMethod Part2() As %Status [ ProcedureBlock = 1 ]
 {
+  zw "This will take awhile"
   do ..BuildGraph(.flows, .dists, .n)
   set M = $ZPOWER(2, n)-1, msf = 0
   for mask=0:1:M {

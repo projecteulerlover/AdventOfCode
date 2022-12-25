@@ -29,6 +29,7 @@ ClassMethod Part1() As %Status [ ProcedureBlock = 1 ]
 
 ClassMethod Part2() As %Status [ ProcedureBlock = 1 ]
 {
+  zw "This will take awhile"
   d ..Read("/irisdev/app/inputs/2022/15.in", .ls)
   set Y = 2000000, bs = ""
   for i=1:1:ls {
@@ -40,7 +41,7 @@ ClassMethod Part2() As %Status [ ProcedureBlock = 1 ]
       set cx = $p(l, " ", 3), cy = $p(l, " ", 4)
       set bs(x, y) = "", bs(cx, cy) = ""
   }
-  for yy=0:1:2*Y  {
+  for yy=2*Y:-1:0  {
     kill ints
     set ints = ""
     for i=1:1:ls {
@@ -50,20 +51,23 @@ ClassMethod Part2() As %Status [ ProcedureBlock = 1 ]
       set d = $zabs(x - cx) + $zabs(y - cy)
       set dy = $zabs(yy - y)
       if (d - dy < 0) continue
-      set free = ..Max(d - dy, 0)
-      if ($d(ints(x-free))) {
-        set ints(x-free) = ..Max(x+free, ints(x-free))
+      set free = d - dy
+      set l = ..Max(0, x-free), r = ..Min(2*Y, x+free)
+      if ($d(ints(l))) {
+        set ints(l) = ..Max(r, ints(l))
       } else {
-        set ints(x-free) = x+free
+        set ints(l) = r
       }
     }
     set ptr = $order(ints(""), 1, msf)
     for {
       set ptr = $order(ints(ptr), 1, x)
       if (ptr = "") quit
-      if ((msf + 2 = ptr) && ('$d(bs(yy, msf+1))))
+      if ((msf + 2 = ptr) && ('$d(bs(yy, msf+1)))) {
         return (msf + 1) * 2 * Y + (yy)
+      }
       set msf = ..Max(msf, x)
+      if (2*Y = msf) continue
     }
   }
   return -1

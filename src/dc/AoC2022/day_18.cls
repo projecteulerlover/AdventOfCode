@@ -14,7 +14,7 @@ ClassMethod Part1() As %Status [ ProcedureBlock = 1 ]
     for i=1:1:3 {
       for d=-1:2:1 {
         set cc = coord
-        set $p(cc, ",", i) = $p(cc, ",", i) + d
+        set $p(cc, ",", i) = d+$p(cc, ",", i)
         if ($d(space(cc))) set total = total - 1
       }
     }
@@ -38,9 +38,13 @@ ClassMethod Part2() As %Status [ ProcedureBlock = 1 ]
   for i=1:1:ls {
     set space(ls(i)) = ""
     for j=1:1:3 {
-      set $p(cMin, ",", j) = ..Min($p(cMin, ",", j), $p(ls(i), ",", j)-5)
-      set $p(cMax, ",", j) = ..Max($p(cMax, ",", j), $p(ls(i), ",", j)+5) 
+      set $p(cMin, ",", j) = ..Min($p(cMin, ",", j), $p(ls(i), ",", j))
+      set $p(cMax, ",", j) = ..Max($p(cMax, ",", j), $p(ls(i), ",", j))
     }
+  }
+  for j=1:1:3 {
+    set $p(cMin, ",", j) = $p(cMin, ",", j) - 5
+    set $p(cMax, ",", j) = $p(cMax, ",", j) + 5
   }
   set st = [], vs = ""
   do st.%Push(cMin)

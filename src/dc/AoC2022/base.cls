@@ -1,9 +1,34 @@
 Class dc.AoC2022.base
 {
 
-ClassMethod Read(input, result, case = 0) As %Status [ ProcedureBlock = 1 ]
+ClassMethod PrintAllDays(d = 25) [ ProcedureBlock = 1 ]
+{
+	#; set ^zTEST = 0 // use my own inputs
+	#; comment out one of the following lines to toggle which inputs get run
+	#; set ^zTEST = 1 // use test 1 inputs
+	#; set ^zTEST = 2 // use test 2 inputs
+	for i=1:1:d {
+			s curr = $xecute("return "_"##class(dc.AoC2022.day"_i_").Part1()")
+			zw "Problem "_i_" Part 1 = "_curr
+			s curr = $xecute("return "_"##class(dc.AoC2022.day"_i_").Part2()")
+			zw "Problem "_i_" Part 2 = "_curr
+			w !
+	}
+	return "Done."
+}
+
+ClassMethod Read(input, ByRef result, case = 0) As %Status [ ProcedureBlock = 1 ]
 {
 	set file = ##class(%Stream.FileCharacter).%New()
+	set testMode = $g(^zTEST, 0)
+	if (testMode '= 0) {
+		set re = ##class(%Regex.Matcher).%New("/irisdev/app/inputs/2022/([0-9]+)\.in")
+		if (re.Match(input) && (testMode = 1)) {
+			set input = "/irisdev/app/inputs/2022/test_set_1/"_(re.Group(1))_"/data.txt"
+		} elseif (re.Match(input) && (testMode = 2)) {
+			set input = "/irisdev/app/inputs/2022/test_set_2/"_(re.Group(1))_"/input.txt"
+		}
+	}
 	s sc = file.LinkToFile(input)
 	if ('sc) return sc
 	if (case = 0) {
@@ -21,7 +46,7 @@ ClassMethod Read(input, result, case = 0) As %Status [ ProcedureBlock = 1 ]
 			if (l = "") {
 				s result(i) = j - 1
 				s i = i+1, j = 1
-				continue
+				continue 
 			}
 			s result(i, j) = l
 			s j = j + 1
