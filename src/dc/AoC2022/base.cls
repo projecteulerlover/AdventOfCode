@@ -3,7 +3,7 @@ Class dc.AoC2022.base
 
 ClassMethod PrintAllDays(d = 25) [ ProcedureBlock = 1 ]
 {
-	#; set ^zTEST = 0 // use my own inputs
+	set ^zTEST = 0 // use my own inputs
 	#; comment out one of the following lines to toggle which inputs get run
 	#; set ^zTEST = 1 // use test 1 inputs
 	#; set ^zTEST = 2 // use test 2 inputs
