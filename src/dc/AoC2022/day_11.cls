@@ -9,6 +9,7 @@ ClassMethod BuildMonkeys(ByRef ls, ByRef monkey, ByRef tests) As %Status [ Proce
     set monkey(i-1, "op") = "return "_$p(ls(i, 3), " ", 6, *)
     set $list(tests, i) = $p(ls(i, 4), " ", 6)_" "_$p(ls(i, 5), " ", 10)_" "_$p(ls(i, 6), " ", 10)
   }
+  return 1
 }
 
 ClassMethod Part1() As %Status [ ProcedureBlock = 1 ]
