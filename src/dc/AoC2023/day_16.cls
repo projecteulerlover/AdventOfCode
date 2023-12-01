@@ -1,4 +1,4 @@
-Class dc.AoC2022.day16 Extends dc.AoC2022.base
+Class dc.AoC2023.day16 Extends dc.AoC2023.base
 {
 
 ClassMethod BuildGraph(ByRef flows, ByRef dists, ByRef n) [ ProcedureBlock = 1 ]

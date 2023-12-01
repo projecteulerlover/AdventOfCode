@@ -1,4 +1,4 @@
-Class dc.AoC2022.day23 Extends dc.AoC2022.base
+Class dc.AoC2023.day23 Extends dc.AoC2023.base
 {
 
 ClassMethod shouldMove(r, c, ByRef elves) [ ProcedureBlock = 1 ]

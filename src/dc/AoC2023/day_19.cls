@@ -1,4 +1,4 @@
-Class dc.AoC2022.day19 Extends dc.AoC2022.base
+Class dc.AoC2023.day19 Extends dc.AoC2023.base
 {
 
 ClassMethod dfs(ByRef cache, ByRef bp, rs, os, mo1, t = 24) [ ProcedureBlock = 1 ]

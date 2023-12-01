@@ -1,4 +1,4 @@
-Class dc.AoC2022.day20 Extends dc.AoC2022.base
+Class dc.AoC2023.day20 Extends dc.AoC2023.base
 {
 
 ClassMethod Remove(ByRef vector, index) [ ProcedureBlock = 1 ]

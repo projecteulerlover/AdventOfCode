@@ -1,4 +1,4 @@
-Class dc.AoC2022.day6 Extends dc.AoC2022.base
+Class dc.AoC2023.day6 Extends dc.AoC2023.base
 {
 
 ClassMethod Part1() As %Status [ ProcedureBlock = 1 ]

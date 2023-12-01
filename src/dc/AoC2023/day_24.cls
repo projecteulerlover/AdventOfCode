@@ -1,4 +1,4 @@
-Class dc.AoC2022.day24 Extends dc.AoC2022.base
+Class dc.AoC2023.day24 Extends dc.AoC2023.base
 {
 
 ClassMethod IsBoundary(m, n, x, y) [ ProcedureBlock = 1 ]
@@ -18,7 +18,7 @@ ClassMethod GetBoard(ByRef m, ByRef n, ByRef blizz, ByRef T) [ ProcedureBlock = 
       if (d '= -1) set blizz((i-1)_" "_(j-1), d) = ""
     }
   }
-} 
+}
 
 ClassMethod MoveBlizz(m, n, ByRef blizz) [ ProcedureBlock = 1 ]
 {

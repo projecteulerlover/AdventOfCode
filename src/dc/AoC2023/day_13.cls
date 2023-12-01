@@ -1,4 +1,4 @@
-Class dc.AoC2022.day13 Extends dc.AoC2022.base
+Class dc.AoC2023.day13 Extends dc.AoC2023.base
 {
 
 ClassMethod Helper(ByRef a, ByRef b) As %Boolean [ ProcedureBlock = 1 ]

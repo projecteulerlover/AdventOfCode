@@ -1,4 +1,4 @@
-Class dc.AoC2022.day17 Extends dc.AoC2022.base
+Class dc.AoC2023.day17 Extends dc.AoC2023.base
 {
 
 ClassMethod HorizontalMove(ByRef field, ByRef rock, dx) [ ProcedureBlock = 1 ]

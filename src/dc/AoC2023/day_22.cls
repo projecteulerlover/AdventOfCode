@@ -1,4 +1,4 @@
-Class dc.AoC2022.day22 Extends dc.AoC2022.base
+Class dc.AoC2023.day22 Extends dc.AoC2023.base
 {
 
 ClassMethod GetGrid(ByRef grid, ByRef input) [ ProcedureBlock = 1 ]

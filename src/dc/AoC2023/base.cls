@@ -1,4 +1,4 @@
-Class dc.AoC2022.base
+Class dc.AoC2023.base
 {
 
 ClassMethod PrintAllDays(d = 25) [ ProcedureBlock = 1 ]
@@ -8,9 +8,9 @@ ClassMethod PrintAllDays(d = 25) [ ProcedureBlock = 1 ]
 	#; set ^zTEST = 1 // use test 1 inputs
 	#; set ^zTEST = 2 // use test 2 inputs
 	for i=1:1:d {
-			s curr = $xecute("return "_"##class(dc.AoC2022.day"_i_").Part1()")
+			s curr = $xecute("return "_"##class(dc.AoC2023.day"_i_").Part1()")
 			zw "Problem "_i_" Part 1 = "_curr
-			s curr = $xecute("return "_"##class(dc.AoC2022.day"_i_").Part2()")
+			s curr = $xecute("return "_"##class(dc.AoC2023.day"_i_").Part2()")
 			zw "Problem "_i_" Part 2 = "_curr
 			w !
 	}
