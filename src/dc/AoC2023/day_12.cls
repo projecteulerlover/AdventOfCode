@@ -1,83 +1,89 @@
 Class dc.AoC2023.day12 Extends dc.AoC2023.base
 {
 
+ClassMethod Solve(ByRef DP, ByRef PATTERN, ByRef STATE, i, j) As %Status [ ProcedureBlock = 1 ]
+{
+  if (i = (PATTERN + 1)) {
+    return (j = (STATE + 1))
+  }
+  if ($d(DP(i, j), targ)) {
+    return targ
+  }
+  set res = 0
+  set c = PATTERN(i)
+  if ((c = ".") || (c = "?")) {
+    set res = res + ..Solve(.DP, .PATTERN, .STATE, i + 1, j)
+  }
+
+  if ((j <= STATE) && ((i + STATE(j)) <= PATTERN)) {
+    set ni = i + STATE(j)
+    set space = 0
+    for k=i:1:..Min(ni - 1, PATTERN) {
+      if (PATTERN(k) = ".") {
+        set space = 1
+        quit
+      }
+    }
+    
+    if ('space && (PATTERN(ni) '= "#")) {
+      set res = res + ..Solve(.DP, .PATTERN, .STATE, ni + 1, j + 1)
+    }
+  }
+  set DP(i, j) = res
+  return res
+}
+
 ClassMethod Part1() As %Status [ ProcedureBlock = 1 ]
 {
-  d ..Read("/irisdev/app/inputs/2023/12.in", .g)
-  set m = g, n = $length(g(1))
-  set d = 5, d(1) = 1, d(2) = 0, d(3) = -1, d(4) = 0, d(5) = 1, fr = 0, fc = 0
-  set vs = 0
-  set frontier = []
-  for r=1:1:m {
-    for c=1:1:n {
-      if ($e(g(r), c) = "S") {
-        set $e(g(r), c) = "a"
-        set vs(r, c) = ""
-        do frontier.%Push("a "_r_" "_c)
-      } elseif ($e(g(r), c) = "E") {
-        set fr = r, fc = c
-        set $e(g(r), c) = "z"
-      }
+  d ..Read("/irisdev/app/inputs/2023/12.in", .ls)
+
+  set sum = 0
+  for i=1:1:ls {
+    set p = $p(ls(i), " ")_"?", s = $p(ls(i), " ", 2)
+    set lp = $length(p), ls = $length(s, ",") 
+    set P = lp
+    for j=1:1:lp {
+      set P(j) = $e(p, j)
     }
-  }
-  set d = 1
-  while (frontier.%Size() > 0) {
-    set nf = []
-    set iter = frontier.%GetIterator()
-    while iter.%GetNext(.k, .v) {
-      set x = $p(v, " "), r = $p(v, " ", 2), c = $p(v, " ", 3)
-      for i=1:1:4 {
-        set nr = r+d(i), nc = c + d(i+1)
-        if ((1<=nr) && (nr<=m) && (1<=nc) && (nc<=n) && ($d(vs(nr, nc)) = 0) && ($ASCII($e(g(nr), nc)) - $ASCII(x) <= 1)) {
-          if ((nr = fr) && (nc = fc)) return d
-          do nf.%Push($e(g(nr), nc)_" "_nr_" "_nc)
-          set vs(nr, nc) = ""
-        }
-      }
+    set S = ls
+    for j=1:1:ls {
+      set S(j) = $p(s, ",", j)
     }
-    set frontier = nf
-    set d = d + 1
+    
+    kill dp
+    set dp = ""
+    set sum = sum + ..Solve(.dp, .P, .S, 1, 1)
   }
-  return -1
+
+  return sum
 }
 
 ClassMethod Part2() As %Status [ ProcedureBlock = 1 ]
 {
-  d ..Read("/irisdev/app/inputs/2023/12.in", .g)
-  set m = g, n = $length(g(1))
-  set d = 5, d(1) = 1, d(2) = 0, d(3) = -1, d(4) = 0, d(5) = 1, fr = 0, fc = 0
-  set vs = 0
-  set frontier = []
-  for r=1:1:m {
-    for c=1:1:n {
-      if ($e(g(r), c) = "a") {
-        do frontier.%Push("a "_r_" "_c)
-        set vs(r, c) = ""
-      } elseif ($e(g(r), c) = "E") {
-        set fr = r, fc = c
-        set $e(g(r), c) = "z"
+  d ..Read("/irisdev/app/inputs/2023/12.in", .ls)
+
+  set sum = 0
+  for i=1:1:ls {
+    set p = $p(ls(i), " ")_"?", s = $p(ls(i), " ", 2)
+    set lp = $length(p), ls = $length(s, ",") 
+    set P = lp
+    for t=0:1:4 {
+      for j=1:1:lp {
+        set P(t * lp + j) = $e(p, j)
+      }
+      set S = ls
+      for j=1:1:ls {
+        set S(t * ls + j) = $p(s, ",", j)
       }
     }
+    
+    set P = P * 5, S = S * 5
+    kill dp
+    set dp = ""
+    set sum = sum + ..Solve(.dp, .P, .S, 1, 1)
   }
-  set d = 1
-  while (frontier.%Size() > 0) {
-    set nf = []
-    set iter = frontier.%GetIterator()
-    while iter.%GetNext(.k, .v) {
-      set x = $p(v, " "), r = $p(v, " ", 2), c = $p(v, " ", 3)
-      for i=1:1:4 {
-        set nr = r+d(i), nc = c + d(i+1)
-        if ((1<=nr) && (nr<=m) && (1<=nc) && (nc<=n) && ($d(vs(nr, nc)) = 0) && ($ASCII($e(g(nr), nc)) - $ASCII(x) <= 1)) {
-          if ((nr = fr) && (nc = fc)) return d
-          do nf.%Push($e(g(nr), nc)_" "_nr_" "_nc)
-          set vs(nr, nc) = ""
-        }
-      }
-    }
-    set frontier = nf
-    set d = d + 1
-  }
-  return -1
+
+  return sum
 }
 
 }

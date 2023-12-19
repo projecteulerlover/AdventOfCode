@@ -4,13 +4,35 @@ Class dc.AoC2023.day4 Extends dc.AoC2023.base
 ClassMethod Part1() As %Status [ ProcedureBlock = 1 ]
 {
 	d ..Read("/irisdev/app/inputs/2023/4.in", .input)
+  d ..RemoveColon(.input)
   set res = 0
-  for i=1:1:input {
-    set l = input(i)
-    set a = $p(l, ","), b = $p(l, ",", 2)
-    set s1 = $p(a, "-"), e1 = $p(a, "-", 2), s2 = $p(b, "-"), e2 = $p(b, "-", 2)
-    if (((s1 <= s2) && (e2 <= e1)) || ((s2 <= s1) && (e1 <= e2))) {
-      set res = res + 1
+
+  For i = 1:1:input {
+    set line = input(i)
+    set a = ..GetIntsLine($p(line, "|", 1))
+    set b = ..GetIntsLine($p(line, "|", 2))
+
+    kill hand
+    set hand = ""
+    for j = 1:1:$length(a, " ") {
+      set hand($p(a, " ", j)) = $get(hand($p(a, " ", j)), 0) + 1
+    }
+    for j = 1:1:$length(b, " ") {
+      set hand($p(b, " ", j)) = $get(hand($p(b, " ", j)), 0) + 1
+    }
+    set x = "", v = 0, t = 0, wins = ""
+    for {
+      set x = $o(hand(x), 1, v)
+      if (x = "") {
+        quit
+      }
+      if (v = 2) {
+        set wins = wins_" "_x
+        set t = t + 1
+      }
+    }
+    if (t) {
+      set res = res + $zpower(2, t - 1)
     }
   }
   return res
@@ -19,13 +41,36 @@ ClassMethod Part1() As %Status [ ProcedureBlock = 1 ]
 ClassMethod Part2() As %Status [ ProcedureBlock = 1 ]
 {
 	d ..Read("/irisdev/app/inputs/2023/4.in", .input)
+  d ..RemoveColon(.input)
   set res = 0
-  for i=1:1:input {
-    set l = input(i)
-    set a = $p(l, ","), b = $p(l, ",", 2)
-    set s1 = $p(a, "-"), e1 = $p(a, "-", 2), s2 = $p(b, "-"), e2 = $p(b, "-", 2)
-    if ((..Max(s1, s2) <= ..Min(e1, e2))) {
-      set res = res + 1
+  set cards = 0
+
+  For i = 1:1:input {
+    set line = input(i)
+    set a = ..GetIntsLine($p(line, "|", 1))
+    set b = ..GetIntsLine($p(line, "|", 2))
+    
+    kill hand
+    set hand = ""
+    for j = 1:1:$length(a, " ") {
+      set hand($p(a, " ", j)) = $get(hand($p(a, " ", j)), 0) + 1
+    }
+    for j = 1:1:$length(b, " ") {
+      set hand($p(b, " ", j)) = $get(hand($p(b, " ", j)), 0) + 1
+    }
+    set x = "", v = 0, t = 0, wins = ""
+    for {
+      set x = $o(hand(x), 1, v)
+      if (x = "") {
+        quit
+      }
+      if (v = 2) {
+        set t = t + 1
+      }
+    }
+    set res = res + $get(cards(i), 1)
+    for j = 1:1:t {
+      set cards(i + j) = $get(cards(i + j), 1) + $get(cards(i), 1)
     }
   }
   return res

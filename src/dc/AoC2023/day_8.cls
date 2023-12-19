@@ -3,51 +3,76 @@ Class dc.AoC2023.day8 Extends dc.AoC2023.base
 
 ClassMethod Part1() As %Status [ ProcedureBlock = 1 ]
 {
-	d ..Read("/irisdev/app/inputs/2023/8.in", .input, 2)
-  set dir(1) = 1, dir(2) = 0, dir(3) = -1, dir(4) = 0, dir(5) = 1
-  set res = 0, m = input, n = input(1)
-  for r=1:1:m {
-    for c=1:1:n {
-      set ok = 1
-      for i=1:1:4 {        
-        set ok = 1
-        set nr = r+dir(i), nc = c+dir(i+1)
-        while ((1 <= nr) && (nr <= m) && (1 <= nc) && (nc <= n)) {
-          if (input(nr, nc) >= input(r, c)) {
-            set ok = 0
-            quit
-          }
-          set nr = nr+dir(i), nc = nc+dir(i+1)
-        }
-        if (ok) quit
-      }
-      set res = res + ok
+	d ..Read("/irisdev/app/inputs/2023/8.in", .input)
+
+  set D = input(1)
+
+  set G = ""
+  for i=3:1:input {
+    set a = $e(input(i), 1, 3)
+    set b = $e(input(i), 8, 10)
+    set c = $e(input(i), 13, 15)
+    set G(a) = b_" "_c
+  }
+
+  set s = "AAA"
+  set res = 0
+
+  while (s '= "ZZZ") {
+    set d = $e(D, (res # $length(D)) + 1)
+    set dd = 1
+    if (d = "R") {
+      set dd = 2
     }
+    set s = $p(G(s), " ", dd)
+    set res = res + 1
+  }
+
+  return res
+}
+
+ClassMethod Solve(ByRef G, ByRef D, s) As %Status [ ProcedureBlock = 1 ]
+{
+  set res = 0
+  while ($e(s, 3) '= "Z") {
+    set d = $e(D, (res # $length(D)) + 1)
+    set dd = 1
+    if (d = "R") {
+      set dd = 2
+    }
+    set s = $p(G(s), " ", dd)
+    set res = res + 1
   }
   return res
 }
 
 ClassMethod Part2() As %Status [ ProcedureBlock = 1 ]
 {
-	d ..Read("/irisdev/app/inputs/2023/8.in", .input, 2)
-  set dir(1) = 1, dir(2) = 0, dir(3) = -1, dir(4) = 0, dir(5) = 1
-  set msf = 0, m = input, n = input(1)
-  for r=1:1:m {
-    for c=1:1:n {
-      set curr = 1
-      for i=1:1:4 {
-        set nr = r+dir(i), nc = c+dir(i+1), v = 0
-        while ((1 <= nr) && (nr <= m) && (1 <= nc) && (nc <= n)) {
-          set v = v+1
-          if (input(nr, nc) >= input(r, c)) quit
-          set nr = nr+dir(i), nc = nc+dir(i+1)
-        }
-        set curr = curr * v
-      }
-      set msf = ..Max(msf, curr)
+	d ..Read("/irisdev/app/inputs/2023/8.in", .input)
+
+  set D = input(1)
+
+  set G = ""
+  set res = 1
+  for i=3:1:input {
+    set a = $e(input(i), 1, 3)
+    set b = $e(input(i), 8, 10)
+    set c = $e(input(i), 13, 15)
+    set G(a) = b_" "_c
+  }
+
+  set s = ""
+  for {
+    set s = $o(G(s))
+    if (s = "") {
+      quit
+    }
+    if ($e(s, 3) = "A") {
+      set res = ..LCM(res, ..Solve(.G, .D, s))
     }
   }
-  return msf
+
+  return res
 }
 
 }

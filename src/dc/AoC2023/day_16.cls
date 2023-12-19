@@ -1,65 +1,112 @@
 Class dc.AoC2023.day16 Extends dc.AoC2023.base
 {
 
-ClassMethod BuildGraph(ByRef flows, ByRef dists, ByRef n) [ ProcedureBlock = 1 ]
+ClassMethod Push(ByRef frontier, ByRef vs, M, N, r, c, d) As %Status [ ProcedureBlock = 1 ]
 {
-  d ..Read("/irisdev/app/inputs/2023/16.in", .ls)
-  set flows = "", dists = "", compression("AA") = 0, id = 1
-  for i=1:1:ls {
-    set ls(i) = $replace(ls(i), "=", " ")
-    set ls(i) = $replace(ls(i), ";", "")
-    set ls(i) = $change(ls(i), ", ", " ")
-    set c = $p(ls(i), " ", 2)
-    if ((c '= "AA") && (+$p(ls(i), " ", 6) > 0)) set compression(c) = id, id = id + 1
-  }
-  set n = id
-  for i=1:1:ls {
-    set c = $p(ls(i), " ", 2)
-    if ((c '= "AA") && (+$p(ls(i), " ", 6) = 0)) set compression(c) = id, id = id + 1
-  }
-  for i=1:1:ls {
-    set flows(compression($p(ls(i), " ", 2))) = $p(ls(i), " ", 6)
-    for j=11:1:$LENGTH(ls(i), " ") {
-      set dists(compression($p(ls(i), " ", 2)), compression($p(ls(i), " ", j))) = 1
-    }
-  }
-  for v=0:1:ls-1 {
-    for u=0:1:ls-1 {
-      for w=0:1:ls-1 {
-        set dists(u, w) = ..Min($g(dists(u, w), 100), $g(dists(u, v), 100) + $g(dists(v, w), 100))
-      }
-    }
+  if ((1 <= r) && (r <= M) && (1 <= c) && (c <= N) && '$d(vs(r, c, d))) {
+    set vs(r, c, d) = ""
+    do frontier.%Push(r_" "_c_" "_d)
   }
 }
 
-ClassMethod dfs(u, t, opened, n, ByRef flows, ByRef dists, ByRef cache) [ ProcedureBlock = 1 ]
+ClassMethod Solve(ByRef g, r, c, dir) As %Status [ ProcedureBlock = 1 ]
 {
-  if ($d(cache(u_" "_t_" "_opened), targ)) return targ
-  set x = 0
-  for v=0:1:n-1 {
-    if (($ZBOOLEAN(opened, $ZPOWER(2, v), 1) = 0) || (dists(u, v) >= t) || (flows(v) = 0)) continue
-    set arrival = t - 1 - dists(u, v)
-    set x = ..Max(x, flows(v) * arrival + ..dfs(v, arrival, opened - $ZPOWER(2, v), n, .flows, .dists, .cache))
+  set M = g, N = $length(g(1))
+  set d(1) = 1, d(2) = 0, d(3) = -1, d(4) = 0, d(5) = 1
+  set D(1) = 4, D(2) = 3, D(3) = 2, D(4) = 1
+  set E(1) = 2, E(2) = 1, E(3) = 4, E(4) = 3
+  set vs = 0
+  set frontier = []
+  do frontier.%Push(r_" "_c_" "_dir)
+
+  while (frontier.%Size() > 0) {
+    set nf = []
+    set iter = frontier.%GetIterator()
+    while iter.%GetNext(.k, .v) {
+      set r = $p(v, " "), c = $p(v, " ", 2), dir = $p(v, " ", 3)
+      if ((r = 0) || (r = (M + 1)) || (c = 0) || (c = (N + 1))) {
+        set tile = "."
+      } else {
+        set tile = $e(g(r), c)
+      }
+
+      if (((dir = 1) || (dir = 3)) && (tile = "-")) {
+        set nr = r + d(2), nc = c + d(3)
+        do ..Push(.nf, .vs, M, N, nr, nc, 2)
+        set nr = r + d(4), nc = c + d(5)
+        do ..Push(.nf, .vs, M, N, nr, nc, 4)
+        continue
+      }
+
+      if (((dir = 2) || (dir = 4)) && (tile = "|")) {
+        set nr = r + d(1), nc = c + d(2)
+        do ..Push(.nf, .vs, M, N, nr, nc, 1)
+        set nr = r + d(3), nc = c + d(4)
+        do ..Push(.nf, .vs, M, N, nr, nc, 3)
+        continue
+      }
+
+      if (tile = "\") {
+        set nr = r + d(dir + 1), nc = c + d(dir)
+        do ..Push(.nf, .vs, M, N, nr, nc, D(dir))
+        continue
+      }
+
+      if (tile = "/") {
+        set nr = r - d(dir + 1), nc = c - d(dir)
+        do ..Push(.nf, .vs, M, N, nr, nc, E(dir))
+        continue
+      }
+
+      set nr = r + d(dir), nc = c + d(dir + 1)
+      do ..Push(.nf, .vs, M, N, nr, nc, dir)
+    }
+    set frontier = nf
   }
-  set cache(u_" "_t_" "_opened) = x
-  return x
+
+  set res = 0, r = ""
+  for {
+    set r = $o(vs(r))
+    if (r = "") {
+      quit
+    }
+    set c = ""
+    for {
+      set c = $o(vs(r, c))
+      if (c = "") {
+        quit
+      }
+      set res = res + 1
+    }
+  }
+
+  return res
 }
 
 ClassMethod Part1() As %Status [ ProcedureBlock = 1 ]
 {
-  do ..BuildGraph(.flows, .dists, .n)
-  return ..dfs(0, 30, $ZPOWER(2, n)-1, n, .flows, .dists, .cache)
+  d ..Read("/irisdev/app/inputs/2023/16.in", .g)
+
+  return ..Solve(.g, 1, 0, 4)
 }
 
 ClassMethod Part2() As %Status [ ProcedureBlock = 1 ]
 {
-  zw "This will take awhile"
-  do ..BuildGraph(.flows, .dists, .n)
-  set M = $ZPOWER(2, n)-1, msf = 0
-  for mask=0:1:M {
-    set msf = ..Max(msf, ..dfs(0, 26, mask, n, .flows, .dists, .cache) + ..dfs(0, 26, M - mask, n, .flows, .dists, .cache))
+  d ..Read("/irisdev/app/inputs/2023/16.in", .g)
+  set res = 0
+  set M = g, N = $length(g(1))
+
+  for r=1:1:M {
+    set res = ..Max(res, ..Solve(.g, r, 0, 4))
+    set res = ..Max(res, ..Solve(.g, r, N + 1, 2))
   }
-  return msf
+  
+  for c=1:1:N {
+    set res = ..Max(res, ..Solve(.g, 0, c, 1))
+    set res = ..Max(res, ..Solve(.g, M + 1, c, 3))
+  }
+
+  return res
 }
 
 }

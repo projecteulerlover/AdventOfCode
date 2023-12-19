@@ -14,19 +14,33 @@ ClassMethod Part1() As %Status [ ProcedureBlock = 1 ]
 {
 	d ..Read("/irisdev/app/inputs/2023/3.in", .input)
   set res = 0
-  for i=1:1:input {
-    set n = $length(input(i))
-    set m = n/2
-    set a = $extract(input(i), 1, n/2)
-    set b = $extract(input(i), n/2 + 1, n)
-    kill aSet
-    for j=1:1:m {
-      set aSet($extract(a, j)) = ""
-    }
-    for j=1:1:m {
-      if ($data(aSet($extract(b, j))) = 1) {
-        set res = res + ..Helper($extract(b, j))
-        quit
+  set R = input, C = $LENGTH(input(1))
+  for i=1:1:R {
+    set line = input(i)
+    set num = 0
+    set counts = 0
+    for j=1:1:C {
+      set c = $extract(line, j)
+      if c?1N {
+        set num = num * 10 + (+c)
+        for di = -1:1:1 {
+          for dj = -1:1:1 {
+            set ni = i + di, nj = j + dj
+            if ((1 <= ni) && (ni <= R) && (1 <= nj) && (nj <= C)) {
+              set cc = $extract(input(ni), nj)
+              if ((cc '= ".") && '(cc?1N)) {
+                set counts = 1
+              }
+            }
+          }
+        }
+      }
+      if ('(c?1N) || (j = C)) {
+        if (counts) {
+          set res = res + num
+          set counts = 0
+        }
+        set num = 0
       }
     }
   }
@@ -37,21 +51,41 @@ ClassMethod Part2() As %Status [ ProcedureBlock = 1 ]
 {
 	d ..Read("/irisdev/app/inputs/2023/3.in", .input)
   set res = 0
-  for i=1:3:input {
-    set a = input(i), b = input(i+1), c = input(i+2)
-    kill aSet, bSet
-    for j=1:1:$length(a) {
-      set aSet($extract(a, j)) = ""
-    }
-    for j=1:1:$length(b) {
-      if ($data(aSet($extract(b, j))) = 1) {
-        set bSet($extract(b, j)) = ""
+  set R = input, C = $LENGTH(input(1))
+  set mults = ""
+
+  for i=1:1:R {
+    set line = input(i)
+    set num = 0
+    set mult = 0
+    for j=1:1:C {
+      set c = $extract(line, j)
+      if c?1N {
+        set num = num * 10 + (+c)
+        for di = -1:1:1 {
+          for dj = -1:1:1 {
+            set ni = i + di, nj = j + dj
+            if ((1 <= ni) && (ni <= R) && (1 <= nj) && (nj <= C)) {
+              set cc = $extract(input(ni), nj)
+              if ((cc '= ".") && '(cc?1N)) {
+                if (cc = "*") {
+                  set mult = ni_"^"_nj
+                }
+              }
+            }
+          }
+        }
       }
-    }
-    for j=1:1:$length(c) {
-      if ($data(bSet($extract(c, j))) = 1) {
-        set res = res + ..Helper($extract(c, j))
-        quit
+      if ('(c?1N) || (j = C)) {
+        if (mult) {
+          set mults(mult) = $get(mults(mult), "")
+          set $p(mults(mult), ",", $length(mults(mult), ",") + 1) = num
+          if ($length(mults(mult), ",") = 3) {
+            set res = res + ($p(mults(mult), ",", 2) * $p(mults(mult), ",", 3))
+          }
+          set mult = 0
+        }
+        set num = 0
       }
     }
   }

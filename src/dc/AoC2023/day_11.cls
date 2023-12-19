@@ -1,88 +1,74 @@
 Class dc.AoC2023.day11 Extends dc.AoC2023.base
 {
 
-ClassMethod BuildMonkeys(ByRef ls, ByRef monkey, ByRef tests) As %Status [ ProcedureBlock = 1 ]
+ClassMethod Solve(ByRef A, expand) As %Status [ ProcedureBlock = 1 ]
 {
-  s monkey = ls-1
-  for i=1:1:ls {
-    set monkey(i-1) = $LISTFROMSTRING($p(ls(i, 2), ": ", 2), ", ")
-    set monkey(i-1, "op") = "return "_$p(ls(i, 3), " ", 6, *)
-    set $list(tests, i) = $p(ls(i, 4), " ", 6)_" "_$p(ls(i, 5), " ", 10)_" "_$p(ls(i, 6), " ", 10)
+  set B = []
+  set setA = ""
+  for i=0:1:A.%Size() - 1 {
+    set setA(A.%Get(i)) = ""
   }
-  return 1
+  for i=0:1:A.%Size() - 1 {
+    set a = A.%Get(i)
+    set res = 0
+    for x=1:1:a-1 {
+      if ($d(setA(x))) {
+        set res = res + 1
+      } else {
+        set res = res + expand
+      }
+    }
+    d B.%Push(res)
+  }
+  set sum = 0
+  for i=0:1:B.%Size() - 1 {
+    set b1 = B.%Get(i)
+    for j=i+1:1:B.%Size() - 1 {
+      set b2 = B.%Get(j)
+      set sum = sum + $zabs(b2 - b1)
+    }
+  }
+  return sum
 }
 
 ClassMethod Part1() As %Status [ ProcedureBlock = 1 ]
 {
-  d ..Read("/irisdev/app/inputs/2023/11.in", .ls, 1)
-  d ..BuildMonkeys(.ls, .monkey, .tests)
-  for m=0:1:monkey {
-    set counter(m) = 0
-  }
-  for t=1:1:20 {
-    for m=0:1:monkey {
-      set counter(m) = counter(m) + $LISTLENGTH(monkey(m))
-      set ptr = 0
-      set test = $list(tests, m+1)
-      set a = $p(test, " "), b = $p(test, " ", 2), c = $p(test, " ", 3)
-      while $listnext(monkey(m), ptr, item) {
-        set op = $replace(monkey(m, "op"), "old", item)
-        set x = $XECUTE(op) \ 3
-        set y = b
-        if (x # a > 0) set y = c
-        set $list(monkey(y), *+1) = x
+  d ..Read("/irisdev/app/inputs/2023/11.in", .ls)
+
+  set R = ls, C = $LENGTH(ls(1))
+  set rs = [], cs = []
+
+  for r=1:1:R {
+    for c=1:1:C {
+      if ($e(ls(r), c) = "#") {
+        d rs.%Push(r)
+        d cs.%Push(c)
       }
-      set monkey(m) = ""
     }
   }
-  for m=0:1:monkey {
-    set scounter(counter(m)) = ""
-  }
-  set ptr = "", res = 1
-  for i=1:1:2 {
-    set ptr = $order(scounter(ptr), -1)
-    set res = res * ptr
-  }
-  return res
+  set rsum = ..Solve(.rs, 2), csum = ..Solve(.cs, 2)
+
+  return rsum + csum
 }
 
 ClassMethod Part2() As %Status [ ProcedureBlock = 1 ]
 {
-  d ..Read("/irisdev/app/inputs/2023/11.in", .ls, 1)
-  d ..BuildMonkeys(.ls, .monkey, .tests)
-  for m=0:1:monkey {
-    set counter(m) = 0
-  }
-  set mod = 1
-  for m=0:1:monkey {
-    set mod = mod * $p($list(tests, m+1), " ")
-  }
-  for t=1:1:10000 {
-    for m=0:1:monkey {
-      set counter(m) = counter(m) + $LISTLENGTH(monkey(m))
-      set ptr = 0
-      set test = $list(tests, m+1)
-      set a = $p(test, " "), b = $p(test, " ", 2), c = $p(test, " ", 3)
-      while $listnext(monkey(m), ptr, item) {
-        if ($d(item) = 0) continue
-        set op = $replace(monkey(m, "op"), "old", item)
-        set x = $XECUTE(op) # mod
-        set y = b
-        if (x # a > 0) set y = c
-        set $list(monkey(y), *+1) = x
+  d ..Read("/irisdev/app/inputs/2023/11.in", .ls)
+
+  set R = ls, C = $LENGTH(ls(1))
+  set rs = [], cs = []
+
+  for r=1:1:R {
+    for c=1:1:C {
+      if ($e(ls(r), c) = "#") {
+        d rs.%Push(r)
+        d cs.%Push(c)
       }
-      set monkey(m) = ""
     }
   }
-  for m=0:1:monkey {
-    set scounter(counter(m)) = ""
-  }
-  set ptr = "", res = 1
-  for i=1:1:2 {
-    set ptr = $order(scounter(ptr), -1)
-    set res = res * ptr
-  }
-  return res
+  set rsum = ..Solve(.rs, 1000000), csum = ..Solve(.cs, 1000000)
+
+  return rsum + csum
 }
 
 }

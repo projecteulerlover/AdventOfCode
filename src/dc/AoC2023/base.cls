@@ -5,7 +5,7 @@ ClassMethod PrintAllDays(d = 25) [ ProcedureBlock = 1 ]
 {
 	set ^zTEST = 0 // use my own inputs
 	#; comment out one of the following lines to toggle which inputs get run
-	#; set ^zTEST = 1 // use test 1 inputs
+	set ^zTEST = 1 // use test 1 inputs
 	#; set ^zTEST = 2 // use test 2 inputs
 	for i=1:1:d {
 			s curr = $xecute("return "_"##class(dc.AoC2023.day"_i_").Part1()")
@@ -23,10 +23,18 @@ ClassMethod Read(input, ByRef result, case = 0) As %Status [ ProcedureBlock = 1 
 	set testMode = $g(^zTEST, 0)
 	if (testMode '= 0) {
 		set re = ##class(%Regex.Matcher).%New("/irisdev/app/inputs/2023/([0-9]+)\.in")
-		if (re.Match(input) && (testMode = 1)) {
-			set input = "/irisdev/app/inputs/2023/test_set_1/"_(re.Group(1))_"/data.txt"
-		} elseif (re.Match(input) && (testMode = 2)) {
-			set input = "/irisdev/app/inputs/2023/test_set_2/"_(re.Group(1))_"/input.txt"
+		if (re.Match(input)) {
+			set fn = ""
+			if ($length(re.Group(1)) = 1) {
+				set fn = "0"_re.Group(1)
+			} else {
+				set fn = re.Group(1)
+			}
+			if (testMode = 1) {
+				set input = "/irisdev/app/inputs/2023/test_set_1/input"_(fn)_".txt"
+			} elseif (testMode = 2) {
+				set input = "/irisdev/app/inputs/2023/test_set_2/input"_(fn)_".txt"
+			}
 		}
 	}
 	s sc = file.LinkToFile(input)
@@ -110,6 +118,90 @@ ClassMethod Equal(ByRef a, ByRef b) As %Boolean [ ProcedureBlock = 1 ]
 		if ('$d(a(bptr))) return 0
 	}
 	return 1
+}
+
+ClassMethod RemoveColonLine(a) As %Status [ ProcedureBlock = 1 ]
+{
+	return $p(a, ": ", 2)
+}
+
+ClassMethod RemoveColon(ByRef a) As %Status [ ProcedureBlock = 1 ]
+{
+	for i = 1:1:a {
+		set a(i) = ..RemoveColonLine(a(i))
+	}
+}
+
+ClassMethod GetIntsLine(a, delim = " ") As %String [ ProcedureBlock = 1 ]
+{
+	set nl = ""
+	for j = 1:1:$LENGTH(a, delim) {
+		set token = $p(a, delim, j)
+		if ($length(token)) {
+			if ($length(nl)) {
+				set nl = nl_delim_token
+			} else {
+				set nl = token
+			}
+		}
+	}
+	return nl
+}
+
+ClassMethod GetInts(ByRef a, delim = " ") As %Status [ ProcedureBlock = 1 ]
+{
+	for i = 1:1:a {
+		set a(i) = ..GetIntsLine(a(i), delim)
+	}
+}
+
+ClassMethod GCD(a, b) As %Status [ ProcedureBlock = 1 ]
+{
+	if (a > b) {
+		return ..GCD(b, a)
+	}
+	if (a = 0) {
+		return b
+	}
+	set rem = b # a
+	if (rem = 0) {
+		return a
+	}
+	return ..GCD(rem, a)
+}
+
+ClassMethod LCM(a, b) As %Status [ ProcedureBlock = 1 ]
+{
+	return a * b / ..GCD(a, b)
+}
+
+ClassMethod ReverseList(a, delim = " ") As %String [ ProcedureBlock = 1 ]
+{
+	set N = $length(a, delim)
+	set res = ""
+	for r=N:-1:1 {
+		set R = $p(a, delim, r)
+		if ($length(res)) {
+			set res = res_delim_R
+		} else {
+			set res = R
+		}
+	}
+
+	return res
+}
+
+ClassMethod Shoelace(ByRef a, delim = " ") As %Integer [ ProcedureBlock = 1 ]
+{
+	if (a(a) '= a(1)) {
+		set a = a + 1
+		set a(a) = a(1)
+	}
+	set res = 0
+	for i=1:1:a-1 {
+		set res = res + (($p(a(i), delim, 1) * $p(a(i + 1), delim, 2)) - ($p(a(i + 1), delim, 1) * $p(a(i), delim, 2)))
+	}
+	return $zabs(res) \ 2
 }
 
 }

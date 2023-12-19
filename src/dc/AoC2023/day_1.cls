@@ -21,7 +21,7 @@ ClassMethod Part1() As %Status [ ProcedureBlock = 1 ]
 
 ClassMethod Part2() As %Status [ ProcedureBlock = 1 ]
 {
-	d ..Read("/irisdev/app/inputs/2023/1.in", .lines)
+    d ..Read("/irisdev/app/inputs/2023/1.in", .lines)
     set nums = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]
     set total = 0
     for k = 1:1:lines {

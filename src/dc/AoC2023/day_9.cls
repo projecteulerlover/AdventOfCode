@@ -1,49 +1,57 @@
 Class dc.AoC2023.day9 Extends dc.AoC2023.base
 {
 
-ClassMethod Helper(sl) As %Integer [ ProcedureBlock = 1 ]
+ClassMethod Solve(l) As %Integer [ ProcedureBlock = 1 ]
 {
-  d ..Read("/irisdev/app/inputs/2023/9.in", .input)
-  set mp("R") = 1, mp("D") = 2, mp("L") = 3, mp("U") = 4
-  set dir(1) = 1, dir(2) = 0, dir(3) = -1, dir(4) = 0, dir(5) = 1
-  set seen = 1
-  set seen("0^0") = ""
-  for s=1:1:sl {
-    set snake(s, "r") = 0, snake(s, "c") = 0
-  }
-  
-  for i=1:1:input {
-    set l = input(i)
-    set d = mp($p(l, " ")), x = $p(l, " ", 2)
-    set dr = dir(d), dc = dir(d+1)
-    for z=1:1:x {
-      set snake(1, "r") = snake(1, "r") + dr
-      set snake(1, "c") = snake(1, "c") + dc
-      for s=2:1:sl {
-        set rx = snake(s-1, "r")-snake(s, "r") 
-        set cx = snake(s-1, "c")-snake(s, "c")
-        if (($zabs(rx) > 1) || ($zabs(cx) > 1)) {
-          if ($zabs(rx) > 0) set snake(s, "r") = snake(s, "r") + (rx/$zabs(rx))
-          if ($zabs(cx) > 0) set snake(s, "c") = snake(s, "c") + (cx/$zabs(cx))
-        }
-      }
-      if ($d(seen(snake(sl, "r")_"^"_snake(sl, "c"))) = 0) {
-        set seen(snake(sl, "r")_"^"_snake(sl, "c")) = i
-        set seen = seen + 1
-      }
+  set nonzero = 0
+  set N = $length(l, " ")
+  for i=1:1:N {
+    if ($p(l, " ", i) '= 0) {
+      set nonzero = 1
+      quit
     }
   }
-  return seen
+  if (nonzero = 0) {
+    return 0
+  }
+  set cur = ""
+  for i=1:1:N - 1 {
+    if ($length(cur)) {
+      set cur = cur_" "_($p(l, " ", i + 1) - $p(l, " ", i))
+    } else {
+      set cur = $p(l, " ", i + 1) - $p(l, " ", i)
+    }
+  }
+  return $p(l, " ", N)_" "_..Solve(cur)
 }
 
 ClassMethod Part1() As %Status [ ProcedureBlock = 1 ]
 {
-  return ..Helper(2)
+  d ..Read("/irisdev/app/inputs/2023/9.in", .input)
+  set res = 0
+  for i=1:1:input {
+    set vs = ..Solve(input(i))
+  
+    for j=1:1:$length(vs, " ") {
+      set res = res + $p(vs, " ", j)
+    }
+  }
+  return res
 }
 
 ClassMethod Part2() As %Status [ ProcedureBlock = 1 ]
 {
-  return ..Helper(10)
+  d ..Read("/irisdev/app/inputs/2023/9.in", .input)
+  set res = 0
+  for i=1:1:input {
+    set rev = ..ReverseList(input(i))
+    set vs = ..Solve(rev)
+  
+    for j=1:1:$length(vs, " ") {
+      set res = res + $p(vs, " ", j)
+    }
+  }
+  return res
 }
 
 }

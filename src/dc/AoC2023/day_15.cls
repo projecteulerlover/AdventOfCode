@@ -1,76 +1,84 @@
 Class dc.AoC2023.day15 Extends dc.AoC2023.base
 {
 
+ClassMethod Hash(token) As %Status [ ProcedureBlock = 1 ]
+{
+  set hash = 0
+  for j=1:1:$length(token) {
+    set x = $e(token, j)
+    set hash = hash + $ascii(x)
+    set hash = 17 * hash
+    set hash = hash # 256
+  }
+  return hash
+}
+
 ClassMethod Part1() As %Status [ ProcedureBlock = 1 ]
 {
   d ..Read("/irisdev/app/inputs/2023/15.in", .ls)
-  set Y = 2000000
-  set vs = "", bs = ""
-  for i=1:1:ls {
-    set l = $replace(ls(i), "Sensor at x=", "")
-    set l = $replace(l, ", y=", " ")
-    set l = $replace(l, ": closest beacon is at x=", " ")
-    set x = $p(l, " "), y = $p(l, " ", 2)
-    set cx = $p(l, " ", 3), cy = $p(l, " ", 4)
-    if (cy = Y) set bs(cx) = ""
-    set d = $zabs(x - cx) + $zabs(y - cy)
-    set dy = $zabs(Y - y)
-    set free = ..Max(d - dy, 0)
-    for ix=x-free:1:x+free set vs(ix) = ""
-  }
-  set ptr = "", res = 0
-  for {
-    set ptr = $o(vs(ptr))
-    if (ptr = "") quit
-    if ('$d(bs(ptr))) set res = res + 1
+
+  set l = ls(1)
+  set res = 0
+  for i=1:1:$length(l, ",") {
+    set hash = 0
+    set token = $p(l, ",", i)
+    set res = res + ..Hash(token)
   }
   return res
 }
 
 ClassMethod Part2() As %Status [ ProcedureBlock = 1 ]
 {
-  zw "This will take awhile"
   d ..Read("/irisdev/app/inputs/2023/15.in", .ls)
-  set Y = 2000000, bs = ""
-  for i=1:1:ls {
-      set l = $replace(ls(i), "Sensor at x=", "")
-      set l = $replace(l, ", y=", " ")
-      set l = $replace(l, ": closest beacon is at x=", " ")
-      set ls(i) = l
-      set x = $p(l, " "), y = $p(l, " ", 2)
-      set cx = $p(l, " ", 3), cy = $p(l, " ", 4)
-      set bs(x, y) = "", bs(cx, cy) = ""
-  }
-  for yy=2*Y:-1:0  {
-    kill ints
-    set ints = ""
-    for i=1:1:ls {
-      set l = ls(i)
-      set x = $p(l, " "), y = $p(l, " ", 2)
-      set cx = $p(l, " ", 3), cy = $p(l, " ", 4)
-      set d = $zabs(x - cx) + $zabs(y - cy)
-      set dy = $zabs(yy - y)
-      if (d - dy < 0) continue
-      set free = d - dy
-      set l = ..Max(0, x-free), r = ..Min(2*Y, x+free)
-      if ($d(ints(l))) {
-        set ints(l) = ..Max(r, ints(l))
-      } else {
-        set ints(l) = r
+
+  set l = ls(1)
+  set res = 0
+
+  for i=1:1:$length(l, ",") {
+    set token = $p(l, ",", i)
+    set tl = $length(token, "=")
+    if (tl = 2) {
+      set var = $p(token, "="), val = $p(token, "=", 2)
+      if ('$d(slots(var))) {
+        set slots(var) = i
+      }
+      set hm(..Hash(var), slots(var), var) = val
+    } else {
+      set var = $e(token, 1, *-1)
+      if ($d(slots(var))) {
+        kill hm(..Hash(var), slots(var), var)
+        kill slots(var)
       }
     }
-    set ptr = $order(ints(""), 1, msf)
+  }
+
+  set box = ""
+  for {
+    set box = $o(hm(box))
+    if (box = "") {
+      quit
+    }
+
+    set slot = ""
+    set s = 0
     for {
-      set ptr = $order(ints(ptr), 1, x)
-      if (ptr = "") quit
-      if ((msf + 2 = ptr) && ('$d(bs(yy, msf+1)))) {
-        return (msf + 1) * 2 * Y + (yy)
+      set slot = $o(hm(box, slot))
+      if (slot = "") {
+        quit
       }
-      set msf = ..Max(msf, x)
-      if (2*Y = msf) continue
+      set s = s + 1
+
+      set var = ""
+      for {
+        set var = $o(hm(box, slot, var), 1, f)
+        if (var = "") {
+          quit
+        }
+        set res = res + ((box + 1) * s * f)
+      }
     }
   }
-  return -1
+  return res
 }
 
 }

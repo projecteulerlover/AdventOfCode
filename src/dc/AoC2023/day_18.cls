@@ -4,67 +4,54 @@ Class dc.AoC2023.day18 Extends dc.AoC2023.base
 ClassMethod Part1() As %Status [ ProcedureBlock = 1 ]
 {
   d ..Read("/irisdev/app/inputs/2023/18.in", .ls)
-  set space = 0
-  for i=1:1:ls set space(ls(i)) = ""
-  set coord = "", total = 0
-  for {
-    set coord = $order(space(coord))
-    if (coord = "") quit
-    set total = total + 6
-    for i=1:1:3 {
-      for d=-1:2:1 {
-        set cc = coord
-        set $p(cc, ",", i) = d+$p(cc, ",", i)
-        if ($d(space(cc))) set total = total - 1
-      }
-    }
-  }
-  return total
-}
+  set res = 0
 
-ClassMethod ok(cMin, cc, cMax) [ ProcedureBlock = 1 ]
-{
-  for i=1:1:3 {
-    set s = $p(cMin, ",", i), m = $p(cc, ",", i), l = $p(cMax, ",", i)
-    if ((s > m) || (m > l)) return 0
+  set corners = 1
+  set corners(1) = "0 0"
+  set r = 0, c = 0
+
+  set D("R") = "0 1", D("U") = "-1 0", D("D") = "1, 0", D("L") = "0 -1"
+  set b = -1
+  for i=1:1:ls {
+    set l = ls(i)
+    set d = $p(l, " "), x = $p(l, " ", 2), hex = $p(l, " ", 3)
+    set dr = $p(D(d), " "), dc = $p(D(d), " ", 2)
+
+    set r = dr * x + r, c = dc * x + c
+    set corners = corners + 1
+    set corners(corners) = r_" "_c
+    set b = b + x
   }
-  return 1
+
+  return ..Shoelace(.corners) - (b \ 2) + 1 + b
 }
 
 ClassMethod Part2() As %Status [ ProcedureBlock = 1 ]
 {
   d ..Read("/irisdev/app/inputs/2023/18.in", .ls)
-  set space = 0, cMin = ls(1), cMax = ls(1), total = 0
+  set res = 0
+
+  set corners = 1
+  set corners(1) = "0 0"
+  set r = 0, c = 0
+
+  set D("R") = "0 1", D("U") = "-1 0", D("D") = "1, 0", D("L") = "0 -1"
+  set M(0) = "R", M(1) = "D", M(2) = "L", M(3) = "U"
+  set b = -1
   for i=1:1:ls {
-    set space(ls(i)) = ""
-    for j=1:1:3 {
-      set $p(cMin, ",", j) = ..Min($p(cMin, ",", j), $p(ls(i), ",", j))
-      set $p(cMax, ",", j) = ..Max($p(cMax, ",", j), $p(ls(i), ",", j))
-    }
+    set l = ls(i)
+    set hex = $p(l, " ", 3)
+    set x = $System.Util.HexToDecimal($e(hex, 3, 7))
+    set d = M($e(hex, 8))
+    set dr = $p(D(d), " "), dc = $p(D(d), " ", 2)
+
+    set r = dr * x + r, c = dc * x + c
+    set corners = corners + 1
+    set corners(corners) = r_" "_c
+    set b = b + x
   }
-  for j=1:1:3 {
-    set $p(cMin, ",", j) = $p(cMin, ",", j) - 5
-    set $p(cMax, ",", j) = $p(cMax, ",", j) + 5
-  }
-  set st = [], vs = ""
-  do st.%Push(cMin)
-  set vs(cMin) = ""
-  while (st.%Size() > 0) {
-    set p = st.%Pop()
-    for i=1:1:3 {
-      for d=-1:2:1 {
-        set cc = p
-        set $p(cc, ",", i) = $p(cc, ",", i) + d
-        if ($d(space(cc))) {
-          set total = total + 1
-        } elseif ('$d(vs(cc)) && ..ok(cMin, cc, cMax)) {
-          do st.%Push(cc)
-          set vs(cc) = ""
-        }
-      }
-    }
-  }
-  return total
+
+  return ..Shoelace(.corners) - (b \ 2) + 1 + b
 }
 
 }
