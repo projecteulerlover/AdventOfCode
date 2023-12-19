@@ -26,7 +26,7 @@ ClassMethod Part2() As %Status [ ProcedureBlock = 1 ]
 	d ..Read("/irisdev/app/inputs/2023/6.in", .input)
   d ..RemoveColon(.input)
   d ..GetInts(.input)
-  set res = 1
+  set res = 0
   set t = "", d = ""
   for i=1:1:$length(input(1), " ") {
     set t = t_$p(input(1), " ", i)

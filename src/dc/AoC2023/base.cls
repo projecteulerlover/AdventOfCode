@@ -1,11 +1,15 @@
 Class dc.AoC2023.base
 {
 
-ClassMethod PrintAllDays(d = 25) [ ProcedureBlock = 1 ]
+ClassMethod PrintAllDays(d = 25, mode = 0) [ ProcedureBlock = 1 ]
 {
-	set ^zTEST = 0 // use my own inputs
+	if ((mode '= 0) && (mode '= 1) && (mode '= 2)) {
+		return "BAD MODE"
+	}
+	set ^zTEST = mode
+	#; set ^zTEST = 0 // use my own inputs
 	#; comment out one of the following lines to toggle which inputs get run
-	set ^zTEST = 1 // use test 1 inputs
+	#; set ^zTEST = 1 // use test 1 inputs
 	#; set ^zTEST = 2 // use test 2 inputs
 	for i=1:1:d {
 			s curr = $xecute("return "_"##class(dc.AoC2023.day"_i_").Part1()")
@@ -33,7 +37,7 @@ ClassMethod Read(input, ByRef result, case = 0) As %Status [ ProcedureBlock = 1 
 			if (testMode = 1) {
 				set input = "/irisdev/app/inputs/2023/test_set_1/input"_(fn)_".txt"
 			} elseif (testMode = 2) {
-				set input = "/irisdev/app/inputs/2023/test_set_2/input"_(fn)_".txt"
+				set input = "/irisdev/app/inputs/2023/test_set_2/input2"_(fn)_".txt"
 			}
 		}
 	}
