@@ -208,4 +208,13 @@ ClassMethod Shoelace(ByRef a, delim = " ") As %Integer [ ProcedureBlock = 1 ]
 	return $zabs(res) \ 2
 }
 
+ClassMethod ToArray(ByRef arr, s, delim = " ") As %Status [ ProcedureBlock = 1 ]
+{
+	set arr = $length(s, delim)
+	for i=1:1:arr {
+		set x = $p(s, delim, i)
+		set arr(i) = x
+	}
+}
+
 }
