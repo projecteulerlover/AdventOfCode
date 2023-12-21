@@ -132,6 +132,7 @@ ClassMethod Part2() As %Status [ ProcedureBlock = 1 ]
   set res(0) = 0, res(1) = 0
   set q = [], qi = 0
 
+  // 1e4 seems to be minimum of time for all cycles to be computed
   for t=1:1:10000 {
     set res(0) = res(0) + 1
     for i=1:1:bc {

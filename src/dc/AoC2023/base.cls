@@ -217,4 +217,25 @@ ClassMethod ToArray(ByRef arr, s, delim = " ") As %Status [ ProcedureBlock = 1 ]
 	}
 }
 
+ClassMethod ToGrid(ByRef g, ByRef ls, delim = "") As %Status [ ProcedureBlock = 1 ]
+{
+	set g = ls
+	for i=1:1:g {
+		if (delim = "") {
+			set g(i) = $length(ls(i))
+		} else {
+			set g(i) = $length(ls(i), delim)
+		}
+		for j=1:1:g(i) {
+			set x = ""
+			if (delim = "") {
+				set x = $e(ls(i), j)
+			} else {
+				set x = $p(ls(i), delim, j)
+			}
+			set g(i, j) = x
+		}
+	}
+}
+
 }
