@@ -1,193 +1,143 @@
 Class dc.AoC2023.day22 Extends dc.AoC2023.base
 {
 
-ClassMethod GetGrid(ByRef grid, ByRef input) [ ProcedureBlock = 1 ]
+ClassMethod BuildGraph(ByRef ls, ByRef g, ByRef R, ByRef C) As %Status [ ProcedureBlock = 1 ]
 {
-  for r=1:1:input(1) {
-    for c=1:1:$length(input(1, r)) {
-      set p = $e(input(1, r), c)
-      if ((p = ".") || (p = "#")) set grid(r-1, c-1) = p
-    }
-  }
-}
+  set blocks = ""
+  set R = 0, C = 0
 
-ClassMethod GetSteps(ByRef steps, moves) [ ProcedureBlock = 1 ]
-{
-  set n = $length(moves), c = 0, index = 1
-  for i=1:1:n {
-    if (($ascii("0") <= $ascii($e(moves, i))) && ($ascii($e(moves, i)) <= $ascii("9"))) {
-      set c = 10 * c + $e(moves, i)
-    } else {
-      set steps(index) = c_" "_$e(moves, i)
-      set c = 0
-      set index = index + 1
-    }
+  for i=1:1:ls {
+    set l = ls(i)
+    set s = $p(l, "~"), e = $p(l, "~", 2)
+    set R = ..Max(R, ..Max($p(e, ","), $p(s, ",")))
+    set C = ..Max(C, ..Max($p(e, ",", 2), $p(s, ",", 2)))
+    set key = $p(s, ",", 3)
+    set blocks(key, i) = l
   }
-  set steps(index) = c_" "
-  set steps = index
-}
 
-ClassMethod Teleport(ByRef r, ByRef c, di, ByRef grid) [ ProcedureBlock = 1 ]
-{
-  if (di = 0) {
-    set nr = r, nc = 0
-    while ('$d(grid(nr, nc))) {
-      set nc = nc + 1
+  set heights = ""
+  set carry = ""
+  set cc = 0
+
+  set key = ""
+  for {
+    set key = $o(blocks(key))
+    if (key = "") {
+      quit
     }
-    set c = nc
-    return
-  }
-  if (di = 1) {
-    set nr = 0, nc = c
-    while ('$d(grid(nr, nc))) {
-      set nr = nr + 1
+    set id = ""
+    for {
+      set id = $o(blocks(key, id), 1, targ)
+      if (id = "") {
+        quit
+      }
+      set mx = -1
+      kill touched
+
+      set a = $p(targ, "~"), b = $p(targ, "~", 2)
+      set r1 = $p(a, ","), r2 = $p(b, ",")
+      set c1 = $p(a, ",", 2), c2 = $p(b, ",", 2)
+      for r=..Min(r1, r2):1:..Max(r1, r2) {
+        for c=..Min(c1, c2):1:..Max(c1, c2) {
+          if (($get(heights(r, c, "h"), 0) + 1) > mx) {
+            set mx = $get(heights(r, c, "h"), 0) + 1
+            kill touched
+            set touched($get(heights(r, c, "id"), 0)) = ""
+          } elseif (($get(heights(r, c, "h"), 0) + 1) = mx) {
+            set touched($get(heights(r, c, "id"), 0)) = ""
+          }
+        }
+      }
+
+      set x = 0, c = 0
+      for {
+        set x = $o(touched(x))
+        if (x = "") {
+          quit
+        }
+        set g(x, id) = ""
+        set c = c + 1
+      }
+
+      // only held up by 1 other block
+      if (c = 1) {
+        if ('$d(carry($o(touched(""))))) {
+          set cc = cc + 1
+        }
+        set carry($o(touched(""))) = ""
+        kill touched
+      }
+
+      if ($p(a, ",", 3) > mx) {
+        set $p(b, ",", 3) = $p(b, ",", 3) - $p(a, ",", 3) + mx
+        set $p(a, ",", 3) = mx 
+      }
+
+      set r1 = $p(a, ","), r2 = $p(b, ",")
+      set c1 = $p(a, ",", 2), c2 = $p(b, ",", 2)
+      set h1 = $p(a, ",", 3), h2 = $p(b, ",", 3)
+      for r=..Min(r1, r2):1:..Max(r1, r2) {
+        for c=..Min(c1, c2):1:..Max(c1, c2) {
+          set heights(r, c, "h") = ..Max(h1, h2)
+          set heights(r, c, "id") = id
+        }
+      }
     }
-    set r = nr
-    return
   }
-  if (di = 2) {
-    set nr = r, nc = 149
-    while ('$d(grid(nr, nc))) {
-      set nc = nc - 1
-    }
-    set c = nc
-    return
-  }
-  if (di = 3) {
-    set nr = 199, nc = c
-    while ('$d(grid(nr, nc))) {
-      set nr = nr - 1
-    }
-    set r = nr
-    return
-  }
+
+  return ls - cc
 }
 
 ClassMethod Part1() As %Status [ ProcedureBlock = 1 ]
 {
-	d ..Read("/irisdev/app/inputs/2023/22.in", .ls, 1)
-  do ..GetGrid(.grid, .ls)
-  do ..GetSteps(.steps, ls(2, 1))
-  set ds(0) = "0 1", ds(1) = "1 0", ds(2) = "0 -1", ds(3) = "-1 0"
-  set di = 0, r = 0, c = 0
-  while 1 {
-    if ($d(grid(r, c), targ) && (targ = ".")) quit
-    set c = c + 1
-  }
-  for s=1:1:steps {
-    set n = $p(steps(s), " ")
-    for z=1:1:n {
-      set nr = r + $p(ds(di), " "), nc = c + $p(ds(di), " ", 2)
-      if ('$d(grid(nr, nc))) do ..Teleport(.nr, .nc, di, .grid)
-      if (grid(nr, nc) = ".") set r = nr, c = nc
-    }
-    set d = $p(steps(s), " ", 2)
-    if (d = "R") {
-      set di = (di + 1) # 4
-    } elseif (d = "L") {
-      set di = (di + 3) # 4
-    }
-  }
-
-  return (1000 * (r+1)) + (4 * (c+1)) + di
+	d ..Read("/irisdev/app/inputs/2023/22.in", .ls)
+  set g = "" 
+  return ..BuildGraph(.ls, .g, .R,.C)
 }
 
-ClassMethod CrossFace(ByRef r, ByRef c, ByRef di) [ ProcedureBlock = 1 ]
+ClassMethod Solve(ByRef g, ByRef ind, n, u) As %Status [ ProcedureBlock = 1 ]
 {
-  set pr = r, pc = c, pdi = di
-  if (pdi = 0) {
-    if (pr \ 50 = 0) {
-      set r = 149 - pr, c = 99, di = 2
-      return
-    }
-    if (pr \ 50 = 1) {
-      set r = 49, c = pr + 50, di = 3
-      return
-    }
-    if (pr \ 50 = 2) {
-      set r = 149 - pr, c = 149, di = 2
-      return
-    }
-    if (pr \ 50 = 3) {
-      set r = 149, c = pr - 100, di = 3
-      return
-    }
-  }
-  if (pdi = 1) {
-    if (pc \ 50 = 0) {
-      set r = 0, c = pc + 100, di = 1
-      return
-    }
-    if (pc \ 50 = 1) {
-      set r = 100 + pc, c = 49, di = 2
-      return
-    }
-    if (pc \ 50 = 2) {
-      set r = pc - 50, c = 99, di = 2
-      return
+  set q = []
+  do q.%Push(u)
+  set qi = 0
+
+  set destroyed = 0
+  while (qi < q.%Size()) {
+    set u = q.%Get(qi)
+    set qi = qi + 1
+    set destroyed = destroyed + 1
+
+    for v=1:1:n {
+      if ($d(g(u, v))) {
+        set ind(v) = ind(v) - 1
+        if (ind(v) = 0) {
+          do q.%Push(v)
+        }
+      }
     }
   }
-  if (pdi = 2) {
-    if (pr \ 50 = 0) {
-      set r = 149 - pr, c = 0, di = 0
-      return
-    }
-    if (pr \ 50 = 1) {
-      set r = 100, c = pr - 50, di = 1
-      return
-    }
-    if (pr \ 50 = 2) {
-      set r = 149 - pr, c = 50, di = 0
-      return
-    }
-    if (pr \ 50 = 3) {
-      set r = 0, c = pr - 100, di = 1
-      return
-    }
-  }
-  if (pdi = 3) {
-    if (pc \ 50 = 0) {
-      set r = 50 + pc, c = 50, di = 0
-      return
-    }
-    if (pc \ 50 = 1) {
-      set r = 100 + pc, c = 0, di = 0
-      return
-    }
-    if (pc \ 50 = 2) {
-      set r = 199, c = pc - 100, di = 3
-      return
-    }
-  }
+  return destroyed - 1
 }
 
 ClassMethod Part2() As %Status [ ProcedureBlock = 1 ]
 {
-	d ..Read("/irisdev/app/inputs/2023/22.in", .ls, 1)
-  do ..GetGrid(.grid, .ls)
-  do ..GetSteps(.steps, ls(2, 1))
-  set ds(0) = "0 1", ds(1) = "1 0", ds(2) = "0 -1", ds(3) = "-1 0"
-  set di = 0, r = 0, c = 0
-  while 1 {
-    if ($d(grid(r, c), targ) && (targ = ".")) quit
-    set c = c + 1
-  }
-  for s=1:1:steps {
-    set n = $p(steps(s), " ")
-    for z=1:1:n {
-      set nr = r + $p(ds(di), " "), nc = c + $p(ds(di), " ", 2), ndi = di
-      if ('$d(grid(nr, nc))) do ..CrossFace(.nr, .nc, .ndi)
-      if (grid(nr, nc) = ".") set r = nr, c = nc, di = ndi
-    }
-    set d = $p(steps(s), " ", 2)
-    if (d = "R") {
-      set di = (di + 1) # 4
-    } elseif (d = "L") {
-      set di = (di + 3) # 4
+	d ..Read("/irisdev/app/inputs/2023/22.in", .ls)
+  d ..BuildGraph(.ls, .g, .R, .C)
+  set res = 0, n = ls
+
+  for u=1:1:n {
+    for v=1:1:n {
+      if ($d(g(u, v))) {
+        set ind(v) = $g(ind(v), 0) + 1 
+      }
     }
   }
 
-  return (1000 * (r+1)) + (4 * (c+1)) + di
+  for u=1:1:ls {
+    merge cind = ind
+    set res = res + ..Solve(.g, .cind, n, u)
+  }
+  return res
 }
 
 }
