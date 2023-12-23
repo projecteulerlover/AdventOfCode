@@ -63,6 +63,7 @@ ClassMethod BackTrack(ByRef g, ByRef DS, ByRef mx, r, c, d) As %Status [ Procedu
 
 ClassMethod Part2() As %Status [ ProcedureBlock = 1 ]
 {
+  // This will take awhile, even with graph contraction optimizations.
   d ..Read("/irisdev/app/inputs/2023/23.in", .ls)
 
   for i=1:1:ls {
@@ -106,12 +107,10 @@ ClassMethod Part2() As %Status [ ProcedureBlock = 1 ]
         continue
       }
       set q = []
-      set qi = 0
       do q.%Push(r_" "_c_" "_0)
       kill vs
-      while (qi < q.%Size()) {
-        set x = q.%Get(qi)
-        set qi = qi + 1
+      while (q.%Size()) {
+        set x = q.%Pop()
         set cr = $p(x, " "), cc = $p(x, " ", 2), d = $p(x, " ", 3)
         if ($d(vs(cr, cc))) {
           continue
@@ -131,18 +130,15 @@ ClassMethod Part2() As %Status [ ProcedureBlock = 1 ]
       }
     }
   }
-
   set q = []
   set res = 0
   do q.%Push("1 "_sc_" 0")
-  while (q.%Size()) {
-    set x = q.%Pop()
+  set t = 0
+  while (q.%Size() && (t < 10000000)) {
+    set x = q.%Pop(), t = t + 1
     set r = $p(x, " "), c = $p(x, " ", 2), d = $p(x, " ", 3)
     if ((r = m)) {
-      if (res < d) {
-        set res = d
-        zw res
-      }
+      set res = ..Max(res, d)
     }
 
     if (d = "") {
