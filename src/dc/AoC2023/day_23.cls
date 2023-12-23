@@ -1,152 +1,84 @@
 Class dc.AoC2023.day23 Extends dc.AoC2023.base
 {
 
-ClassMethod shouldMove(r, c, ByRef elves) [ ProcedureBlock = 1 ]
-{
-  for nr=r-1:1:r+1 {
-    for nc=c-1:1:c+1 {
-      if ((nr = r) && (nc = c)) continue
-      if ($d(elves(nr_" "_nc))) return 1
-    }
-  }
-  return 0
-}
-
-ClassMethod move(d, r, c, ByRef elves) [ ProcedureBlock = 1 ]
-{
-  if ('..shouldMove(r, c, .elves)) return r_" "_c
-  if ((d = "N") && '$d(elves((r-1)_" "_(c-1))) && '$d(elves((r-1)_" "_(c))) && '$d(elves((r-1)_" "_(c+1)))) {
-    return (r-1)_" "_c
-  }
-  if ((d = "S") && '$d(elves((r+1)_" "_(c-1))) && '$d(elves((r+1)_" "_(c))) && '$d(elves((r+1)_" "_(c+1)))) {
-    return (r+1)_" "_c
-  }
-  if ((d = "W") && '$d(elves((r-1)_" "_(c-1))) && '$d(elves((r)_" "_(c-1))) && '$d(elves((r+1)_" "_(c-1)))) {
-    return r_" "_(c-1)
-  }
-  if ((d = "E") && '$d(elves((r-1)_" "_(c+1))) && '$d(elves((r)_" "_(c+1))) && '$d(elves((r+1)_" "_(c+1)))) {
-    return r_" "_(c+1)
-  }
-  return r_" "_c
-}
-
 ClassMethod Part1() As %Status [ ProcedureBlock = 1 ]
 {
   d ..Read("/irisdev/app/inputs/2023/23.in", .ls)
-  set elves = "", m = ls, n = $length(ls(1))
-  for r=1:1:m {
-    for c=1:1:n {
-      if ($e(ls(r), c) = "#") set elves(r_" "_c) = ""
+  d ..ToGrid(.g, .ls)
+  set DS(0) = 1, DS(1) = 0, DS(2) = -1, DS(3) = 0, DS(4) = 1
+  set tiles("v") = 0, tiles("<") = 1, tiles("^") = 2, tiles(">") = 3
+
+  set sc = 0
+  set m = g, n = g(1)
+  for c=1:1:n {
+    if g(1, c) = "." {
+      set sc = c 
+      quit
     }
   }
-  set dirs = 3, dirs(0) = "N", dirs(1) = "S", dirs(2) = "W", dirs(3) = "E"
-  for t=0:1:9 {
-    kill newElves, proposal, proposalCount
-    set coords = ""
-    for {
-      set coords = $o(elves(coords))
-      if (coords = "") quit
-      set found = 0
+
+  set q = []
+  set qi = 0, res = 0
+  do q.%Push(1_" "_sc_" 0 0 0")
+  while (qi < q.%Size()) {
+    set x = q.%Get(qi)
+    set qi = qi + 1
+    set r = $p(x, " "), c = $p(x, " ", 2), pr = $p(x, " ", 3), pc = $p(x, " ", 4), d = $p(x, " ", 5)
+    set res = ..Max(res, d)
+
+    if (g(r, c) = ".") {
       for i=0:1:3 {
-        set d = dirs((t + i) # 4)
-        set r = $p(coords, " "), c = $p(coords, " ", 2)
-        set ncoords = ..move(d, r, c, .elves)
-        if (ncoords '= coords) {
-          set proposalCount(ncoords) = $g(proposalCount(ncoords), 0) + 1
-          set proposal(coords) = ncoords
-          set found = 1
-          quit
+        set nr = r + DS(i), nc = c + DS(i + 1)
+        if ((1 <= nr) && (nr <= m) && (1 <= nc) && (nc <= n) && ((nr '= pr) || (nc '= pc)) && (g(nr, nc) '= "#")) {
+          do q.%Push(nr_" "_nc_" "_r_" "_c_" "_(d + 1))
         }
       }
-      if ('found) {
-        set proposalCount(coords) = $g(proposalCount(coords), 0) + 1
-        set proposal(coords) = coords
+    } elseif ($d(tiles(g(r, c)), i)) {
+      set nr = r + DS(i), nc = c + DS(i + 1)
+      if ((1 <= nr) && (nr <= m) && (1 <= nc) && (nc <= n) && ((nr '= pr) || (nc '= pc)) && (g(nr, nc) '= "#")) {
+        do q.%Push(nr_" "_nc_" "_r_" "_c_" "_(d + 1))
       }
     }
-    set coords = ""
-    for {
-      set coords = $o(proposal(coords), 1, ncoords)
-      if (coords = "") quit
-
-      if (proposalCount(ncoords) = 1) {
-        set newElves(ncoords) = ""
-      } else {
-        set newElves(coords) = ""
-      }
-    }
-    kill elves
-    MERGE elves = newElves
   }
-  set mr = 10000000, Mr = -10000000, mc = 10000000, Mc = -10000000
-  set coords = ""
-  for {
-    set coords = $order(elves(coords))
-    if (coords = "") quit
-    set r = $p(coords, " "), c = $p(coords, " ", 2)
-    set mr = ..Min(mr, r), Mr = ..Max(Mr, r), mc = ..Min(mc, c), Mc = ..Max(Mc, c)
-  }
-  set total = 0
-  for r=mr:1:Mr {
-    for c=mc:1:Mc {
-      if ('$d(elves(r_" "_c))) set total = total + 1
-    }
-  }
-  return total
+  return res
 }
 
 ClassMethod Part2() As %Status [ ProcedureBlock = 1 ]
 {
-  zw "This might take awhile."
   d ..Read("/irisdev/app/inputs/2023/23.in", .ls)
-  set elves = "", m = ls, n = $length(ls(1))
-  for r=1:1:m {
-    for c=1:1:n {
-      if ($e(ls(r), c) = "#") set elves(r_" "_c) = ""
-    }
+  for i=1:1:ls {
+    set ls(i) = $translate(ls(i), "^><v", "....")
   }
-  set dirs = 3, dirs(0) = "N", dirs(1) = "S", dirs(2) = "W", dirs(3) = "E"
-  set t = 0
-  while 1 {
-    kill newElves, proposal, proposalCount
-    set coords = ""
-    for {
-      set coords = $o(elves(coords))
-      if (coords = "") quit
-      set found = 0
-      for i=0:1:3 {
-        set d = dirs((t + i) # 4)
-        set r = $p(coords, " "), c = $p(coords, " ", 2)
-        set ncoords = ..move(d, r, c, .elves)
-        if (ncoords '= coords) {
-          set proposalCount(ncoords) = $g(proposalCount(ncoords), 0) + 1
-          set proposal(coords) = ncoords
-          set found = 1
-          quit
-        }
-      }
-      if ('found) {
-        set proposalCount(coords) = $g(proposalCount(coords), 0) + 1
-        set proposal(coords) = coords
-      }
-    }
-    set coords = "", moved = 0
-    for {
-      set coords = $o(proposal(coords), 1, ncoords)
-      if (coords = "") quit
+  d ..ToGrid(.g, .ls)
+  set DS(0) = 1, DS(1) = 0, DS(2) = -1, DS(3) = 0, DS(4) = 1
+  set tiles("v") = 0, tiles("<") = 1, tiles("^") = 2, tiles(">") = 3
 
-      if (proposalCount(ncoords) = 1) {
-        if (ncoords '= coords) set moved = 1
-        set newElves(ncoords) = ""
-      } else {
-        set newElves(coords) = ""
+  set sc = 0
+  set m = g, n = g(1)
+  for c=1:1:n {
+    if g(1, c) = "." {
+      set sc = c 
+      quit
+    }
+  }
+
+  set q = []
+  set qi = 0, res = 0
+  do q.%Push(1_" "_sc_" 0 0 0")
+  while (qi < q.%Size()) {
+    set x = q.%Get(qi)
+    set qi = qi + 1
+    set r = $p(x, " "), c = $p(x, " ", 2), pr = $p(x, " ", 3), pc = $p(x, " ", 4), d = $p(x, " ", 5)
+    set res = ..Max(res, d)
+
+    for i=0:1:3 {
+      set nr = r + DS(i), nc = c + DS(i + 1)
+      if ((1 <= nr) && (nr <= m) && (1 <= nc) && (nc <= n) && ((nr '= pr) || (nc '= pc)) && (g(nr, nc) '= "#")) {
+        do q.%Push(nr_" "_nc_" "_r_" "_c_" "_(d + 1))
       }
     }
-    if ('moved) return t+1
-    kill elves
-    MERGE elves = newElves
-    set t = t + 1
   }
-  return -1
+  return res
 }
 
 }
