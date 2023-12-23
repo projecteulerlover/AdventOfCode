@@ -81,6 +81,57 @@ ClassMethod Part2() As %Status [ ProcedureBlock = 1 ]
     }
   }
 
+  set ind = ""
+  for r=1:1:m {
+    for c=1:1:n {
+      if (g(r, c) = "#") {
+        continue
+      }
+      set in = 0
+      for i=0:1:3 {
+        set nr = r + DS(i), nc = c + DS(i + 1)
+        if ((1 <= nr) && (nr <= m) && (1 <= nc) && (nc <= n) && (g(nr, nc) = ".")) {
+          set in = in + 1
+        }
+      }
+      if ((in > 2) || (r = 1) || (r = m)) {
+        set ind(r, c) = ""
+      }
+    }
+  }
+  set adj = ""
+  for r=1:1:m {
+    for c=1:1:n {
+      if ('$d(ind(r, c))) {
+        continue
+      }
+      set q = []
+      set qi = 0
+      do q.%Push(r_" "_c_" "_0)
+      kill vs
+      while (qi < q.%Size()) {
+        set x = q.%Get(qi)
+        set qi = qi + 1
+        set cr = $p(x, " "), cc = $p(x, " ", 2), d = $p(x, " ", 3)
+        if ($d(vs(cr, cc))) {
+          continue
+        }
+        set vs(cr, cc) = ""
+        if (((cr '= r) || (cc '= c)) && ($d(ind(cr, cc)))) {
+          set adj(r, c) = $g(adj(r, c), 0) + 1
+          set adj(r, c, adj(r, c)) = cr_" "_cc_" "_d
+          continue
+        }
+        for i=0:1:3 {
+          set nr = cr + DS(i), nc = cc + DS(i + 1)
+          if ((1 <= nr) && (nr <= m) && (1 <= nc) && (nc <= n) && (g(nr, nc) = ".")) {
+            do q.%Push(nr_" "_nc_" "_(d + 1))
+          }
+        }
+      }
+    }
+  }
+
   set q = []
   set res = 0
   do q.%Push("1 "_sc_" 0")
@@ -105,11 +156,10 @@ ClassMethod Part2() As %Status [ ProcedureBlock = 1 ]
 
     set g(r, c) = "#"
     do q.%Push(r_" "_c_" ")
-    for i=0:1:3 {
-      set nr = r + DS(i), nc = c + DS(i + 1)
-      if ((1 <= nr) && (nr <= m) && (1 <= nc) && (nc <= n) && (g(nr, nc) = ".")) {
-        do q.%Push(nr_" "_nc_" "_(d + 1))
-      }
+    for i=1:1:adj(r, c) {
+      set cur = adj(r, c, i)
+      set $p(cur, " ", 3) = d + $p(cur, " ", 3)
+      do q.%Push(cur)
     }
   }
   return res
