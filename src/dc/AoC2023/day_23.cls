@@ -88,7 +88,10 @@ ClassMethod Part2() As %Status [ ProcedureBlock = 1 ]
     set x = q.%Pop()
     set r = $p(x, " "), c = $p(x, " ", 2), d = $p(x, " ", 3)
     if ((r = m)) {
-      set res = ..Max(res, d)
+      if (res < d) {
+        set res = d
+        zw res
+      }
     }
 
     if (d = "") {
