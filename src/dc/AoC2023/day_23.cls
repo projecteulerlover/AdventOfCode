@@ -100,7 +100,7 @@ ClassMethod Part2() As %Status [ ProcedureBlock = 1 ]
       }
     }
   }
-  set adj = ""
+  set adj = "", exits = ""
   for r=1:1:m {
     for c=1:1:n {
       if ('$d(ind(r, c))) {
@@ -119,6 +119,10 @@ ClassMethod Part2() As %Status [ ProcedureBlock = 1 ]
         if (((cr '= r) || (cc '= c)) && ($d(ind(cr, cc)))) {
           set adj(r, c) = $g(adj(r, c), 0) + 1
           set adj(r, c, adj(r, c)) = cr_" "_cc_" "_d
+          if (r = m) {
+            set exits = $g(exits, 0) + 1
+            set exits(exits) = cr_" "_cc 
+          }
           continue
         }
         for i=0:1:3 {
@@ -147,6 +151,18 @@ ClassMethod Part2() As %Status [ ProcedureBlock = 1 ]
     }
 
     if ($d(g(r, c), v) && (v = "#")) {
+      continue
+    }
+
+    set blocked = 1
+    for i=1:1:exits {
+      set er = $p(exits(i), " "), ec = $p(exits(i), " ", 2)
+      if (g(er, ec) = ".") {
+        set blocked = 0
+        quit
+      }
+    }
+    if (blocked) {
       continue
     }
 
