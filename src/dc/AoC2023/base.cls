@@ -161,17 +161,12 @@ ClassMethod GetInts(ByRef a, delim = " ") As %Status [ ProcedureBlock = 1 ]
 
 ClassMethod GCD(a, b) As %Status [ ProcedureBlock = 1 ]
 {
-	if (a > b) {
-		return ..GCD(b, a)
+	while (b '= 0) {
+		set temp = a
+		set a = b
+		set b = temp # b
 	}
-	if (a = 0) {
-		return b
-	}
-	set rem = b # a
-	if (rem = 0) {
-		return a
-	}
-	return ..GCD(rem, a)
+	return a
 }
 
 ClassMethod LCM(a, b) As %Status [ ProcedureBlock = 1 ]
