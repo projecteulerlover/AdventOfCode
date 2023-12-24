@@ -18,6 +18,9 @@ ClassMethod Part1() As %Status [ ProcedureBlock = 1 ]
 
   set res = 0
   set MN = 200000000000000, MX = 400000000000000
+  // Only tricky thing here is we have to implement a rational numbers class to make sure we stay in bounds;
+  // if we used division in Reals, the floating point inaccuracies for such large bounds would get wrong answer.
+  // Iterate over pairs of lines, see if there is an intersection inside the bounds.
   for i=1:1:ls {
     set x0 = hs(i, "x"), y0 = hs(i, "y"), z0 = hs(i, "z")
     set dx0 = hs(i, "dx"), dy0 = hs(i, "dy"), dz0 = hs(i, "dz")
@@ -62,6 +65,10 @@ ClassMethod Part2() As %Status [ ProcedureBlock = 1 ]
 
   // Main intution: the velocities of the rock cannot be that large; otherwise would not be able to intersect
   // with every hailstone.
+  // That means we can brute force on what the 3 component velocities are (this also turns the quadratic 
+  // system of equations to linear).
+  // After that, use gaussian elimination to deduce of the resulting system of equations has a working solution
+  // for the positions.
   for DX=-400:1:400 {
     for i = 0:1:2 {
       set dx(i) = cdx(i) - DX
