@@ -51,7 +51,7 @@ ClassMethod MinCut(ByRef g) As %Status
       }
     }
     if ((res * (n - res)) > (n - 1)) {
-      quit;
+      quit
     }
     for k=0:1:co(t) - 1 {
       set co(s, co(s)) = co(t, k)
