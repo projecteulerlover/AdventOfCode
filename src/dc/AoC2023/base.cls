@@ -233,4 +233,15 @@ ClassMethod ToGrid(ByRef g, ByRef ls, delim = "") As %Status [ ProcedureBlock = 
 	}
 }
 
+ClassMethod MaxInd(ByRef x, n) As %Status
+{
+  set best = -1e20, ind = -1
+  for i=0:1:n - 1 {
+    if (x(i) > best) {
+      set best = x(i), ind = i
+    }
+  }
+  return ind
+}
+
 }
